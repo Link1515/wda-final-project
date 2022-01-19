@@ -17,6 +17,7 @@ h1 {
   text-align: center;
   letter-spacing: 0.5rem;
   font-size: 2.5rem;
+  margin-bottom: 4rem;
 
   span {
     position: relative;

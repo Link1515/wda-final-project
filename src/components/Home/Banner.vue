@@ -1,13 +1,13 @@
 <template>
   <div class="banner">
     <h1>讓下一場<span>桌遊</span>更容<span>易</span></h1>
-    <div class="row">
-      <div class="col-6">
+    <div class="row g-4">
+      <div class="col-12 col-lg-6">
         <div class="banner_img rounded shadow">
           <img class="banner_img" src="https://web.ntnu.edu.tw/~40147014S/TG.jpg">
         </div>
       </div>
-      <div class="col-6">
+      <div class="col-12 col-lg-6">
         <Card>
           <template #title>
             Simple Card

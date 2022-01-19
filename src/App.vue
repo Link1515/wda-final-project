@@ -1,21 +1,25 @@
 <template>
   <div id="app">
-    <div class="container">
-      <Navbar />
-      <router-view></router-view>
-    </div>
-    <Footer/>
+    <ScrollPanel style="height: 100vh">
+      <div class="container">
+        <Navbar/>
+        <router-view></router-view>
+      </div>
+      <Footer/>
+    </ScrollPanel>
   </div>
 </template>
 
 <script>
 import Navbar from './components/App/Navbar.vue'
 import Footer from './components/App/Footer.vue'
+import ScrollPanel from 'primevue/scrollpanel'
 
 export default {
   components: {
     Footer,
-    Navbar
+    Navbar,
+    ScrollPanel
   }
 }
 </script>
@@ -35,11 +39,17 @@ img {
     vertical-align: top;
 }
 
-#app .container {
-  overflow: hidden;
-  border-radius: 12px;
-  padding: 0;
-  margin-top: 2rem !important;
-  margin-bottom: 2rem !important;
+#app {
+  .container {
+    overflow: hidden;
+    border-radius: 12px;
+    padding: 0;
+    margin-top: 2rem !important;
+    margin-bottom: 2rem !important;
+  }
+
+  .p-scrollpanel-bar {
+    background-color: var(--color-primary);
+  }
 }
 </style>
