@@ -7,7 +7,7 @@
     </Title>
     <div class="row g-5 justify-content-evenly">
       <div class="col-8 col-lg-4">
-        <Card class="rounded-3 shadow">
+        <Card>
           <template #header>
             <FontAwesomeIcon :icon="['fas','gamepad']" size="10x"></FontAwesomeIcon>
           </template>
@@ -19,7 +19,7 @@
         </Card>
       </div>
       <div class="col-8 col-lg-4">
-        <Card class="rounded-3 shadow">
+        <Card>
           <template #header>
             <FontAwesomeIcon :icon="['fas','running']" size="10x" transform="filp-h"></FontAwesomeIcon>
           </template>
