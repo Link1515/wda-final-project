@@ -10,6 +10,7 @@ import './style/variable.css'
 // plugins
 import './plugins/PrimeVue.js'
 import './plugins/FortAwesome.js'
+import './plugins/Axios.js'
 // global component
 import Title from './components/Title.vue'
 Vue.component('Title', Title)

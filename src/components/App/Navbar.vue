@@ -12,7 +12,7 @@
       </template>
     </Menubar>
 
-    <Dialog :visible.sync="isLogin" :showHeader="false" modal dismissableMask>
+    <Dialog :visible.sync="displayPanel" :showHeader="false" modal dismissableMask>
       <TabView>
         <TabPanel header="登入">
           <form class="p-fluid" @submit.prevent="login">
@@ -71,7 +71,7 @@ export default {
   },
   data () {
     return {
-      isLogin: false,
+      displayPanel: false,
       loginData: {
         account: '',
         password: ''
@@ -94,20 +94,19 @@ export default {
         {
           label: '關於我們'
         }
-      ],
-      loginItem: [
-        { label: '登入' },
-        { label: '註冊' }
       ]
     }
   },
   methods: {
     showLoginModel () {
-      this.isLogin = !this.isLogin
+      this.displayPanel = !this.displayPanel
     },
     login () {
+      this.$store.dispatch('user/login', this.loginData)
       this.loginData.account = ''
       this.loginData.password = ''
+      console.log(this.$store.state.user.account)
+      if (this.$store.state.user.account) this.displayPanel = false
     },
     register () {
       this.registerData.email = ''
