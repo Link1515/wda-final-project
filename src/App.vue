@@ -6,6 +6,7 @@
         <router-view></router-view>
       </div>
       <Footer/>
+      <Steps/>
     </ScrollPanel>
   </div>
 </template>
@@ -37,6 +38,12 @@ img {
     height: 100%;
     object-fit: cover;
     vertical-align: top;
+}
+
+.viewBox{
+  padding-bottom: 6rem;
+  overflow: hidden;
+  background-color: var(--color-info);
 }
 
 #app {

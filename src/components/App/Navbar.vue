@@ -7,21 +7,22 @@
         </router-link>
       </template>
       <template #end>
-        <Button label="登入" class="p-button-rounded p-button-raised" @click="showLoginModel"/>
-        <Button label="註冊" class="p-button-rounded p-button-raised ms-3" @click="showLoginModel"/>
+        <Button label="登入" class="p-button-rounded p-button-raised" @click="showLoginModel(0)" v-if="!userInfo.isLogin"/>
+        <Button label="註冊" class="p-button-rounded p-button-raised ms-3" @click="showLoginModel(1)" v-if="!userInfo.isLogin"/>
+        <Button label="登出" class="p-button-rounded p-button-raised ms-3" @click="logout" v-if="userInfo.isLogin"/>
       </template>
     </Menubar>
 
-    <Dialog :visible.sync="displayPanel" :showHeader="false" modal dismissableMask>
-      <TabView>
+    <Dialog :visible.sync="displayPanel" @hide="resetSubmitted" :showHeader="false" modal dismissableMask>
+      <TabView :activeIndex="tabActiveIndex">
         <TabPanel header="登入">
           <form class="p-fluid" @submit.prevent="login">
             <span class="p-float-label">
-              <InputText id="login_username" type="text" v-model="loginData.account" />
+              <InputText id="login_username" type="text" v-model.trim="loginData.account" :class="{'p-invalid': loginInvalid.account}"/>
               <label for="login_username">帳號</label>
             </span>
             <span class="p-float-label">
-              <InputText id="login_password" type="password" v-model="loginData.password" autocomplete/>
+              <InputText id="login_password" type="password" v-model.trim="loginData.password" autocomplete :class="{'p-invalid': loginInvalid.password}"/>
               <label for="login_password">密碼</label>
             </span>
             <Button label="登入" class="p-button-rounded p-button-warning" type="submit" />
@@ -30,19 +31,19 @@
         <TabPanel header="註冊">
           <form class="p-fluid" @submit.prevent="register">
             <span class="p-float-label">
-              <InputText id="register_email" type="text" v-model="registerData.email"/>
+              <InputText id="register_email" type="text" v-model.trim="registerData.email" :class="{'p-invalid': registerInvalid.email}"/>
               <label for="register_email">信箱</label>
             </span>
             <span class="p-float-label">
-              <InputText id="register_username" type="text" v-model="registerData.account" />
+              <InputText id="register_username" type="text" v-model.trim="registerData.account" :class="{'p-invalid': registerInvalid.account}"/>
               <label for="register_username">帳號</label>
             </span>
             <span class="p-float-label">
-              <InputText id="register_password" type="password" v-model="registerData.password" autocomplete/>
+              <InputText id="register_password" type="password" v-model.trim="registerData.password" autocomplete :class="{'p-invalid': registerInvalid.password}"/>
               <label for="register_password">密碼</label>
             </span>
             <span class="p-float-label">
-              <InputText id="register_passwordAgain" type="password" v-model="registerData.passwordAgain" autocomplete/>
+              <InputText id="register_passwordAgain" type="password" v-model.trim="registerData.passwordAgain" autocomplete :class="{'p-invalid': registerInvalid.passwordAgain}"/>
               <label for="register_passwordAgain">再次輸入密碼</label>
             </span>
             <Button label="註冊" class="p-button-rounded p-button-warning" type="submit"/>
@@ -59,6 +60,8 @@ import Dialog from 'primevue/dialog'
 import TabView from 'primevue/tabview'
 import TabPanel from 'primevue/tabpanel'
 import InputText from 'primevue/inputtext'
+
+import validator from 'validator'
 
 export default {
   name: 'Navbar',
@@ -94,28 +97,77 @@ export default {
         {
           label: '關於我們'
         }
-      ]
+      ],
+      tabActiveIndex: 0,
+      submitted: {
+        login: false,
+        register: false
+      }
     }
   },
   methods: {
-    showLoginModel () {
+    showLoginModel (tabIndex) {
+      this.tabActiveIndex = tabIndex
       this.displayPanel = !this.displayPanel
+      console.log(this.$router)
     },
     login () {
+      this.submitted.login = true
+      for (const key in this.loginInvalid) {
+        // 有認證錯誤就 return
+        if (this.loginInvalid[key]) return
+      }
+
       this.$store.dispatch('user/login', this.loginData)
       this.loginData.account = ''
       this.loginData.password = ''
-      console.log(this.$store.state.user.account)
-      if (this.$store.state.user.account) this.displayPanel = false
     },
     register () {
+      this.submitted.register = true
+      for (const key in this.registerInvalid) {
+        if (this.registerInvalid[key]) return
+      }
+
+      this.$store.dispatch('user/register', this.registerData)
       this.registerData.email = ''
       this.registerData.account = ''
       this.registerData.password = ''
       this.registerData.passwordAgain = ''
+    },
+    logout () {
+      this.$store.dispatch('user/logout')
+      this.$router.push('/')
+    },
+    resetSubmitted () {
+      this.submitted.login = false
+      this.submitted.register = false
     }
   },
   computed: {
+    loginInvalid () {
+      return {
+        account: !this.loginData.account.length > 0 && this.submitted.login,
+        password: !this.loginData.password.length > 0 && this.submitted.login
+      }
+    },
+    registerInvalid () {
+      return {
+        email: !validator.isEmail(this.registerData.email) && this.submitted.register,
+        account: !this.registerData.account.length > 0 && this.submitted.register,
+        password: !this.registerData.password.length > 0 && this.submitted.register,
+        passwordAgain: this.registerData.password !== this.registerData.passwordAgain && this.submitted.register
+      }
+    }
+  },
+  watch: {
+    userInfo (newValue) {
+      if (newValue.isLogin) {
+        this.navItems = [...this.navItems, { label: '自製遊戲', to: '/makegame' }]
+        this.displayPanel = false
+      } else {
+        this.navItems = [this.navItems[0], this.navItems[1], this.navItems[2]]
+      }
+    }
   }
 }
 </script>

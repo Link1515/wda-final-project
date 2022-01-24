@@ -13,6 +13,10 @@ import './plugins/FortAwesome.js'
 import './plugins/Axios.js'
 // global component
 import Title from './components/Title.vue'
+// mixin
+import mixin from './mixin.js'
+
+Vue.mixin(mixin)
 Vue.component('Title', Title)
 
 Vue.config.productionTip = false

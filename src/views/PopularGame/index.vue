@@ -1,5 +1,5 @@
 <template>
-  <div id="populargame">
+  <div id="populargame" class="viewBox">
     <Title>
       <template #text>
         熱門遊戲
@@ -58,10 +58,7 @@ export default {
 
 <style lang="scss">
 #populargame {
-  padding: 0 4rem;
-  padding-bottom: 6rem;
-  overflow: hidden;
-  background-color: var(--color-info);
+  padding: 0 4rem 6rem;
 
   .p-card {
     text-align: center;

@@ -1,5 +1,5 @@
 <template>
-  <div id="play">
+  <div id="play" class="viewBox">
     <Title>
       <template #text>
         立即開始！
@@ -42,10 +42,6 @@ export default {
 
 <style lang="scss">
 #play {
-  padding-bottom: 6rem;
-  overflow: hidden;
-  background-color: var(--color-info);
-
   .p-card {
     margin: auto;
     text-align: center;
