@@ -9,7 +9,12 @@ import 'primeicons/primeicons.css'
 import Button from 'primevue/button'
 import Card from 'primevue/card'
 
+// global directive
+import Tooltip from 'primevue/tooltip'
+
 Vue.component('Button', Button)
 Vue.component('Card', Card)
+
+Vue.directive('tooltip', Tooltip)
 
 Vue.use(PrimeVue, { ripple: true })

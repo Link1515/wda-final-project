@@ -6,7 +6,6 @@
         <router-view></router-view>
       </div>
       <Footer/>
-      <Steps/>
     </ScrollPanel>
   </div>
 </template>
@@ -21,6 +20,9 @@ export default {
     Footer,
     Navbar,
     ScrollPanel
+  },
+  created () {
+    this.$store.dispatch('user/getInfo')
   }
 }
 </script>
@@ -41,9 +43,24 @@ img {
 }
 
 .viewBox{
-  padding-bottom: 6rem;
   overflow: hidden;
   background-color: var(--color-info);
+}
+
+.subViewBox {
+  background-color: #fff;
+  border-radius: 10px;
+  padding: 3rem;
+}
+
+.borderBox {
+  border-radius: 10px;
+  border: 2px solid #000;
+  padding: 2rem;
+}
+
+.position-relative{
+  position: relative;
 }
 
 #app {
@@ -58,5 +75,25 @@ img {
   .p-scrollpanel-bar {
     background-color: var(--color-primary);
   }
+
+  .p-card {
+    text-align: center;
+    border-radius: 10px;
+    overflow: hidden;
+    box-shadow: 5px 5px 10px rgba(143, 174, 189, 0.5);
+
+    img {
+      cursor: pointer;
+    }
+  }
+
+  .p-button:focus{
+    box-shadow: none;
+  }
+
+  .p-inputtext {
+    border-radius: 9999px;
+  }
 }
+
 </style>

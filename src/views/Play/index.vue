@@ -42,6 +42,8 @@ export default {
 
 <style lang="scss">
 #play {
+  padding-bottom: 6rem;
+
   .p-card {
     margin: auto;
     text-align: center;

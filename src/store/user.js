@@ -12,12 +12,12 @@ export default {
     role: ''
   },
   mutations: {
-    login (state, value) {
-      state._id = value._id
-      state.account = value.account
-      state.email = value.email
-      state.token = value.token
-      state.role = value.role
+    login (state, userInfo) {
+      state._id = userInfo._id
+      state.account = userInfo.account
+      state.email = userInfo.email
+      state.token = userInfo.token
+      state.role = userInfo.role
     },
     logout (state) {
       state._id = ''
@@ -28,6 +28,12 @@ export default {
     },
     extend (state, newToken) {
       state.token = newToken
+    },
+    getInfo (state, userInfo) {
+      state._id = userInfo._id
+      state.account = userInfo.account
+      state.email = userInfo.email
+      state.role = userInfo.role
     }
   },
   actions: {
@@ -85,6 +91,19 @@ export default {
           title: '失敗',
           text: error.response.data.message
         })
+      }
+    },
+    async getInfo ({ commit, state }) {
+      if (state.token.length > 0) return
+      try {
+        const { data } = await serverAPI.get('/users/getInfo', {
+          headers: {
+            authorization: 'Bearer ' + state.token
+          }
+        })
+        commit('getInfo', data.result)
+      } catch (error) {
+        commit('logout')
       }
     }
   },

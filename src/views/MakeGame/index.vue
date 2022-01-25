@@ -1,39 +1,68 @@
 <template>
   <div id="makegame" class="viewBox">
     <Title>
-      <template #text> 自製遊戲 </template>
+      <template #text>自製遊戲</template>
     </Title>
-    <form-wizard :title="false">
-      <tab-content title="基本配置"> My first tab content </tab-content>
-      <tab-content title="進程配置"> My second tab content </tab-content>
-      <tab-content title="最後檢查">
-        Yuhuuu! This seems pretty damn simple
-      </tab-content>
-    </form-wizard>
+    <div class="row g-5" v-show="showMakegameHome">
+        <div class="col-12 col-md-6 col-lg-4 col-xl-3" v-for="i in 1" :key="i">
+          <Card>
+            <template #header>
+              <img src="https://andyventure.com/wp-content/uploads/boardgame_salem_1692.webp">
+            </template>
+            <template #title>
+              獵巫鎮
+            </template>
+          </Card>
+        </div>
+        <div class="col-12 col-md-6 col-lg-4 col-xl-3">
+          <div class="addNewGame" @click="addNewGame">
+            <i class="pi pi-plus"></i>
+          </div>
+        </div>
+      </div>
+    <router-view></router-view>
   </div>
 </template>
 
 <script>
-import { FormWizard, TabContent } from 'vue-form-wizard'
-import 'vue-form-wizard/dist/vue-form-wizard.min.css'
 
 export default {
-  components: {
-    FormWizard,
-    TabContent
+  computed: {
+    showMakegameHome () {
+      return this.$route.path === '/makegame'
+    }
+  },
+  methods: {
+    addNewGame () {
+      this.$router.push('/makegame/edit')
+    }
   }
 }
 </script>
 
 <style lang="scss">
 #makegame {
-  /* 修正套件樣式 */
-  .vue-form-wizard .wizard-icon-circle .wizard-icon-container {
-    border-radius: 50px;
-    margin: -3px;
+  padding: 0 4rem 6rem;
+
+  .p-card-content {
+    padding: 0;
   }
-  .wizard-header {
-    display: none;
+
+  .addNewGame {
+    display: inline-block;
+    width: 100%;
+    height: 100%;
+    padding: 2rem 0;
+    border: 5px dashed #000;
+    border-radius: 10px;
+    cursor: pointer;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+
+    i{
+      font-size: 3rem;
+    }
   }
 }
 </style>

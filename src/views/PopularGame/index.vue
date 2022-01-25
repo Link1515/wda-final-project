@@ -60,17 +60,6 @@ export default {
 #populargame {
   padding: 0 4rem 6rem;
 
-  .p-card {
-    text-align: center;
-    border-radius: 10px;
-    overflow: hidden;
-    box-shadow: 5px 5px 10px rgba(143, 174, 189, 0.5);
-
-    img {
-      cursor: pointer;
-    }
-  }
-
   .p-card-content {
     padding: 0;
   }
@@ -95,6 +84,5 @@ export default {
   .p-highlight {
     background-color: transparent;
   }
-
 }
 </style>

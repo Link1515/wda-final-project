@@ -4,6 +4,8 @@ import Home from '../views/Home'
 import Play from '../views/Play'
 import PopularGame from '../views/PopularGame'
 import MakeGame from '../views/MakeGame'
+import Edit from '../views/MakeGame/Edit'
+import NotFound from '../views/NotFound'
 
 Vue.use(VueRouter)
 
@@ -26,7 +28,19 @@ const routes = [
   {
     path: '/makegame',
     name: 'MakeGame',
-    component: MakeGame
+    component: MakeGame,
+    children: [
+      {
+        path: 'edit',
+        name: 'Edit',
+        component: Edit
+      }
+    ]
+  },
+  {
+    path: '*',
+    name: 'NotFound',
+    component: NotFound
   }
   // {
   //   path: '/about',
