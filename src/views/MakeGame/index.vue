@@ -42,7 +42,7 @@ export default {
 
 <style lang="scss">
 #makegame {
-  padding: 0 4rem 6rem;
+  padding: 0 0.5rem 6rem;
 
   .p-card-content {
     padding: 0;
@@ -63,6 +63,12 @@ export default {
     i{
       font-size: 3rem;
     }
+  }
+}
+
+@media (min-width: 992px) {
+  #makegame{
+    padding: 0 4rem 6rem;
   }
 }
 </style>

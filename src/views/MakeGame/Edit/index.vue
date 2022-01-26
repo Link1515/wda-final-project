@@ -1,11 +1,11 @@
 <template>
   <div id="edit" class="viewBox">
-  <Button @click="backHome" icon="pi pi-arrow-left" class="p-button-rounded" />
-  <form-wizard class="stepper" color="#5A7AB5">
-    <tab-content title="基本配置"><BasicSetting></BasicSetting></tab-content>
-    <tab-content title="進程配置"><StepSetting></StepSetting></tab-content>
-    <tab-content title="最後檢查"><FinalCheck></FinalCheck></tab-content>
-  </form-wizard>
+    <Button @click="backHome" icon="pi pi-arrow-left" class="p-button-rounded p-button-raised backHomeIcon" />
+    <form-wizard class="stepper" color="#5A7AB5">
+      <tab-content title="基本配置"><BasicSetting></BasicSetting></tab-content>
+      <tab-content title="流程配置"><StepSetting></StepSetting></tab-content>
+      <tab-content title="最後檢查"><FinalCheck></FinalCheck></tab-content>
+    </form-wizard>
   </div>
 </template>
 
@@ -33,7 +33,13 @@ export default {
 </script>
 
 <style lang="scss">
-#makegame {
+#edit {
+  position: relative;
+
+  .backHomeIcon{
+    position: absolute;
+  }
+
   /* 修正套件樣式 */
   .vue-form-wizard .wizard-icon-circle .wizard-icon-container {
     border-radius: 50px;
@@ -48,6 +54,10 @@ export default {
     .wizard-nav {
       margin-bottom: 2rem;
     }
+  }
+
+  .wizard-navigation {
+    margin-bottom: 3rem;
   }
 }
 </style>

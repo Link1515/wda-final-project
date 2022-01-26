@@ -40,7 +40,7 @@
           <component :is="'Chip'" v-for="item in goodCompList" :key="item.id" :label="item.text" class="goodColor me-2 mb-2" removable style="font-weight: bold"></component>
         </div>
         <div class="badComp mb-2">
-          <component :is="'Chip'" v-for="item in badCompList" :key="item.id" :label="item.text" class="badColor me-2" removable style="font-weight: bold"></component>
+          <component :is="'Chip'" v-for="item in badCompList" :key="item.id" :label="item.text" class="badColor me-2 mb-2" removable style="font-weight: bold"></component>
         </div>
       </div>
       <!--
@@ -51,6 +51,7 @@
           <Checkbox class="funIdentityCheckbox" v-model="enableFunIdentity" binary/>
           <label for="funIdentity" class="me-md-3 my-2">功能身分: </label>
           <InputText
+            @keydown.enter="setfunRole"
             id="funIdentity"
             v-model="funIdentity"
             class="mb-2 mb-lg-0"
@@ -59,11 +60,12 @@
             @click="setfunRole"
             class="p-button-rounded ms-2 setBtn"
             v-tooltip.top="'Enter 鍵快速加入'"
+            :disabled="!enableFunIdentity"
           >設定</Button>
           <hr class="my-4 mx-5">
         </div>
         <div class="funRole mb-2">
-          <component :is="'Chip'" v-for="item in funRoleList" :key="item.id" :label="item.text" class="me-2 mb-2" removable style="font-weight: bold"></component>
+          <component :is="'Chip'" v-for="item in funRoleList" :key="item.id" :label="item.text" class="funColor me-2 mb-2" :removable="enableFunIdentity" style="font-weight: bold"></component>
         </div>
       </div>
     </div>
@@ -144,6 +146,10 @@ export default {
 
   .badColor{
     background-color: #ffc4c8;
+  }
+
+  .funColor{
+    background-color: #FDD31C;
   }
 
   .funIdentityCheckbox {

@@ -33,13 +33,11 @@
 <script>
 import Rating from 'primevue/rating'
 import ToggleButton from 'primevue/togglebutton'
-import Dialog from 'primevue/dialog'
 
 export default {
   components: {
     Rating,
-    ToggleButton,
-    Dialog
+    ToggleButton
   },
   data () {
     return {

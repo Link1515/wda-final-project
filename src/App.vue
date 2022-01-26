@@ -2,8 +2,8 @@
   <div id="app">
     <ScrollPanel style="height: 100vh">
       <div class="container">
-        <Navbar/>
-        <router-view></router-view>
+        <Navbar />
+        <router-view />
       </div>
       <Footer/>
     </ScrollPanel>
@@ -35,6 +35,10 @@ body {
   font-family: 'Open Sans', sans-serif;
 }
 
+body::-webkit-scrollbar {
+  display: none;
+}
+
 img {
     width: 100%;
     height: 100%;
@@ -42,9 +46,14 @@ img {
     vertical-align: top;
 }
 
+li {
+  list-style: none;
+}
+
 .viewBox{
   overflow: hidden;
   background-color: var(--color-info);
+  border-radius: 0 0 12px 12px;
 }
 
 .subViewBox {
@@ -65,9 +74,6 @@ img {
 
 #app {
   .container {
-    overflow: hidden;
-    border-radius: 12px;
-    padding: 0;
     margin-top: 2rem !important;
     margin-bottom: 2rem !important;
   }
@@ -92,6 +98,8 @@ img {
   }
 
   .p-inputtext {
+    padding-left: 1rem;
+    padding-right: 1rem;
     border-radius: 9999px;
   }
 }

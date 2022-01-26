@@ -56,7 +56,6 @@
 
 <script>
 import Menubar from 'primevue/menubar'
-import Dialog from 'primevue/dialog'
 import TabView from 'primevue/tabview'
 import TabPanel from 'primevue/tabpanel'
 import InputText from 'primevue/inputtext'
@@ -67,7 +66,6 @@ export default {
   name: 'Navbar',
   components: {
     Menubar,
-    Dialog,
     TabView,
     TabPanel,
     InputText
@@ -178,6 +176,8 @@ export default {
 #navbar {
   color: #000;
   font-weight: 600;
+  border-radius: 12px 12px 0 0;
+  overflow: hidden;
 
   .logo{
     height: 50px;

@@ -8,12 +8,14 @@ import 'primeicons/primeicons.css'
 // global components
 import Button from 'primevue/button'
 import Card from 'primevue/card'
+import Dialog from 'primevue/dialog'
 
 // global directive
 import Tooltip from 'primevue/tooltip'
 
 Vue.component('Button', Button)
 Vue.component('Card', Card)
+Vue.component('Dialog', Dialog)
 
 Vue.directive('tooltip', Tooltip)
 
