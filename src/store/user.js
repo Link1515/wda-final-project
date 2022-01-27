@@ -37,7 +37,7 @@ export default {
     }
   },
   actions: {
-    async register ({ commit }, registerData) {
+    async register (_, registerData) {
       try {
         await serverAPI.post('users/register', registerData)
         swal.fire({
@@ -94,7 +94,7 @@ export default {
       }
     },
     async getInfo ({ commit, state }) {
-      if (state.token.length > 0) return
+      if (!state.token) return
       try {
         const { data } = await serverAPI.get('/users/getInfo', {
           headers: {

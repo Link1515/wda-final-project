@@ -6,6 +6,7 @@
     <Draggable
       tag="ul"
       v-model="stepList"
+      handle=".handle"
       :animation="300"
     >
       <transition-group>
@@ -15,8 +16,11 @@
           :key="step.id"
         >
           <Avatar :icon="step.icon" shape="circle" class="me-2" :style="{background: step.iconColor}"/>
-          <span>{{ step.mode }}</span>
-          <p>{{ step.audioText || step.timer || step.playerLabel }}</p>
+          <span class="me-auto">{{ step.mode }}</span>
+          <p>
+            <span>{{ step.audioText || step.timer || step.playerLabel }}</span>
+            <i class="pi pi-bars handle"></i>
+          </p>
         </li>
       </transition-group>
     </Draggable>
@@ -28,7 +32,6 @@
           :options="configs"
           optionLabel="name"
           optionValue="name"
-          :filter="true"
           placeholder="選擇模式"
         />
         <p v-show="configForm.mode">{{ configIntro }}</p>
@@ -126,6 +129,7 @@ export default {
           newStep.iconColor = '#E8837E'
           break
       }
+      this.displayConfig = false
       this.stepList.push(newStep)
     }
   },
@@ -177,8 +181,23 @@ export default {
     }
 
     p {
+      margin: 0 auto 1rem;
       font-size: 1.2rem;
       text-align: center;
+      position: relative;
+
+      span {
+        display: inline-block;
+        width: 50%;
+      }
+    }
+
+    .handle {
+      font-size: 1.5rem;
+      cursor: move;
+      position: absolute;
+      right: 2rem;
+      top: 0;
     }
 
     .p-tag {

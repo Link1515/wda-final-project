@@ -13,40 +13,67 @@
       </template>
     </Menubar>
 
-    <Dialog :visible.sync="displayPanel" @hide="resetSubmitted" :showHeader="false" modal dismissableMask>
+    <Dialog :visible.sync="displayPanel" @hide="resetForm" :showHeader="false" modal dismissableMask>
       <TabView :activeIndex="tabActiveIndex">
+        <!--
+          登入
+        -->
         <TabPanel header="登入">
           <form class="p-fluid" @submit.prevent="login">
-            <span class="p-float-label">
-              <InputText id="login_username" type="text" v-model.trim="loginData.account" :class="{'p-invalid': loginInvalid.account}"/>
+            <span class="p-float-label mb-1">
+              <InputText id="login_username" type="text" v-model.trim="$v.loginData.account.$model" :class="{'p-invalid': $v.loginData.account.$error}"/>
               <label for="login_username">帳號</label>
             </span>
-            <span class="p-float-label">
-              <InputText id="login_password" type="password" v-model.trim="loginData.password" autocomplete :class="{'p-invalid': loginInvalid.password}"/>
+            <template v-if="$v.loginData.account.$error">
+              <div class="invalidMsg" v-if="!$v.loginData.account.required">帳號必填</div>
+              <div class="invalidMsg" v-if="!$v.loginData.account.minLength">帳號最小長度為 {{$v.loginData.account.$params.minLength.min}}</div>
+            </template>
+            <span class="p-float-label mb-1">
+              <InputText id="login_password" type="password" v-model.trim="$v.loginData.password.$model" autocomplete :class="{'p-invalid': $v.loginData.password.$error}"/>
               <label for="login_password">密碼</label>
             </span>
-            <Button label="登入" class="p-button-rounded p-button-warning" type="submit" />
+            <template v-if="$v.loginData.password.$error">
+              <div class="invalidMsg" v-if="!$v.loginData.password.required">密碼必填</div>
+            </template>
+            <Button label="登入" class="p-button-rounded p-button-warning mt-3" type="submit" />
           </form>
         </TabPanel>
+        <!--
+          註冊
+        -->
         <TabPanel header="註冊">
           <form class="p-fluid" @submit.prevent="register">
-            <span class="p-float-label">
-              <InputText id="register_email" type="text" v-model.trim="registerData.email" :class="{'p-invalid': registerInvalid.email}"/>
+            <span class="p-float-label mb-1">
+              <InputText id="register_email" type="text" v-model.trim="$v.registerData.email.$model" :class="{'p-invalid': $v.registerData.email.$error }"/>
               <label for="register_email">信箱</label>
             </span>
-            <span class="p-float-label">
-              <InputText id="register_username" type="text" v-model.trim="registerData.account" :class="{'p-invalid': registerInvalid.account}"/>
+            <template v-if="$v.registerData.email.$error">
+              <div class="invalidMsg" v-if="!$v.registerData.email.required">信箱必填</div>
+              <div class="invalidMsg" v-if="!$v.registerData.email.email">信箱格式錯誤</div>
+            </template>
+            <span class="p-float-label mb-1">
+              <InputText id="register_username" type="text" v-model.trim="$v.registerData.account.$model" :class="{'p-invalid': $v.registerData.account.$error}"/>
               <label for="register_username">帳號</label>
             </span>
-            <span class="p-float-label">
-              <InputText id="register_password" type="password" v-model.trim="registerData.password" autocomplete :class="{'p-invalid': registerInvalid.password}"/>
+            <template v-if="$v.registerData.account.$error">
+              <div class="invalidMsg" v-if="!$v.registerData.account.required">帳號必填</div>
+              <div class="invalidMsg" v-if="!$v.registerData.account.minLength">帳號最小長度為 {{$v.registerData.account.$params.minLength.min}}</div>
+            </template>
+            <span class="p-float-label mb-1">
+              <InputText id="register_password" type="password" v-model.trim="$v.registerData.password.$model" autocomplete :class="{'p-invalid': $v.registerData.password.$error}"/>
               <label for="register_password">密碼</label>
             </span>
-            <span class="p-float-label">
-              <InputText id="register_passwordAgain" type="password" v-model.trim="registerData.passwordAgain" autocomplete :class="{'p-invalid': registerInvalid.passwordAgain}"/>
+            <template v-if="$v.registerData.password.$error">
+              <div class="invalidMsg" v-if="!$v.registerData.password.required">密碼必填</div>
+            </template>
+            <span class="p-float-label mb-1">
+              <InputText id="register_passwordAgain" type="password" v-model.trim="$v.registerData.passwordAgain.$model" autocomplete :class="{'p-invalid': $v.registerData.passwordAgain.$error}"/>
               <label for="register_passwordAgain">再次輸入密碼</label>
             </span>
-            <Button label="註冊" class="p-button-rounded p-button-warning" type="submit"/>
+            <template v-if="$v.registerData.passwordAgain.$error">
+              <div class="invalidMsg" v-if="!$v.registerData.passwordAgain.sameAsPassword">密碼不相同</div>
+            </template>
+            <Button label="註冊" class="p-button-rounded p-button-warning mt-3" type="submit"/>
           </form>
         </TabPanel>
       </TabView>
@@ -60,7 +87,7 @@ import TabView from 'primevue/tabview'
 import TabPanel from 'primevue/tabpanel'
 import InputText from 'primevue/inputtext'
 
-import validator from 'validator'
+import { required, minLength, email, sameAs } from 'vuelidate/lib/validators'
 
 export default {
   name: 'Navbar',
@@ -96,10 +123,33 @@ export default {
           label: '關於我們'
         }
       ],
-      tabActiveIndex: 0,
-      submitted: {
-        login: false,
-        register: false
+      tabActiveIndex: 0
+    }
+  },
+  validations: {
+    loginData: {
+      account: {
+        required,
+        minLength: minLength(4)
+      },
+      password: {
+        required
+      }
+    },
+    registerData: {
+      email: {
+        required,
+        email
+      },
+      account: {
+        required,
+        minLength: minLength(4)
+      },
+      password: {
+        required
+      },
+      passwordAgain: {
+        sameAsPassword: sameAs('password')
       }
     }
   },
@@ -109,51 +159,38 @@ export default {
       this.displayPanel = !this.displayPanel
     },
     login () {
-      this.submitted.login = true
-      for (const key in this.loginInvalid) {
-        // 有認證錯誤就 return
-        if (this.loginInvalid[key]) return
+      this.$v.loginData.$touch()
+      if (!this.$v.loginData.$invalid) {
+        this.$store.dispatch('user/login', this.loginData)
+        this.$v.loginData.$reset()
+        this.loginData.account = ''
+        this.loginData.password = ''
       }
-
-      this.$store.dispatch('user/login', this.loginData)
-      this.loginData.account = ''
-      this.loginData.password = ''
     },
     register () {
-      this.submitted.register = true
-      for (const key in this.registerInvalid) {
-        if (this.registerInvalid[key]) return
+      this.$v.registerData.$touch()
+      if (!this.$v.registerData.$invalid) {
+        this.$store.dispatch('user/register', this.registerData)
+        this.$v.registerData.$reset()
+        this.registerData.email = ''
+        this.registerData.account = ''
+        this.registerData.password = ''
+        this.registerData.passwordAgain = ''
       }
-
-      this.$store.dispatch('user/register', this.registerData)
-      this.registerData.email = ''
-      this.registerData.account = ''
-      this.registerData.password = ''
-      this.registerData.passwordAgain = ''
     },
     logout () {
       this.$store.dispatch('user/logout')
       this.$router.push('/')
     },
-    resetSubmitted () {
-      this.submitted.login = false
-      this.submitted.register = false
-    }
-  },
-  computed: {
-    loginInvalid () {
-      return {
-        account: !this.loginData.account.length > 0 && this.submitted.login,
-        password: !this.loginData.password.length > 0 && this.submitted.login
-      }
-    },
-    registerInvalid () {
-      return {
-        email: !validator.isEmail(this.registerData.email) && this.submitted.register,
-        account: !this.registerData.account.length > 0 && this.submitted.register,
-        password: !this.registerData.password.length > 0 && this.submitted.register,
-        passwordAgain: this.registerData.password !== this.registerData.passwordAgain && this.submitted.register
-      }
+    resetForm () {
+      this.$v.loginData.$reset()
+      this.loginData.account = ''
+      this.loginData.password = ''
+      this.$v.registerData.$reset()
+      this.registerData.email = ''
+      this.registerData.account = ''
+      this.registerData.password = ''
+      this.registerData.passwordAgain = ''
     }
   },
   watch: {

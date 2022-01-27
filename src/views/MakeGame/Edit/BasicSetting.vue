@@ -2,8 +2,8 @@
   <div id="basicsetting">
     <div class="row justify-content-center g-3 subViewBox">
       <div class="col-9 col-xl-4 d-flex justify-content-center align-items-center flex-wrap flex-lg-nowrap">
-        <label for="gameName" class="me-md-3 my-2">遊戲名稱: </label>
-        <InputText id="gameName"></InputText>
+        <label for="gameName" class="me-3 my-2">遊戲名稱 </label>
+        <InputText id="gameName" v-model="name"></InputText>
       </div>
       <div class="col-9 col-xl-4 d-grid">
         <div class="d-flex flex-column align-items-xl-center flex-xl-row">
@@ -15,112 +15,155 @@
         設定陣營身分
       -->
       <div class="col-12 col-md-9 borderBox">
-        <div class="mb-4">
-          <label for="compIdentity" class="me-md-3 my-2">陣營身分: </label>
+        <div class="d-flex justify-content-center flex-wrap mb-4">
+          <label for="compRole" class="me-3 my-2">陣營身分 </label>
           <InputText
-            @keydown.enter="setGoodComp"
-            @keydown.ctrl="setBadComp"
-            id="compIdentity"
-            v-model="compIdentity"
-            class="mb-2 mb-lg-0"
+            @keydown.enter="addList('goodCompList', compRole)"
+            @keydown.ctrl="addList('badCompList', compRole)"
+            id="compRole"
+            v-model="compRole"
+            class="mb-2"
           ></InputText>
-          <Button
-            @click="setGoodComp"
-            class="p-button-rounded ms-2 setBtn goodColor"
-            v-tooltip.top="'Enter 鍵快速加入'"
-          >設為好人</Button>
-          <Button
-            @click="setBadComp"
-            class="p-button-rounded ms-2 setBtn badColor"
-            v-tooltip.top="'Ctrl 鍵快速加入'"
-          >設為壞人</Button>
-          <hr class="my-4 mx-5">
+          <div>
+            <Button
+              @click="addList('goodCompList', compRole)"
+              class="p-button-rounded ms-2 setBtn goodColor"
+              v-tooltip.top="'Enter 鍵快速加入'"
+            >設為好人</Button>
+            <Button
+              @click="addList('badCompList', compRole)"
+              class="p-button-rounded ms-2 setBtn badColor"
+              v-tooltip.top="'Ctrl 鍵快速加入'"
+            >設為壞人</Button>
+          </div>
         </div>
-        <div class="goodComp mb-2">
-          <component :is="'Chip'" v-for="item in goodCompList" :key="item.id" :label="item.text" class="goodColor me-2 mb-2" removable style="font-weight: bold"></component>
+        <Textarea v-model="compRoleDescription" :autoResize="true" rows="5" placeholder="身分描述" />
+        <hr class="my-4 mx-5">
+        <div class="goodComp mb-2 mx-5">
+          <component :is="'Chip'" v-for="item in goodCompList" :key="item.id" :label="item.role" class="goodColor me-2 mb-2" removable @remove="removeList($event, 'goodCompList')" style="font-weight: bold"></component>
+          <Accordion :multiple="true">
+            <component :is="'AccordionTab'" v-for="item in goodCompList" :key="item.id" :header="item.role">{{ item.role }}</component>
+          </Accordion>
         </div>
-        <div class="badComp mb-2">
-          <component :is="'Chip'" v-for="item in badCompList" :key="item.id" :label="item.text" class="badColor me-2 mb-2" removable style="font-weight: bold"></component>
+        <div class="badComp mb-2 mx-5">
+          <component :is="'Chip'" v-for="item in badCompList" :key="item.id" :label="item.role" class="badColor me-2 mb-2" removable @remove="removeList($event, 'badCompList')" style="font-weight: bold"></component>
+          <Accordion :multiple="true">
+            <component :is="'AccordionTab'" v-for="item in badCompList" :key="item.id" :header="item.role">{{ item.role }}</component>
+          </Accordion>
         </div>
       </div>
       <!--
         設定功能身分
       -->
-      <div class="col-12 col-md-9 borderBox position-relative" :class="{disabled: !enableFunIdentity}">
-        <div class="mb-4">
-          <Checkbox class="funIdentityCheckbox" v-model="enableFunIdentity" binary/>
-          <label for="funIdentity" class="me-md-3 my-2">功能身分: </label>
+      <div class="col-12 col-md-9 borderBox position-relative" :class="{disabled: !enableFunRole}">
+        <div class="d-flex justify-content-center flex-wrap mb-4">
+          <Checkbox class="funIdentityCheckbox" v-model="enableFunRole" binary/>
+          <label for="funRole" class="me-3 my-2">功能身分 </label>
           <InputText
-            @keydown.enter="setfunRole"
-            id="funIdentity"
-            v-model="funIdentity"
+            @keydown.enter="addList('funRoleList', funRole)"
+            id="funRole"
+            v-model="funRole"
             class="mb-2 mb-lg-0"
+            :disabled="!enableFunRole"
           ></InputText>
           <Button
-            @click="setfunRole"
+            @click="addList('funRoleList', funRole)"
             class="p-button-rounded ms-2 setBtn"
             v-tooltip.top="'Enter 鍵快速加入'"
-            :disabled="!enableFunIdentity"
+            :disabled="!enableFunRole"
           >設定</Button>
-          <hr class="my-4 mx-5">
         </div>
+        <Textarea v-model="funRoleDescription" :autoResize="true" rows="5" placeholder="身分描述" :disabled="!enableFunRole"/>
+        <hr class="my-4 mx-5">
         <div class="funRole mb-2">
-          <component :is="'Chip'" v-for="item in funRoleList" :key="item.id" :label="item.text" class="funColor me-2 mb-2" :removable="enableFunIdentity" style="font-weight: bold"></component>
+          <component :is="'Chip'" v-for="item in funRoleList" :key="item.id" :label="item.role" class="funColor me-2 mb-2" :removable="enableFunRole" @remove="removeList($event, 'funRoleList')" style="font-weight: bold;"></component>
         </div>
       </div>
     </div>
+    <Toast position="top-center"/>
   </div>
 </template>
 
 <script>
 import InputText from 'primevue/inputtext'
+import Textarea from 'primevue/textarea'
 import Checkbox from 'primevue/checkbox'
 import Slider from 'primevue/slider'
 import Chip from 'primevue/chip'
+import Toast from 'primevue/toast'
+import Accordion from 'primevue/accordion'
+import AccordionTab from 'primevue/accordiontab'
+
+import { mapState } from 'vuex'
 
 export default {
   components: {
     InputText,
     Slider,
     Chip,
-    Checkbox
+    Checkbox,
+    Toast,
+    Textarea,
+    Accordion,
+    AccordionTab
   },
   data () {
     return {
-      playerRange: [3, 8],
-      compIdentity: '',
-      goodCompList: [],
-      badCompList: [],
-      enableFunIdentity: false,
-      funIdentity: '',
-      funRoleList: []
+      // compRole: {
+      //   name: '',
+      //   description: ''
+      // },
+      compRole: '',
+      compRoleDescription: '',
+      funRole: '',
+      funRoleDescription: ''
     }
   },
   methods: {
-    setGoodComp () {
-      if (!this.compIdentity) return
-      this.goodCompList.push({
-        id: Date.now(),
-        text: this.compIdentity
-      })
-      this.compIdentity = ''
+    addList (listKey, value) {
+      if (!value) return
+      for (const item of this[listKey]) {
+        if (item.role === value) {
+          const detail = `${listKey === 'goodCompList' ? '好人陣營' : listKey === 'goodCompList' ? '壞人陣營' : '功能身分'} ${value} 已存在`
+          this.$toast.add({ severity: 'error', summary: '錯誤', detail, life: 3000 })
+          return
+        }
+      }
+      this.$store.commit('game/addList', { listKey, value })
+      this.compRole = ''
+      this.funRole = ''
     },
-    setBadComp () {
-      if (!this.compIdentity) return
-      this.badCompList.push({
-        id: Date.now(),
-        text: this.compIdentity
-      })
-      this.compIdentity = ''
-    },
-    setfunRole () {
-      if (!this.funIdentity) return
-      this.funRoleList.push({
-        id: Date.now(),
-        text: this.funIdentity
-      })
-      this.funIdentity = ''
+    removeList (e, listKey) {
+      const removeTargetValue = e.target.previousSibling.textContent
+      this.$store.commit('game/removeList', { listKey, value: removeTargetValue })
     }
+  },
+  computed: {
+    name: {
+      get () {
+        return this.$store.state.game.name
+      },
+      set (value) {
+        this.$store.commit('game/setName', value)
+      }
+    },
+    playerRange: {
+      get () {
+        return this.$store.state.game.playerRange
+      },
+      set (value) {
+        this.$store.commit('game/setPlayerRange', value)
+      }
+    },
+    enableFunRole: {
+      get () {
+        return this.$store.state.game.enableFunRole
+      },
+      set (value) {
+        this.$store.commit('game/setFunRoleState', value)
+      }
+    },
+    ...mapState('game', ['goodCompList', 'badCompList', 'funRoleList'])
   }
 }
 </script>
@@ -140,11 +183,11 @@ export default {
     border: none;
   }
 
-  .goodColor{
+  .goodColor,.goodComp .p-accordion-header-link{
     background-color: #a1dcff;
   }
 
-  .badColor{
+  .badColor, .badComp .p-accordion-header-link{
     background-color: #ffc4c8;
   }
 
@@ -171,6 +214,15 @@ export default {
       position: absolute;
       left: 150%;
     }
+  }
+
+  .p-inputtextarea {
+    border-radius: 0;
+    width: 80%;
+  }
+
+  .p-accordion-header-link:focus {
+    box-shadow: none;
   }
 }
 </style>

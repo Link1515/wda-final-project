@@ -72,6 +72,10 @@ li {
   position: relative;
 }
 
+.invalidMsg {
+  color: red;
+}
+
 #app {
   .container {
     margin-top: 2rem !important;

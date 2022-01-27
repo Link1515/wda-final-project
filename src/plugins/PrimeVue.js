@@ -13,10 +13,14 @@ import Dialog from 'primevue/dialog'
 // global directive
 import Tooltip from 'primevue/tooltip'
 
+// toastservice
+import ToastService from 'primevue/toastservice'
+
 Vue.component('Button', Button)
 Vue.component('Card', Card)
 Vue.component('Dialog', Dialog)
 
 Vue.directive('tooltip', Tooltip)
 
+Vue.use(ToastService)
 Vue.use(PrimeVue, { ripple: true })
