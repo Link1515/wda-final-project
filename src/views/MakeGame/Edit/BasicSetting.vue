@@ -21,7 +21,7 @@
             @keydown.enter="addList('goodCompList', compRole)"
             @keydown.ctrl="addList('badCompList', compRole)"
             id="compRole"
-            v-model="compRole"
+            v-model="compRole.name"
             class="mb-2"
           ></InputText>
           <div>
@@ -37,18 +37,18 @@
             >設為壞人</Button>
           </div>
         </div>
-        <Textarea v-model="compRoleDescription" :autoResize="true" rows="5" placeholder="身分描述" />
+        <Textarea v-model="compRole.description" :autoResize="true" rows="5" placeholder="身分描述" />
         <hr class="my-4 mx-5">
         <div class="goodComp mb-2 mx-5">
           <component :is="'Chip'" v-for="item in goodCompList" :key="item.id" :label="item.role" class="goodColor me-2 mb-2" removable @remove="removeList($event, 'goodCompList')" style="font-weight: bold"></component>
           <Accordion :multiple="true">
-            <component :is="'AccordionTab'" v-for="item in goodCompList" :key="item.id" :header="item.role">{{ item.role }}</component>
+            <component :is="'AccordionTab'" v-for="item in goodCompList" :key="item.id" :header="item.role">{{ item.description }}</component>
           </Accordion>
         </div>
         <div class="badComp mb-2 mx-5">
           <component :is="'Chip'" v-for="item in badCompList" :key="item.id" :label="item.role" class="badColor me-2 mb-2" removable @remove="removeList($event, 'badCompList')" style="font-weight: bold"></component>
           <Accordion :multiple="true">
-            <component :is="'AccordionTab'" v-for="item in badCompList" :key="item.id" :header="item.role">{{ item.role }}</component>
+            <component :is="'AccordionTab'" v-for="item in badCompList" :key="item.id" :header="item.role">{{ item.description }}</component>
           </Accordion>
         </div>
       </div>
@@ -62,7 +62,7 @@
           <InputText
             @keydown.enter="addList('funRoleList', funRole)"
             id="funRole"
-            v-model="funRole"
+            v-model="funRole.name"
             class="mb-2 mb-lg-0"
             :disabled="!enableFunRole"
           ></InputText>
@@ -73,10 +73,13 @@
             :disabled="!enableFunRole"
           >設定</Button>
         </div>
-        <Textarea v-model="funRoleDescription" :autoResize="true" rows="5" placeholder="身分描述" :disabled="!enableFunRole"/>
+        <Textarea v-model="funRole.description" :autoResize="true" rows="5" placeholder="身分描述" :disabled="!enableFunRole"/>
         <hr class="my-4 mx-5">
-        <div class="funRole mb-2">
+        <div class="funRole mb-2 mx-5">
           <component :is="'Chip'" v-for="item in funRoleList" :key="item.id" :label="item.role" class="funColor me-2 mb-2" :removable="enableFunRole" @remove="removeList($event, 'funRoleList')" style="font-weight: bold;"></component>
+          <Accordion :multiple="true">
+            <component :is="'AccordionTab'" v-for="item in funRoleList" :key="item.id" :header="item.role">{{ item.description }}</component>
+          </Accordion>
         </div>
       </div>
     </div>
@@ -109,29 +112,31 @@ export default {
   },
   data () {
     return {
-      // compRole: {
-      //   name: '',
-      //   description: ''
-      // },
-      compRole: '',
-      compRoleDescription: '',
-      funRole: '',
-      funRoleDescription: ''
+      compRole: {
+        name: '',
+        description: ''
+      },
+      funRole: {
+        name: '',
+        description: ''
+      }
     }
   },
   methods: {
-    addList (listKey, value) {
-      if (!value) return
+    addList (listKey, roleData) {
+      if (!roleData.name) return
       for (const item of this[listKey]) {
-        if (item.role === value) {
-          const detail = `${listKey === 'goodCompList' ? '好人陣營' : listKey === 'goodCompList' ? '壞人陣營' : '功能身分'} ${value} 已存在`
+        if (item.role === roleData.name) {
+          const detail = `${listKey === 'goodCompList' ? '好人陣營' : listKey === 'goodCompList' ? '壞人陣營' : '功能身分'} ${roleData.name} 已存在`
           this.$toast.add({ severity: 'error', summary: '錯誤', detail, life: 3000 })
           return
         }
       }
-      this.$store.commit('game/addList', { listKey, value })
-      this.compRole = ''
-      this.funRole = ''
+      this.$store.commit('game/addList', { listKey, ...roleData })
+      this.compRole.name = ''
+      this.compRole.description = ''
+      this.funRole.name = ''
+      this.funRole.description = ''
     },
     removeList (e, listKey) {
       const removeTargetValue = e.target.previousSibling.textContent
@@ -191,7 +196,7 @@ export default {
     background-color: #ffc4c8;
   }
 
-  .funColor{
+  .funColor, .funRole .p-accordion-header-link{
     background-color: #FDD31C;
   }
 

@@ -20,7 +20,8 @@ export default {
     addList (state, newData) {
       state[newData.listKey].push({
         id: Date.now(),
-        role: newData.value
+        role: newData.name,
+        description: newData.description || '無描述'
       })
     },
     removeList (state, removeData) {
