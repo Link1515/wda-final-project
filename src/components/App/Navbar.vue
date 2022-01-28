@@ -85,7 +85,6 @@
 import Menubar from 'primevue/menubar'
 import TabView from 'primevue/tabview'
 import TabPanel from 'primevue/tabpanel'
-import InputText from 'primevue/inputtext'
 
 import { required, minLength, email, sameAs } from 'vuelidate/lib/validators'
 
@@ -94,8 +93,7 @@ export default {
   components: {
     Menubar,
     TabView,
-    TabPanel,
-    InputText
+    TabPanel
   },
   data () {
     return {
@@ -213,8 +211,6 @@ export default {
 #navbar {
   color: #000;
   font-weight: 600;
-  border-radius: 12px 12px 0 0;
-  overflow: hidden;
 
   .logo{
     height: 50px;
@@ -222,7 +218,7 @@ export default {
 
 // ----- p-menubar -----
   .p-menubar {
-    border-radius: 0;
+    border-radius: 12px 12px 0 0;
     border: none;
     padding: 1rem 3rem;
   }

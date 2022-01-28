@@ -9,6 +9,8 @@ import 'primeicons/primeicons.css'
 import Button from 'primevue/button'
 import Card from 'primevue/card'
 import Dialog from 'primevue/dialog'
+import InputText from 'primevue/inputtext'
+import Textarea from 'primevue/textarea'
 
 // global directive
 import Tooltip from 'primevue/tooltip'
@@ -19,6 +21,8 @@ import ToastService from 'primevue/toastservice'
 Vue.component('Button', Button)
 Vue.component('Card', Card)
 Vue.component('Dialog', Dialog)
+Vue.component('InputText', InputText)
+Vue.component('Textarea', Textarea)
 
 Vue.directive('tooltip', Tooltip)
 

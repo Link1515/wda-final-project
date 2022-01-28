@@ -66,18 +66,14 @@
 <script>
 import Draggable from 'vuedraggable'
 import Dropdown from 'primevue/dropdown'
-import Textarea from 'primevue/textarea'
 import InputNumber from 'primevue/inputnumber'
-import InputText from 'primevue/inputtext'
 import Avatar from 'primevue/avatar'
 
 export default {
   components: {
     Draggable,
     Dropdown,
-    Textarea,
     InputNumber,
-    InputText,
     Avatar
   },
   data () {

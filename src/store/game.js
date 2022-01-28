@@ -1,3 +1,5 @@
+import { nanoid } from 'nanoid'
+
 export default {
   namespaced: true,
   state: {
@@ -19,7 +21,7 @@ export default {
     },
     addList (state, { listType, name, description }) {
       state[listType].push({
-        id: Date.now().toString(),
+        id: nanoid(),
         name,
         description: description || '無描述',
         isEditing: false
@@ -29,11 +31,19 @@ export default {
       state[listType] = state[listType].filter(role => role.id !== target)
     },
     editList (state, { listType, target }) {
-      for (const role of state[listType]) {
-        if (role.id === target) {
-          role.isEditing = !role.isEditing
-        } else {
-          role.isEditing = false
+      if (target) {
+        for (const role of state[listType]) {
+          if (role.id === target) {
+            role.isEditing = !role.isEditing
+            break
+          }
+        }
+      } else {
+        for (const role of state[listType]) {
+          if (role.isEditing === true) {
+            role.isEditing = false
+            break
+          }
         }
       }
     },

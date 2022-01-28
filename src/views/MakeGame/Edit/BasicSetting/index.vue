@@ -39,36 +39,8 @@
         </div>
         <Textarea v-model="compRole.description" :autoResize="true" rows="5" placeholder="身分描述" />
         <hr class="my-4 mx-5">
-        <!-- *********** good comp *********** -->
-        <div class="goodComp mb-3 mx-5">
-          <Accordion :multiple="true">
-            <component :is="'AccordionTab'" v-for="role in goodCompList" :key="role.id" :header="role.name">
-              <p>{{ role.description }}</p>
-              <Textarea v-model="editModel.description" v-if="role.isEditing" :autoResize="true" rows="3" />
-              <div class="AccordionTab_footer">
-                <template v-if="!role.isEditing">
-                  <Button label="編輯" @click="editList($event, 'goodCompList')" :data-target="role.id" class="p-button-rounded p-button-raised p-button-secondary ms-2" />
-                  <Button label="刪除" @click="removeList($event, 'goodCompList')" :data-target="role.id" class="p-button-rounded p-button-raised p-button-danger ms-2" />
-                </template>
-                <template v-else>
-                  <Button label="保存" @click="updateList($event, 'goodCompList')" :data-target="role.id" class="p-button-rounded p-button-raised p-button-success ms-2" />
-                  <Button label="取消" @click="editList($event, 'goodCompList')" :data-target="role.id" class="p-button-rounded p-button-raised p-button-danger ms-2" />
-                </template>
-              </div>
-            </component>
-          </Accordion>
-        </div>
-        <!-- *********** bad comp *********** -->
-        <div class="badComp mb-3 mx-5">
-          <Accordion :multiple="true">
-            <component :is="'AccordionTab'" v-for="role in badCompList" :key="role.id" :header="role.name">
-              <p>{{ role.description }}</p>
-              <div class="AccordionTab_footer">
-                <Button label="刪除" @click="removeList($event, 'badCompList')" :data-removetarget="role.name" class="p-button-rounded p-button-raised p-button-danger" />
-              </div>
-            </component>
-          </Accordion>
-        </div>
+        <RoleList listType="goodCompList" class="goodComp mb-3 mx-5"/>
+        <RoleList listType="badCompList" class="badComp mb-3 mx-5"/>
       </div>
       <!--
         設定功能身分
@@ -93,16 +65,7 @@
         </div>
         <Textarea v-model="funRole.description" :autoResize="true" rows="5" placeholder="身分描述" :disabled="!enableFunRole"/>
         <hr class="my-4 mx-5">
-        <div class="funRole mb-2 mx-5">
-          <Accordion :multiple="true">
-            <component :is="'AccordionTab'" v-for="item in funRoleList" :key="item.id" :header="item.role">
-              <p>{{ item.description }}</p>
-              <div class="AccordionTab_footer">
-                <Button label="刪除" @click="removeList($event, 'funRoleList')" :data-removetarget="item.role" :disabled="!enableFunRole" class="p-button-rounded p-button-raised p-button-danger" />
-              </div>
-            </component>
-          </Accordion>
-        </div>
+        <RoleList listType="funRoleList" class="funRole mb-3 mx-5" v-show="enableFunRole"/>
       </div>
     </div>
     <Toast position="top-center"/>
@@ -110,25 +73,20 @@
 </template>
 
 <script>
-import InputText from 'primevue/inputtext'
-import Textarea from 'primevue/textarea'
 import Checkbox from 'primevue/checkbox'
 import Slider from 'primevue/slider'
 import Toast from 'primevue/toast'
-import Accordion from 'primevue/accordion'
-import AccordionTab from 'primevue/accordiontab'
+
+import RoleList from './RoleList'
 
 import { mapState } from 'vuex'
 
 export default {
   components: {
-    InputText,
     Slider,
     Checkbox,
     Toast,
-    Textarea,
-    Accordion,
-    AccordionTab
+    RoleList
   },
   data () {
     return {
@@ -139,43 +97,28 @@ export default {
       funRole: {
         name: '',
         description: ''
-      },
-      editModel: {
-        name: '',
-        description: ''
       }
     }
   },
   methods: {
     addList (listType, roleData) {
-      if (!roleData.name) return
+      if (!roleData.name) {
+        this.$toast.add({ severity: 'error', summary: '錯誤', detail: '未輸入名稱', life: 3000 })
+        return
+      }
+      const listTypeTC = listType === 'goodCompList' ? '好人陣營' : listType === 'badCompList' ? '壞人陣營' : '功能身分'
       for (const item of this[listType]) {
-        if (item.role === roleData.name) {
-          const detail = `${listType === 'goodCompList' ? '好人陣營' : listType === 'goodCompList' ? '壞人陣營' : '功能身分'} ${roleData.name} 已存在`
-          this.$toast.add({ severity: 'error', summary: '錯誤', detail, life: 3000 })
+        if (item.name === roleData.name) {
+          this.$toast.add({ severity: 'error', summary: '錯誤', detail: `${listTypeTC} ${roleData.name} 已存在`, life: 3000 })
           return
         }
       }
       this.$store.commit('game/addList', { listType, ...roleData })
+      this.$toast.add({ severity: 'success', summary: '成功', detail: `${roleData.name} 成功加入 ${listTypeTC}`, life: 3000 })
       this.compRole.name = ''
       this.compRole.description = ''
       this.funRole.name = ''
       this.funRole.description = ''
-    },
-    removeList (e, listType) {
-      const target = e.target.dataset.target
-      this.$store.commit('game/removeList', { listType, target })
-    },
-    editList (e, listType) {
-      const target = e.target.dataset.target
-      this.$store.commit('game/editList', { listType, target })
-      const editingData = this[listType].filter(item => item.id === target)[0]
-      this.editModel.name = editingData.name
-      this.editModel.description = editingData.description
-    },
-    updateList (e, listType) {
-      const target = e.target.dataset.target
-      this.$store.commit('game/updateList', { listType, target, ...this.editModel })
     }
   },
   computed: {
@@ -259,18 +202,6 @@ export default {
   .p-inputtextarea {
     border-radius: 0;
     width: 80%;
-  }
-
-  .p-accordion-header-link:focus {
-    box-shadow: none;
-  }
-
-  .AccordionTab_footer {
-    text-align: right;
-
-    span {
-      pointer-events: none;
-    }
   }
 }
 </style>
