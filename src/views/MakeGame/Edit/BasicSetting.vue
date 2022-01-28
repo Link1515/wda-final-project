@@ -39,16 +39,34 @@
         </div>
         <Textarea v-model="compRole.description" :autoResize="true" rows="5" placeholder="身分描述" />
         <hr class="my-4 mx-5">
-        <div class="goodComp mb-2 mx-5">
-          <component :is="'Chip'" v-for="item in goodCompList" :key="item.id" :label="item.role" class="goodColor me-2 mb-2" removable @remove="removeList($event, 'goodCompList')" style="font-weight: bold"></component>
+        <!-- *********** good comp *********** -->
+        <div class="goodComp mb-3 mx-5">
           <Accordion :multiple="true">
-            <component :is="'AccordionTab'" v-for="item in goodCompList" :key="item.id" :header="item.role">{{ item.description }}</component>
+            <component :is="'AccordionTab'" v-for="role in goodCompList" :key="role.id" :header="role.name">
+              <p>{{ role.description }}</p>
+              <Textarea v-model="editModel.description" v-if="role.isEditing" :autoResize="true" rows="3" />
+              <div class="AccordionTab_footer">
+                <template v-if="!role.isEditing">
+                  <Button label="編輯" @click="editList($event, 'goodCompList')" :data-target="role.id" class="p-button-rounded p-button-raised p-button-secondary ms-2" />
+                  <Button label="刪除" @click="removeList($event, 'goodCompList')" :data-target="role.id" class="p-button-rounded p-button-raised p-button-danger ms-2" />
+                </template>
+                <template v-else>
+                  <Button label="保存" @click="updateList($event, 'goodCompList')" :data-target="role.id" class="p-button-rounded p-button-raised p-button-success ms-2" />
+                  <Button label="取消" @click="editList($event, 'goodCompList')" :data-target="role.id" class="p-button-rounded p-button-raised p-button-danger ms-2" />
+                </template>
+              </div>
+            </component>
           </Accordion>
         </div>
-        <div class="badComp mb-2 mx-5">
-          <component :is="'Chip'" v-for="item in badCompList" :key="item.id" :label="item.role" class="badColor me-2 mb-2" removable @remove="removeList($event, 'badCompList')" style="font-weight: bold"></component>
+        <!-- *********** bad comp *********** -->
+        <div class="badComp mb-3 mx-5">
           <Accordion :multiple="true">
-            <component :is="'AccordionTab'" v-for="item in badCompList" :key="item.id" :header="item.role">{{ item.description }}</component>
+            <component :is="'AccordionTab'" v-for="role in badCompList" :key="role.id" :header="role.name">
+              <p>{{ role.description }}</p>
+              <div class="AccordionTab_footer">
+                <Button label="刪除" @click="removeList($event, 'badCompList')" :data-removetarget="role.name" class="p-button-rounded p-button-raised p-button-danger" />
+              </div>
+            </component>
           </Accordion>
         </div>
       </div>
@@ -76,9 +94,13 @@
         <Textarea v-model="funRole.description" :autoResize="true" rows="5" placeholder="身分描述" :disabled="!enableFunRole"/>
         <hr class="my-4 mx-5">
         <div class="funRole mb-2 mx-5">
-          <component :is="'Chip'" v-for="item in funRoleList" :key="item.id" :label="item.role" class="funColor me-2 mb-2" :removable="enableFunRole" @remove="removeList($event, 'funRoleList')" style="font-weight: bold;"></component>
           <Accordion :multiple="true">
-            <component :is="'AccordionTab'" v-for="item in funRoleList" :key="item.id" :header="item.role">{{ item.description }}</component>
+            <component :is="'AccordionTab'" v-for="item in funRoleList" :key="item.id" :header="item.role">
+              <p>{{ item.description }}</p>
+              <div class="AccordionTab_footer">
+                <Button label="刪除" @click="removeList($event, 'funRoleList')" :data-removetarget="item.role" :disabled="!enableFunRole" class="p-button-rounded p-button-raised p-button-danger" />
+              </div>
+            </component>
           </Accordion>
         </div>
       </div>
@@ -92,7 +114,6 @@ import InputText from 'primevue/inputtext'
 import Textarea from 'primevue/textarea'
 import Checkbox from 'primevue/checkbox'
 import Slider from 'primevue/slider'
-import Chip from 'primevue/chip'
 import Toast from 'primevue/toast'
 import Accordion from 'primevue/accordion'
 import AccordionTab from 'primevue/accordiontab'
@@ -103,7 +124,6 @@ export default {
   components: {
     InputText,
     Slider,
-    Chip,
     Checkbox,
     Toast,
     Textarea,
@@ -119,28 +139,43 @@ export default {
       funRole: {
         name: '',
         description: ''
+      },
+      editModel: {
+        name: '',
+        description: ''
       }
     }
   },
   methods: {
-    addList (listKey, roleData) {
+    addList (listType, roleData) {
       if (!roleData.name) return
-      for (const item of this[listKey]) {
+      for (const item of this[listType]) {
         if (item.role === roleData.name) {
-          const detail = `${listKey === 'goodCompList' ? '好人陣營' : listKey === 'goodCompList' ? '壞人陣營' : '功能身分'} ${roleData.name} 已存在`
+          const detail = `${listType === 'goodCompList' ? '好人陣營' : listType === 'goodCompList' ? '壞人陣營' : '功能身分'} ${roleData.name} 已存在`
           this.$toast.add({ severity: 'error', summary: '錯誤', detail, life: 3000 })
           return
         }
       }
-      this.$store.commit('game/addList', { listKey, ...roleData })
+      this.$store.commit('game/addList', { listType, ...roleData })
       this.compRole.name = ''
       this.compRole.description = ''
       this.funRole.name = ''
       this.funRole.description = ''
     },
-    removeList (e, listKey) {
-      const removeTargetValue = e.target.previousSibling.textContent
-      this.$store.commit('game/removeList', { listKey, value: removeTargetValue })
+    removeList (e, listType) {
+      const target = e.target.dataset.target
+      this.$store.commit('game/removeList', { listType, target })
+    },
+    editList (e, listType) {
+      const target = e.target.dataset.target
+      this.$store.commit('game/editList', { listType, target })
+      const editingData = this[listType].filter(item => item.id === target)[0]
+      this.editModel.name = editingData.name
+      this.editModel.description = editingData.description
+    },
+    updateList (e, listType) {
+      const target = e.target.dataset.target
+      this.$store.commit('game/updateList', { listType, target, ...this.editModel })
     }
   },
   computed: {
@@ -228,6 +263,14 @@ export default {
 
   .p-accordion-header-link:focus {
     box-shadow: none;
+  }
+
+  .AccordionTab_footer {
+    text-align: right;
+
+    span {
+      pointer-events: none;
+    }
   }
 }
 </style>

@@ -17,15 +17,35 @@ export default {
     setPlayerRange (state, newPlayerRange) {
       state.playerRange = newPlayerRange
     },
-    addList (state, newData) {
-      state[newData.listKey].push({
-        id: Date.now(),
-        role: newData.name,
-        description: newData.description || '無描述'
+    addList (state, { listType, name, description }) {
+      state[listType].push({
+        id: Date.now().toString(),
+        name,
+        description: description || '無描述',
+        isEditing: false
       })
     },
-    removeList (state, removeData) {
-      state[removeData.listKey] = state[removeData.listKey].filter(item => item.role !== removeData.value)
+    removeList (state, { listType, target }) {
+      state[listType] = state[listType].filter(role => role.id !== target)
+    },
+    editList (state, { listType, target }) {
+      for (const role of state[listType]) {
+        if (role.id === target) {
+          role.isEditing = !role.isEditing
+        } else {
+          role.isEditing = false
+        }
+      }
+    },
+    updateList (state, { listType, target, name, description }) {
+      for (const role of state[listType]) {
+        if (role.id === target) {
+          role.name = name
+          role.description = description
+          role.isEditing = false
+          break
+        }
+      }
     },
     setFunRoleState (state, enableFunRole) {
       state.enableFunRole = enableFunRole
