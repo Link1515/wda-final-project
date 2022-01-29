@@ -196,7 +196,7 @@ export default {
       immediate: true,
       handler (newValue) {
         if (newValue.isLogin) {
-          this.navItems = [...this.navItems, { label: '自製遊戲', to: '/makegame' }]
+          this.navItems = [this.navItems[0], this.navItems[1], this.navItems[2], { label: '自製遊戲', to: '/makegame' }]
           this.displayPanel = false
         } else {
           this.navItems = [this.navItems[0], this.navItems[1], this.navItems[2]]

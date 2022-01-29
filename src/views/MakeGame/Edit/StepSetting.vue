@@ -15,10 +15,10 @@
           v-for="step in stepList"
           :key="step.id"
         >
-          <Avatar :icon="step.icon" shape="circle" class="me-2" :style="{background: step.iconColor}"/>
+          <Avatar :icon="iconType(step.mode)" shape="circle" class="me-2" :style="{background: iconColor (step.mode)}"/>
           <span class="me-auto">{{ step.mode }}</span>
           <p>
-            <span>{{ step.audioText || step.timer || step.playerLabel }}</span>
+            <span>{{ step.data }}</span>
             <i class="pi pi-bars handle"></i>
           </p>
         </li>
@@ -30,8 +30,8 @@
         <Dropdown
           v-model="configForm.mode"
           :options="configs"
-          optionLabel="name"
-          optionValue="name"
+          optionLabel="mode"
+          optionValue="mode"
           placeholder="選擇模式"
         />
         <p v-show="configForm.mode">{{ configIntro }}</p>
@@ -82,19 +82,18 @@ export default {
         {
           id: Date.now(),
           mode: '語音',
-          audioText: '天黑請閉眼',
-          icon: 'pi pi-volume-up',
-          iconColor: '#EED19C'
+          data: '天黑請閉眼'
         }
       ],
       displayConfig: false,
       configs: [
-        { name: '語音', intro: '透過語音撥放以下輸入的文字' },
-        { name: '計時器', intro: '間隔設定時間後，執行下一個步驟' },
-        { name: '標記玩家', intro: '執行時可以標記指定的玩家，需要自訂標籤，如: 死亡、警長保護...等' }
+        { mode: '語音', intro: '透過語音撥放以下輸入的文字' },
+        { mode: '計時器', intro: '間隔設定時間後，執行下一個步驟' },
+        { mode: '標記玩家', intro: '執行時可以標記指定的玩家，需要自訂標籤，如: 死亡、警長保護...等' }
       ],
       configForm: {
         mode: '',
+        data: '',
         audioText: '',
         timer: 1,
         playerLabel: ''
@@ -110,28 +109,42 @@ export default {
       const newStep = { id: Date.now(), mode: this.configForm.mode }
       switch (newStep.mode) {
         case '語音':
-          newStep.audioText = this.configForm.audioText
-          newStep.icon = 'pi pi-volume-up'
-          newStep.iconColor = '#EED19C'
+          newStep.data = this.configForm.audioText
           break
         case '計時器':
-          newStep.timer = this.configForm.timer + ' 秒'
-          newStep.icon = 'pi pi-clock'
-          newStep.iconColor = '#ACBA9D'
+          newStep.data = this.configForm.timer + ' 秒'
           break
         case '標記玩家':
-          newStep.playerLabel = this.configForm.playerLabel
-          newStep.icon = 'pi pi-user-edit'
-          newStep.iconColor = '#E8837E'
+          newStep.data = this.configForm.playerLabel
           break
       }
       this.displayConfig = false
       this.stepList.push(newStep)
+    },
+    iconType (mode) {
+      switch (mode) {
+        case '語音':
+          return 'pi pi-volume-up'
+        case '計時器':
+          return 'pi pi-clock'
+        case '標記玩家':
+          return 'pi pi-user-edit'
+      }
+    },
+    iconColor (mode) {
+      switch (mode) {
+        case '語音':
+          return '#EED19C'
+        case '計時器':
+          return '#ACBA9D'
+        case '標記玩家':
+          return '#E8837E'
+      }
     }
   },
   computed: {
     configIntro () {
-      const matchConfig = this.configs.filter(config => config.name === this.configForm.mode)
+      const matchConfig = this.configs.filter(config => config.mode === this.configForm.mode)
       return matchConfig[0]?.intro
     }
   },
@@ -192,7 +205,7 @@ export default {
       font-size: 1.5rem;
       cursor: move;
       position: absolute;
-      right: 2rem;
+      right: 0;
       top: 0;
     }
 
