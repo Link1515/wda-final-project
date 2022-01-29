@@ -2,7 +2,7 @@
   <div id="rolelist">
     <Accordion :multiple="true" @tab-close="editRoleList($event, listType)">
       <component :is="'AccordionTab'" v-for="role in $store.state.game[listType]" :key="role.id" :header="role.name">
-        <p v-if="!role.isEditing" v-html="transferWarp(role.description)"></p>
+        <p v-if="!role.isEditing" v-html="transferWarp(role.description) || '無描述'"></p>
         <template v-else>
           <label for="roleName" class="me-2">名稱</label>
           <InputText id="roleName" v-model="editModel.name" />

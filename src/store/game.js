@@ -24,7 +24,7 @@ export default {
       state[listType].push({
         id: nanoid(),
         name,
-        description: description || '無描述',
+        description: description,
         isEditing: false
       })
     },
