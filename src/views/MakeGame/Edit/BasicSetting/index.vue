@@ -2,7 +2,7 @@
   <div id="basicsetting">
     <div class="row justify-content-center g-3 subViewBox">
       <div class="col-9 col-xl-4 d-flex justify-content-center align-items-center flex-wrap flex-lg-nowrap">
-        <label for="gameName" class="me-3 my-2">遊戲名稱 </label>
+        <label for="gameName" class="me-3 my-2" style="white-space: nowrap;">桌遊名稱</label>
         <InputText id="gameName" v-model="name"></InputText>
       </div>
       <div class="col-9 col-xl-4 d-grid">
@@ -18,29 +18,31 @@
         <div class="d-flex justify-content-center flex-wrap mb-4">
           <label for="compRole" class="me-3 my-2">陣營身分 </label>
           <InputText
-            @keydown.enter="addList('goodCompList', compRole)"
-            @keydown.ctrl="addList('badCompList', compRole)"
+            @keydown.enter="addRoleList('goodCompRoleList', compRole)"
+            @keydown.ctrl="addRoleList('badCompRoleList', compRole)"
             id="compRole"
             v-model="compRole.name"
             class="mb-2"
           ></InputText>
           <div>
             <Button
-              @click="addList('goodCompList', compRole)"
+              @click="addRoleList('goodCompRoleList', compRole)"
               class="p-button-rounded ms-2 setBtn goodColor"
               v-tooltip.top="'Enter 鍵快速加入'"
+              tabindex="-1"
             >設為好人</Button>
             <Button
-              @click="addList('badCompList', compRole)"
+              @click="addRoleList('badCompRoleList', compRole)"
               class="p-button-rounded ms-2 setBtn badColor"
               v-tooltip.top="'Ctrl 鍵快速加入'"
+              tabindex="-1"
             >設為壞人</Button>
           </div>
         </div>
         <Textarea v-model="compRole.description" :autoResize="true" rows="5" placeholder="身分描述" />
         <hr class="my-4 mx-5">
-        <RoleList listType="goodCompList" class="goodComp mb-3 mx-5"/>
-        <RoleList listType="badCompList" class="badComp mb-3 mx-5"/>
+        <RoleList listType="goodCompRoleList" class="goodComp mb-3 mx-5"/>
+        <RoleList listType="badCompRoleList" class="badComp mb-3 mx-5"/>
       </div>
       <!--
         設定功能身分
@@ -50,14 +52,14 @@
           <Checkbox class="funIdentityCheckbox" v-model="enableFunRole" binary/>
           <label for="funRole" class="me-3 my-2">功能身分 </label>
           <InputText
-            @keydown.enter="addList('funRoleList', funRole)"
+            @keydown.enter="addRoleList('funRoleList', funRole)"
             id="funRole"
             v-model="funRole.name"
             class="mb-2 mb-lg-0"
             :disabled="!enableFunRole"
           ></InputText>
           <Button
-            @click="addList('funRoleList', funRole)"
+            @click="addRoleList('funRoleList', funRole)"
             class="p-button-rounded ms-2 setBtn"
             v-tooltip.top="'Enter 鍵快速加入'"
             :disabled="!enableFunRole"
@@ -101,19 +103,19 @@ export default {
     }
   },
   methods: {
-    addList (listType, roleData) {
+    addRoleList (listType, roleData) {
       if (!roleData.name) {
         this.$toast.add({ severity: 'error', summary: '錯誤', detail: '未輸入名稱', life: 3000 })
         return
       }
-      const listTypeTC = listType === 'goodCompList' ? '好人陣營' : listType === 'badCompList' ? '壞人陣營' : '功能身分'
+      const listTypeTC = listType === 'goodCompRoleList' ? '好人陣營' : listType === 'badCompRoleList' ? '壞人陣營' : '功能身分'
       for (const item of this[listType]) {
         if (item.name === roleData.name) {
           this.$toast.add({ severity: 'error', summary: '錯誤', detail: `${listTypeTC} ${roleData.name} 已存在`, life: 3000 })
           return
         }
       }
-      this.$store.commit('game/addList', { listType, ...roleData })
+      this.$store.commit('game/addRoleList', { listType, ...roleData })
       this.$toast.add({ severity: 'success', summary: '成功', detail: `${roleData.name} 成功加入 ${listTypeTC}`, life: 3000 })
       this.compRole.name = ''
       this.compRole.description = ''
@@ -146,7 +148,7 @@ export default {
         this.$store.commit('game/setFunRoleState', value)
       }
     },
-    ...mapState('game', ['goodCompList', 'badCompList', 'funRoleList'])
+    ...mapState('game', ['goodCompRoleList', 'badCompRoleList', 'funRoleList'])
   }
 }
 </script>

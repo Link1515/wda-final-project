@@ -5,8 +5,8 @@ export default {
   state: {
     name: '',
     playerRange: [3, 8],
-    goodCompList: [],
-    badCompList: [],
+    goodCompRoleList: [],
+    badCompRoleList: [],
     enableFunRole: false,
     funRoleList: [],
     stepList: [],
@@ -19,7 +19,7 @@ export default {
     setPlayerRange (state, newPlayerRange) {
       state.playerRange = newPlayerRange
     },
-    addList (state, { listType, name, description }) {
+    addRoleList (state, { listType, name, description }) {
       state[listType].push({
         id: nanoid(),
         name,
@@ -27,10 +27,10 @@ export default {
         isEditing: false
       })
     },
-    removeList (state, { listType, target }) {
+    removeRoleList (state, { listType, target }) {
       state[listType] = state[listType].filter(role => role.id !== target)
     },
-    editList (state, { listType, target }) {
+    editRoleList (state, { listType, target }) {
       if (target) {
         for (const role of state[listType]) {
           if (role.id === target) {
@@ -47,7 +47,7 @@ export default {
         }
       }
     },
-    updateList (state, { listType, target, name, description }) {
+    updateRoleList (state, { listType, target, name, description }) {
       for (const role of state[listType]) {
         if (role.id === target) {
           role.name = name

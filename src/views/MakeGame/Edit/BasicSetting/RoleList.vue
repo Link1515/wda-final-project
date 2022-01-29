@@ -1,6 +1,6 @@
 <template>
   <div id="rolelist">
-    <Accordion :multiple="true" @tab-close="editList($event, listType)">
+    <Accordion :multiple="true" @tab-close="editRoleList($event, listType)">
       <component :is="'AccordionTab'" v-for="role in $store.state.game[listType]" :key="role.id" :header="role.name">
         <p v-if="!role.isEditing" v-html="transferWarp(role.description)"></p>
         <template v-else>
@@ -10,12 +10,12 @@
         </template>
         <div class="AccordionTab_footer">
           <template v-if="!role.isEditing">
-            <Button label="編輯" @click="editList($event, listType)" :data-target="role.id" class="p-button-rounded p-button-raised p-button-secondary ms-2" />
-            <Button label="刪除" @click="removeList($event, listType)" :data-target="role.id" class="p-button-rounded p-button-raised p-button-danger ms-2" />
+            <Button label="編輯" @click="editRoleList($event, listType)" :data-target="role.id" class="p-button-rounded p-button-raised p-button-secondary ms-2" />
+            <Button label="刪除" @click="removeRoleList($event, listType)" :data-target="role.id" class="p-button-rounded p-button-raised p-button-danger ms-2" />
           </template>
           <template v-else>
-            <Button label="保存" @click="updateList($event, listType)" :data-target="role.id" class="p-button-rounded p-button-raised p-button-success ms-2" />
-            <Button label="取消" @click="editList($event, listType)" class="p-button-rounded p-button-raised p-button-danger ms-2" />
+            <Button label="保存" @click="updateRoleList($event, listType)" :data-target="role.id" class="p-button-rounded p-button-raised p-button-success ms-2" />
+            <Button label="取消" @click="editRoleList($event, listType)" class="p-button-rounded p-button-raised p-button-danger ms-2" />
           </template>
         </div>
       </component>
@@ -49,29 +49,29 @@ export default {
     }
   },
   methods: {
-    removeList (e, listType) {
+    removeRoleList (e, listType) {
       const target = e.target.dataset.target
-      this.$store.commit('game/removeList', { listType, target })
+      this.$store.commit('game/removeRoleList', { listType, target })
     },
-    editList (e, listType) {
+    editRoleList (e, listType) {
       const target = e.target?.dataset.target
-      this.$store.commit('game/editList', { listType, target })
+      this.$store.commit('game/editRoleList', { listType, target })
       if (target) {
         const editingData = this[listType].filter(item => item.id === target)[0]
         this.editModel.name = editingData.name
         this.editModel.description = editingData.description
       }
     },
-    updateList (e, listType) {
+    updateRoleList (e, listType) {
       const target = e.target.dataset.target
-      this.$store.commit('game/updateList', { listType, target, ...this.editModel })
+      this.$store.commit('game/updateRoleList', { listType, target, ...this.editModel })
     },
     transferWarp (val) {
       return val.split('\n').join('<br />')
     }
   },
   computed: {
-    ...mapState('game', ['goodCompList', 'badCompList', 'funRoleList'])
+    ...mapState('game', ['goodCompRoleList', 'badCompRoleList', 'funRoleList'])
   }
 }
 </script>
