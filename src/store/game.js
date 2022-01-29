@@ -19,6 +19,7 @@ export default {
     setPlayerRange (state, newPlayerRange) {
       state.playerRange = newPlayerRange
     },
+
     addRoleList (state, { listType, name, description }) {
       state[listType].push({
         id: nanoid(),
@@ -59,6 +60,17 @@ export default {
     },
     setFunRoleState (state, enableFunRole) {
       state.enableFunRole = enableFunRole
+    },
+
+    addStepList (state, { mode, data }) {
+      state.stepList.push({
+        id: nanoid(),
+        mode,
+        data
+      })
+    },
+    updateStepList (state, newOrderSetp) {
+      state.stepList = newOrderSetp
     }
   },
   actions: {
