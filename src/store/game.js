@@ -75,5 +75,50 @@ export default {
   },
   actions: {
 
+  },
+  getters: {
+    stepListDisplayHelper (state) {
+      const newStepList = [...state.stepList]
+
+      newStepList.forEach(step => {
+        switch (step.mode) {
+          case '語音':
+            step.iconType = 'pi pi-volume-up'
+            step.iconColor = '#EED19C'
+            break
+          case '顯示':
+            step.iconType = 'pi pi-eye'
+            step.iconColor = '#ACBA9D'
+            step.roleListName = roleListNameTranslator(step.data.roleListType)
+            step.roleName = roleNameTranslator(state, step.data.roleListType, step.data.roleId)
+            break
+          case '標記':
+            step.iconType = 'pi pi-user-edit'
+            step.iconColor = '#E8837E'
+            step.conductingRoleListName = roleListNameTranslator(step.data.conductingRoleListType)
+            step.conductingRoleName = roleNameTranslator(state, step.data.conductingRoleListType, step.data.conductingRoleId)
+            break
+        }
+      })
+      return newStepList
+    }
   }
+}
+
+function roleListNameTranslator (roleListType) {
+  switch (roleListType) {
+    case 'goodCompRoleList':
+      return '好人陣營'
+    case 'badCompRoleList':
+      return '壞人陣營'
+    case 'funRoleList':
+      return '功能身分'
+  }
+}
+
+function roleNameTranslator (state, roleListType, roleId) {
+  if (roleId === 'all') return '全部'
+  const result = state[roleListType].filter(role => role.id === roleId)[0]
+  if (!result) return 'error: 角色不存在'
+  return result.name
 }

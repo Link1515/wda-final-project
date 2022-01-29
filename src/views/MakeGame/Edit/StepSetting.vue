@@ -12,18 +12,25 @@
       <transition-group>
         <li
           class="stepList"
-          v-for="step in stepList"
+          v-for="step in $store.getters['game/stepListDisplayHelper']"
           :key="step.id"
         >
-          <Avatar :icon="iconType(step.mode)" shape="circle" class="me-2" :style="{background: iconColor (step.mode)}"/>
+          <Avatar :icon="step.iconType" shape="circle" class="me-2" :style="{ background: step.iconColor }"/>
           <span class="me-auto">{{ step.mode }}</span>
           <p>
             <span v-if="step.mode === '語音'">{{ step.data }}</span>
-            <span v-if="step.mode === '顯示'">顯示角色: {{ roleListName(step.data.roleListType) }} {{ step.data.role }}</span>
-            <span v-if="step.mode === '標記'">
-              執行角色: {{ roleListName(step.data.conductingRoleListType) }} {{ roleName(step.data.conductingRoleListType, step.data.conductingRole)}}
+            <span v-if="step.mode === '顯示'">
+              顯示角色: {{ step.roleListName }} {{ step.roleName }}
               <br>
-              標記: {{ step.data.label }}</span>
+              時間: {{ step.data.timer }} 秒
+            </span>
+            <span v-if="step.mode === '標記'">
+              執行角色: {{ step.conductingRoleListName }} {{ step.conductingRoleName }}
+              <br>
+              標記: {{ step.data.label }}
+              <br>
+              時間: {{ step.data.timer }} 秒
+            </span>
             <i class="pi pi-bars handle"></i>
           </p>
         </li>
@@ -60,7 +67,7 @@
           />
           <Dropdown
             v-if="configModel.showPlayer.roleListType && configModel.showPlayer.roleListType !== 'all'"
-            v-model="$v.configModel.showPlayer.role.$model"
+            v-model="$v.configModel.showPlayer.roleId.$model"
             :options="[{name: '全部', id: 'all'}, ...$store.state.game[configModel.showPlayer.roleListType]]"
             optionLabel="name"
             optionValue="id"
@@ -88,7 +95,7 @@
           />
           <Dropdown
             v-if="configModel.markPlayer.conductingRoleListType && configModel.markPlayer.conductingRoleListType !== 'all'"
-            v-model="$v.configModel.markPlayer.conductingRole.$model"
+            v-model="$v.configModel.markPlayer.conductingRoleId.$model"
             :options="[{name: '全部', id: 'all'}, ...$store.state.game[configModel.markPlayer.conductingRoleListType]]"
             optionLabel="name"
             optionValue="id"
@@ -137,6 +144,7 @@ export default {
   },
   data () {
     return {
+      static: true,
       displayConfig: false,
       configs: [
         { mode: '語音', intro: '透過語音撥放以下輸入的文字' },
@@ -154,12 +162,12 @@ export default {
         audioText: '',
         showPlayer: {
           roleListType: '',
-          role: '',
+          roleId: '',
           timer: 5
         },
         markPlayer: {
           conductingRoleListType: '',
-          conductingRole: '',
+          conductingRoleId: '',
           label: '',
           timer: 5
         }
@@ -171,11 +179,11 @@ export default {
       audioText: { required },
       showPlayer: {
         roleListType: { required },
-        role: { required }
+        roleId: { required }
       },
       markPlayer: {
         conductingRoleListType: { required },
-        conductingRole: { required },
+        conductingRoleId: { required },
         label: { required }
       }
     }
@@ -203,7 +211,7 @@ export default {
           break
         case '標記':
           if (this.$v.configModel.markPlayer.$invalid) {
-            if (this.$v.configModel.markPlayer.conductingRoleListType.$invalid || this.$v.configModel.markPlayer.conductingRole.$invalid) {
+            if (this.$v.configModel.markPlayer.conductingRoleListType.$invalid || this.$v.configModel.markPlayer.conductingRoleId.$invalid) {
               this.$toast.add({ severity: 'error', summary: '錯誤', detail: '未選擇執行角色', life: 3000 })
             }
             if (this.$v.configModel.markPlayer.label.$invalid) {
@@ -223,51 +231,16 @@ export default {
         audioText: '',
         showPlayer: {
           roleListType: '',
-          role: '',
+          roleId: '',
           timer: 5
         },
         markPlayer: {
           conductingRoleListType: '',
-          conductingRole: '',
+          conductingRoleId: '',
           label: '',
           timer: 5
         }
       }
-    },
-
-    // display transfer function
-    iconType (mode) {
-      switch (mode) {
-        case '語音':
-          return 'pi pi-volume-up'
-        case '顯示':
-          return 'pi pi-eye'
-        case '標記':
-          return 'pi pi-user-edit'
-      }
-    },
-    iconColor (mode) {
-      switch (mode) {
-        case '語音':
-          return '#EED19C'
-        case '顯示':
-          return '#ACBA9D'
-        case '標記':
-          return '#E8837E'
-      }
-    },
-    roleListName (roleListType) {
-      switch (roleListType) {
-        case 'goodCompRoleList':
-          return '好人陣營'
-        case 'badCompRoleList':
-          return '壞人陣營'
-        case 'funRoleList':
-          return '功能身分'
-      }
-    },
-    roleName (roleListType, roleId) {
-      // const result = this.$store.state.game[roleListType].filter(role => role.id === roleId)[0]
     }
   },
   computed: {
@@ -289,10 +262,10 @@ export default {
       deep: true,
       handler (config) {
         if (config.showPlayer.roleListType === 'all') {
-          config.showPlayer.role = 'all'
+          config.showPlayer.roleId = 'all'
         }
         if (config.markPlayer.conductingRoleListType === 'all') {
-          config.markPlayer.conductingRole = 'all'
+          config.markPlayer.conductingRoleId = 'all'
         }
       }
     }
