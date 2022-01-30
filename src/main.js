@@ -12,6 +12,7 @@ import './plugins/PrimeVue.js'
 import './plugins/FortAwesome.js'
 import './plugins/Axios.js'
 import './plugins/Vuelidate.js'
+import './plugins/VueSweetAlert.js'
 // global component
 import Title from './components/Title.vue'
 // mixin

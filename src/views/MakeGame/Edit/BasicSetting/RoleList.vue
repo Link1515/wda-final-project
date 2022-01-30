@@ -55,8 +55,29 @@ export default {
   },
   methods: {
     removeRoleList (e, listType) {
-      const target = e.target.dataset.target
-      this.$store.commit('game/removeRoleList', { listType, target })
+      this.$swal({
+        title: '確定要刪除此角色?',
+        text: '注意: 與此角色相關的流程將會一併被刪除 !',
+        icon: 'warning',
+        showCancelButton: true,
+        confirmButtonColor: '#d33',
+        cancelButtonColor: '#607D8B',
+        confirmButtonText: '確認',
+        cancelButtonText: '取消'
+      }).then((result) => {
+        console.log(result)
+        if (result.isConfirmed) {
+          const target = e.target.dataset.target
+          this.$store.commit('game/removeRoleList', { listType, target })
+          this.$swal({
+            title: '成功!',
+            text: '角色成功刪除',
+            icon: 'success',
+            showConfirmButton: false,
+            timer: 1500
+          })
+        }
+      })
     },
     editRoleList (e, listType) {
       const target = e.target?.dataset.target
