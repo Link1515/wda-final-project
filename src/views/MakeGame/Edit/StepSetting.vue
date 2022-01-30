@@ -6,6 +6,7 @@
     <Draggable
       tag="ul"
       v-model="stepList"
+      group="stepList"
       handle=".handle"
       :animation="300"
     >
@@ -36,6 +37,12 @@
         </li>
       </transition-group>
     </Draggable>
+    <Draggable
+      tag="ul"
+      v-model="deleteStep"
+      group="stepList"
+      class="trashCan ms-auto mt-5"
+    />
 
     <!-- add step panel -->
     <Dialog :visible.sync="displayConfig" :showHeader="false" modal dismissableMask>
@@ -121,6 +128,8 @@
         <Button @click="addStepList" v-show="configModel.mode" label="添加" class="p-button-rounded p-button-raised"/>
       </template>
     </Dialog>
+
+    <!-- toast -->
     <Toast position="top-center" />
   </div>
 </template>
@@ -144,8 +153,8 @@ export default {
   },
   data () {
     return {
-      static: true,
       displayConfig: false,
+      deleteStep: [],
       configs: [
         { mode: '語音', intro: '透過語音撥放以下輸入的文字' },
         { mode: '顯示', intro: '顯示指定身分' },
@@ -312,6 +321,21 @@ export default {
 
     .p-tag {
       margin-right: 1rem;
+    }
+  }
+
+  .trashCan {
+    padding: 0;
+    width: 200px;
+    min-height: 2rem;
+    transition: .5s;
+    background: url('~@/assets/images/trashCan.png') no-repeat center / contain;
+    p {
+      display: none;
+    }
+    li {
+      opacity: 0.8;
+      background-color: #f66 !important;
     }
   }
 

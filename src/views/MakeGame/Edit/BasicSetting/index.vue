@@ -70,6 +70,8 @@
         <RoleList listType="funRoleList" class="funRole mb-3 mx-5" v-show="enableFunRole"/>
       </div>
     </div>
+
+    <!-- toast -->
     <Toast position="top-center"/>
   </div>
 </template>

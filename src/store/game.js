@@ -30,6 +30,7 @@ export default {
     },
     removeRoleList (state, { listType, target }) {
       state[listType] = state[listType].filter(role => role.id !== target)
+      state.stepList = state.stepList.filter(step => step.data.roleId !== target)
     },
     editRoleList (state, { listType, target }) {
       if (target) {
@@ -78,7 +79,7 @@ export default {
   },
   getters: {
     stepListDisplayHelper (state) {
-      const newStepList = [...state.stepList]
+      const newStepList = JSON.parse(JSON.stringify(state.stepList))
 
       newStepList.forEach(step => {
         switch (step.mode) {

@@ -45,6 +45,11 @@ export default {
       editModel: {
         name: '',
         description: ''
+      },
+      deleteTarget: '',
+      delete: {
+        listType: '',
+        target: ''
       }
     }
   },
@@ -93,6 +98,14 @@ export default {
     span {
       pointer-events: none;
     }
+  }
+
+  .p-toast-message-content {
+    justify-content: center;
+  }
+
+  .p-toast-icon-close {
+    display: none;
   }
 }
 </style>
