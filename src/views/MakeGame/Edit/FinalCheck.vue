@@ -53,10 +53,13 @@ async function start (stepList, vt) {
   msg.voice = voiceType
 
   for (let i = 0; i < stepList.length; i++) {
-    switch (stepList[i].mode) {
-      case '語音':
-        await stepVoice(msg, stepList[i])
-        break
+    if (stepList[i].mode === '語音') {
+      await stepVoice(msg, stepList[i])
+    } else {
+      await stepOthers(msg, stepList[i])
+      for (let j = 0; j < stepList[i].data.timer + 1; j++) {
+        await timer(msg, (stepList[i].data.timer - j))
+      }
     }
   }
 }
@@ -80,6 +83,27 @@ function stepVoice (msg, step) {
   return new Promise((resolve, reject) => {
     msg.onend = resolve
     msg.text = step.data
+    speechSynthesis.speak(msg)
+  })
+}
+
+function stepOthers (msg, step) {
+  return new Promise((resolve, reject) => {
+    if (step.mode === '顯示') {
+      msg.text = '顯示玩家中'
+    } else if (step.mode === '標記') {
+      msg.text = '標記玩家中'
+    }
+    msg.onend = resolve
+    speechSynthesis.speak(msg)
+  })
+}
+
+function timer (msg, time) {
+  console.log(time)
+  return new Promise((resolve, reject) => {
+    msg.onend = resolve
+    msg.text = time
     speechSynthesis.speak(msg)
   })
 }

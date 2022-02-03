@@ -4,7 +4,7 @@
     <form-wizard class="stepper" color="#5A7AB5">
       <tab-content title="基本配置"><BasicSetting /></tab-content>
       <tab-content title="流程配置"><StepSetting /></tab-content>
-      <tab-content title="最後檢查"><FinalCheck /></tab-content>
+      <tab-content title="聲音配置"><FinalCheck /></tab-content>
     </form-wizard>
   </div>
 </template>

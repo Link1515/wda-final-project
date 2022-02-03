@@ -28,6 +28,9 @@ export default {
 
 <style lang="scss">
 #steplist {
+  padding: 3rem;
+  background-color: #fff;
+
   li + li {
     margin-top: 1rem;
     padding-top: 1rem;
