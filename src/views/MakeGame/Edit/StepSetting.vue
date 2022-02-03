@@ -160,12 +160,6 @@ export default {
         { mode: '顯示', intro: '顯示指定身分' },
         { mode: '標記', intro: '執行時可以標記指定的玩家，需要自訂標籤，如: 死亡、警長保護...等' }
       ],
-      roleListType: [
-        { type: 'all', name: '所有人' },
-        { type: 'goodCompRoleList', name: '好人陣營' },
-        { type: 'badCompRoleList', name: '壞人陣營' },
-        { type: 'funRoleList', name: '功能身分' }
-      ],
       configModel: {
         mode: '',
         audioText: '',
@@ -264,6 +258,21 @@ export default {
       set (newOrderSetp) {
         this.$store.commit('game/updateStepList', newOrderSetp)
       }
+    },
+    roleListType () {
+      if (this.$store.state.game.enableFunRole) {
+        return [
+          { type: 'all', name: '所有人' },
+          { type: 'goodCompRoleList', name: '好人陣營' },
+          { type: 'badCompRoleList', name: '壞人陣營' },
+          { type: 'funRoleList', name: '功能身分' }
+        ]
+      }
+      return [
+        { type: 'all', name: '所有人' },
+        { type: 'goodCompRoleList', name: '好人陣營' },
+        { type: 'badCompRoleList', name: '壞人陣營' }
+      ]
     }
   },
   watch: {

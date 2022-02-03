@@ -2,9 +2,9 @@
   <div id="edit" class="viewBox">
     <Button @click="backHome" icon="pi pi-arrow-left" class="p-button-rounded p-button-raised backHomeIcon" />
     <form-wizard class="stepper" color="#5A7AB5">
-      <tab-content title="基本配置"><BasicSetting></BasicSetting></tab-content>
-      <tab-content title="流程配置"><StepSetting></StepSetting></tab-content>
-      <tab-content title="最後檢查"><FinalCheck></FinalCheck></tab-content>
+      <tab-content title="基本配置"><BasicSetting /></tab-content>
+      <tab-content title="流程配置"><StepSetting /></tab-content>
+      <tab-content title="最後檢查"><FinalCheck /></tab-content>
     </form-wizard>
   </div>
 </template>

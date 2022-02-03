@@ -10,6 +10,7 @@ export default {
     enableFunRole: false,
     funRoleList: [],
     stepList: [],
+    voiceType: 'Google 國語',
     savedInServer: false
   },
   mutations: {
@@ -72,6 +73,10 @@ export default {
     },
     updateStepList (state, newOrderSetp) {
       state.stepList = newOrderSetp
+    },
+
+    updateVoiceType (state, newVoiceType) {
+      state.voiceType = newVoiceType
     }
   },
   actions: {
