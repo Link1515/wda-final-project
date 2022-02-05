@@ -1,5 +1,5 @@
 <template>
-  <div id="finalcheck">
+  <div id="voicesetting">
     <div class="row" style="padding-bottom: 8rem">
       <div class="col-12 col-md-6">
         <StepList/>

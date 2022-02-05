@@ -11,6 +11,7 @@
           <Slider class="flex-grow-1" v-model="playerRange" :range="true" :max="20" :min="2"></Slider>
         </div>
       </div>
+      <div class="error" v-if="!$v.name.required && $v.name.$error">必須輸入桌遊名稱</div>
       <!--
         設定陣營身分
       -->
@@ -18,7 +19,7 @@
         <div class="d-flex justify-content-center flex-wrap mb-4">
           <label for="compRole" class="me-3 my-2">陣營身分 </label>
           <InputText
-            @keydown.enter="addRoleList('goodCompRoleList', compRole)"
+            @keydown.enter="('goodCompRoleList', compRole)"
             @keydown.ctrl="addRoleList('badCompRoleList', compRole)"
             id="compRole"
             v-model="compRole.name"
@@ -39,7 +40,9 @@
             >設為壞人</Button>
           </div>
         </div>
-        <Textarea v-model="compRole.description" :autoResize="true" rows="5" placeholder="身分描述" />
+        <Textarea v-model="compRole.description" :autoResize="true" rows="5" placeholder="身分描述" class="mb-3"/>
+        <div class="error" v-if="!$v.goodCompRoleList.required && $v.goodCompRoleList.$error">至少需要一名好人角色</div>
+        <div class="error" v-if="!$v.badCompRoleList.required && $v.badCompRoleList.$error">至少需要一名壞人角色</div>
         <hr class="my-4 mx-5">
         <RoleList listType="goodCompRoleList" class="goodComp mb-3 mx-5"/>
         <RoleList listType="badCompRoleList" class="badComp mb-3 mx-5"/>
@@ -81,9 +84,10 @@ import Checkbox from 'primevue/checkbox'
 import Slider from 'primevue/slider'
 import Toast from 'primevue/toast'
 
-import RoleList from './RoleList'
-
 import { mapState } from 'vuex'
+import { required } from 'vuelidate/lib/validators'
+
+import RoleList from './RoleList'
 
 export default {
   components: {
@@ -102,6 +106,17 @@ export default {
         name: '',
         description: ''
       }
+    }
+  },
+  validations: {
+    name: {
+      required
+    },
+    goodCompRoleList: {
+      required
+    },
+    badCompRoleList: {
+      required
     }
   },
   methods: {
@@ -123,6 +138,10 @@ export default {
       this.compRole.description = ''
       this.funRole.name = ''
       this.funRole.description = ''
+    },
+    validate () {
+      this.$v.$touch()
+      return !this.$v.$error
     }
   },
   computed: {
@@ -158,6 +177,10 @@ export default {
 <style lang="scss">
 #basicsetting {
   text-align: center;
+
+  .error {
+    color: red;
+  }
 
   .playerNum {
     padding: 0 10px;
