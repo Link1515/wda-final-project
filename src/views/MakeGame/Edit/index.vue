@@ -7,15 +7,14 @@
       nextButtonText="下一步"
       backButtonText="上一步"
       finishButtonText="送出"
+      @on-complete="createGame"
     >
       <tab-content title="基本配置" :beforeChange="()=>validateStep('basicsetting')">
         <BasicSetting ref="basicsetting" />
       </tab-content>
-      <!-- <tab-content title="流程配置" :before-change="()=>validateStep('stepsetting')"> -->
-      <tab-content title="流程配置">
+      <tab-content title="流程配置" :before-change="()=>validateStep('stepsetting')">
         <StepSetting ref="stepsetting" />
       </tab-content>
-      <!-- <tab-content title="聲音配置" :before-change="()=>validateStep('voicesetting')"> -->
       <tab-content title="聲音配置">
         <VoiceSetting ref="voicesetting"/>
       </tab-content>
@@ -46,6 +45,9 @@ export default {
     validateStep (name) {
       var refToValidate = this.$refs[name]
       return refToValidate.validate()
+    },
+    createGame () {
+      this.$store.dispatch('game/createGame')
     }
   }
 }

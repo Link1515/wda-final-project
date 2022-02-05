@@ -1,13 +1,13 @@
 <template>
   <div id="voicesetting">
     <div class="row" style="padding-bottom: 8rem">
-      <div class="col-12 col-md-6">
+      <div class="col-12 col-lg-6">
         <StepList/>
       </div>
       <div class="col-12 col-lg-6 controlPanel">
-        <div class="d-flex justify-content-evenly align-items-center gap-3">
-          <Button @click="playStep" icon="pi pi-play" class="p-button-rounded p-button-raised p-button-lg mx-5" />
-          <VSelect v-model="voiceType" :options="voiceOptions" value="value"/>
+        <VSelect v-model="voiceType" :options="voiceOptions" value="value"/>
+        <div class="mt-4" style="text-align:center">
+          <Button @click="playStep" icon="pi pi-play" class="p-button-rounded p-button-raised p-button-lg" />
         </div>
       </div>
     </div>

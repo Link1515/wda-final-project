@@ -12,6 +12,9 @@
         </div>
       </div>
       <div class="error" v-if="!$v.name.required && $v.name.$error">必須輸入桌遊名稱</div>
+      <div class="col-9">
+        <Textarea v-model="description" :autoResize="true" rows="5" placeholder="桌遊描述" />
+      </div>
       <!--
         設定陣營身分
       -->
@@ -19,7 +22,7 @@
         <div class="d-flex justify-content-center flex-wrap mb-4">
           <label for="compRole" class="me-3 my-2">陣營身分 </label>
           <InputText
-            @keydown.enter="('goodCompRoleList', compRole)"
+            @keydown.enter="addRoleList('goodCompRoleList', compRole)"
             @keydown.ctrl="addRoleList('badCompRoleList', compRole)"
             id="compRole"
             v-model="compRole.name"
@@ -151,6 +154,14 @@ export default {
       },
       set (value) {
         this.$store.commit('game/setName', value)
+      }
+    },
+    description: {
+      get () {
+        return this.$store.state.game.description
+      },
+      set (value) {
+        this.$store.commit('game/setDescription', value)
       }
     },
     playerRange: {

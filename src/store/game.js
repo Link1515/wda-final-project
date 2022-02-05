@@ -1,21 +1,40 @@
+import swal from 'sweetalert2'
 import { nanoid } from 'nanoid'
+import { serverAPI } from '../plugins/Axios.js'
 
 export default {
   namespaced: true,
   state: {
     name: '',
+    description: '',
+    author: '',
     playerRange: [3, 8],
     goodCompRoleList: [],
     badCompRoleList: [],
     enableFunRole: false,
     funRoleList: [],
     stepList: [],
-    voiceType: 'Google 國語',
-    savedInServer: false
+    voiceType: 'Google 國語'
   },
   mutations: {
+    reset (state) {
+      state.name = ''
+      state.description = ''
+      state.author = ''
+      state.playerRange = [3, 8]
+      state.goodCompRoleList = []
+      state.badCompRoleList = []
+      state.enableFunRole = false
+      state.funRoleList = []
+      state.stepList = []
+      state.voiceType = 'Google 國語'
+    },
+
     setName (state, newName) {
       state.name = newName
+    },
+    setDescription (state, newDescription) {
+      state.description = newDescription
     },
     setPlayerRange (state, newPlayerRange) {
       state.playerRange = newPlayerRange
@@ -80,7 +99,27 @@ export default {
     }
   },
   actions: {
-
+    async createGame ({ rootState }) {
+      try {
+        await serverAPI.post('/games/create', rootState.game, {
+          headers: {
+            authorization: 'Bearer ' + rootState.user.token
+          }
+        })
+        swal.fire({
+          icon: 'success',
+          title: '成功',
+          text: '創建桌遊成功'
+        })
+      } catch (error) {
+        console.log(error)
+        swal.fire({
+          icon: 'error',
+          title: '失敗',
+          text: '創建桌遊失敗'
+        })
+      }
+    }
   },
   getters: {
     stepListDisplayHelper (state) {

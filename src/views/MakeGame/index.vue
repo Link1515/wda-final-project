@@ -34,6 +34,7 @@ export default {
   },
   methods: {
     addNewGame () {
+      this.$store.commit('game/reset')
       this.$router.push('/makegame/edit')
     }
   }
