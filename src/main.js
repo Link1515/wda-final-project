@@ -13,6 +13,7 @@ import './plugins/FortAwesome.js'
 import './plugins/Axios.js'
 import './plugins/Vuelidate.js'
 import './plugins/VueSweetAlert.js'
+import './plugins/VueImgInputer.js'
 // global component
 import Title from './components/Title.vue'
 // mixin

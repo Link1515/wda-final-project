@@ -5,8 +5,10 @@ import { serverAPI } from '../plugins/Axios.js'
 export default {
   namespaced: true,
   state: {
+    _id: '',
     name: '',
     description: '',
+    image: '',
     author: '',
     playerRange: [3, 8],
     goodCompRoleList: [],
@@ -18,8 +20,10 @@ export default {
   },
   mutations: {
     reset (state) {
+      state._id = ''
       state.name = ''
       state.description = ''
+      state.image = ''
       state.author = ''
       state.playerRange = [3, 8]
       state.goodCompRoleList = []
@@ -38,6 +42,9 @@ export default {
     },
     setPlayerRange (state, newPlayerRange) {
       state.playerRange = newPlayerRange
+    },
+    setImage (state, newImage) {
+      state.image = newImage
     },
 
     addRoleList (state, { listType, name, description }) {
@@ -101,7 +108,18 @@ export default {
   actions: {
     async createGame ({ rootState }) {
       try {
-        await serverAPI.post('/games/create', rootState.game, {
+        const fd = new FormData()
+        for (const key in rootState.game) {
+          if (key !== '_id') {
+            if (key.includes('List') || key === 'playerRange') {
+              fd.append(key, JSON.stringify(rootState.game[key]))
+            } else {
+              fd.append(key, rootState.game[key])
+            }
+          }
+        }
+
+        await serverAPI.post('/games/create', fd, {
           headers: {
             authorization: 'Bearer ' + rootState.user.token
           }
@@ -112,7 +130,6 @@ export default {
           text: '創建桌遊成功'
         })
       } catch (error) {
-        console.log(error)
         swal.fire({
           icon: 'error',
           title: '失敗',

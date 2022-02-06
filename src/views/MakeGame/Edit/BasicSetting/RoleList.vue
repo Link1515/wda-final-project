@@ -65,7 +65,6 @@ export default {
         confirmButtonText: '確認',
         cancelButtonText: '取消'
       }).then((result) => {
-        console.log(result)
         if (result.isConfirmed) {
           const target = e.target.dataset.target
           this.$store.commit('game/removeRoleList', { listType, target })

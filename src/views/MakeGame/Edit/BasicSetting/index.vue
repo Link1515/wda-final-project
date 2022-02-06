@@ -12,8 +12,19 @@
         </div>
       </div>
       <div class="error" v-if="!$v.name.required && $v.name.$error">必須輸入桌遊名稱</div>
-      <div class="col-9">
-        <Textarea v-model="description" :autoResize="true" rows="5" placeholder="桌遊描述" />
+      <div class="row justify-content-center mt-4" style="gap: 1.5rem">
+        <div class="col-12 col-xxl-3">
+          <ImgInputer
+            v-model="image"
+            accept="image/*"
+            theme="material"
+            placeholder="點擊或拖曳選擇圖片"
+            bottom-text="點擊或拖曳修改圖片"
+          />
+        </div>
+        <div class="col-12 col-md-9 col-xxl-6">
+          <Textarea v-model="description" placeholder="桌遊描述" style="width: 100%; height: 150px; resize: none;"/>
+        </div>
       </div>
       <!--
         設定陣營身分
@@ -162,6 +173,14 @@ export default {
       },
       set (value) {
         this.$store.commit('game/setDescription', value)
+      }
+    },
+    image: {
+      get () {
+        return this.$store.state.game.image
+      },
+      set (value) {
+        this.$store.commit('game/setImage', value)
       }
     },
     playerRange: {
