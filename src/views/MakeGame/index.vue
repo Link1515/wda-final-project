@@ -4,13 +4,14 @@
       <template #text>自製遊戲</template>
     </Title>
     <div class="row g-5" v-show="showMakegameHome">
-        <div class="col-12 col-md-6 col-lg-4 col-xl-3" v-for="i in 1" :key="i">
+        <div class="col-12 col-md-6 col-lg-4 col-xl-3" v-for="game in userMadeGame" :key="game._id">
           <Card>
             <template #header>
-              <img src="https://andyventure.com/wp-content/uploads/boardgame_salem_1692.webp">
+              <img v-if="game.image" :src="game.image" @click="editGame(game._id)">
+              <img v-else src="@/assets/images/image-placeholder.png" @click="editGame(game._id)"/>
             </template>
             <template #title>
-              獵巫鎮
+              {{ game.name }}
             </template>
           </Card>
         </div>
@@ -27,6 +28,12 @@
 <script>
 
 export default {
+  name: 'MakeGame',
+  data () {
+    return {
+      userMadeGame: []
+    }
+  },
   computed: {
     showMakegameHome () {
       return this.$route.path === '/makegame'
@@ -36,6 +43,26 @@ export default {
     addNewGame () {
       this.$store.commit('game/reset')
       this.$router.push('/makegame/edit')
+    },
+    editGame (gameId) {
+      this.$store.dispatch('game/getOneGame', gameId)
+      this.$router.push('/makegame/edit')
+    }
+  },
+  async created () {
+    try {
+      const { data } = await this.serverAPI.get('/games/getUserMadeGames', {
+        headers: {
+          authorization: 'Bearer ' + this.userInfo.token
+        }
+      })
+      this.userMadeGame = data.result
+    } catch (error) {
+      this.$swal({
+        icon: 'error',
+        title: '錯誤',
+        text: '取得桌遊失敗'
+      })
     }
   }
 }
@@ -63,6 +90,11 @@ export default {
 
     i{
       font-size: 3rem;
+      transition: transform .5s
+    }
+
+    &:hover i {
+      transform: scale(1.2);
     }
   }
 }
@@ -70,6 +102,12 @@ export default {
 @media (min-width: 992px) {
   #makegame{
     padding: 0 4rem 6rem;
+
+    .p-card-header {
+      img {
+        height: 200px;
+      }
+    }
   }
 }
 </style>

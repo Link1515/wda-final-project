@@ -7,7 +7,7 @@
       nextButtonText="下一步"
       backButtonText="上一步"
       finishButtonText="送出"
-      @on-complete="createGame"
+      @on-complete="editGameFinish"
     >
       <tab-content title="基本配置" :beforeChange="()=>validateStep('basicsetting')">
         <BasicSetting ref="basicsetting" />
@@ -31,6 +31,7 @@ import StepSetting from './StepSetting'
 import VoiceSetting from './VoiceSetting'
 
 export default {
+  name: 'Edit',
   components: {
     FormWizard,
     TabContent,
@@ -46,8 +47,8 @@ export default {
       var refToValidate = this.$refs[name]
       return refToValidate.validate()
     },
-    createGame () {
-      this.$store.dispatch('game/createGame')
+    editGameFinish () {
+      this.$store.dispatch('game/editGameFinish')
     }
   }
 }

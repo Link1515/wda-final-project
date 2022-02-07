@@ -1,6 +1,7 @@
 import swal from 'sweetalert2'
 import { nanoid } from 'nanoid'
 import { serverAPI } from '../plugins/Axios.js'
+import router from '../router'
 
 export default {
   namespaced: true,
@@ -32,6 +33,20 @@ export default {
       state.funRoleList = []
       state.stepList = []
       state.voiceType = 'Google 國語'
+    },
+    update (state, newData) {
+      state._id = newData._id
+      state.name = newData.name
+      state.description = newData.description
+      state.image = newData.image
+      state.author = newData.author
+      state.playerRange = newData.playerRange
+      state.goodCompRoleList = newData.goodCompRoleList
+      state.badCompRoleList = newData.badCompRoleList
+      state.enableFunRole = newData.enableFunRole
+      state.funRoleList = newData.funRoleList
+      state.stepList = newData.stepList
+      state.voiceType = newData.voiceType
     },
 
     setName (state, newName) {
@@ -106,7 +121,7 @@ export default {
     }
   },
   actions: {
-    async createGame ({ rootState }) {
+    async editGameFinish ({ rootState, commit }) {
       try {
         const fd = new FormData()
         for (const key in rootState.game) {
@@ -119,21 +134,53 @@ export default {
           }
         }
 
-        await serverAPI.post('/games/create', fd, {
-          headers: {
-            authorization: 'Bearer ' + rootState.user.token
-          }
-        })
+        if (rootState.game._id.length < 0) {
+          await serverAPI.post('/games/create', fd, {
+            headers: {
+              authorization: 'Bearer ' + rootState.user.token
+            }
+          })
+        } else {
+          fd.append('_id', rootState.game._id)
+          await serverAPI.patch('/games/update/' + rootState.game._id, fd, {
+            headers: {
+              authorization: 'Bearer ' + rootState.user.token
+            }
+          })
+        }
+
         swal.fire({
           icon: 'success',
-          title: '成功',
-          text: '創建桌遊成功'
+          title: '成功'
+        }).then(() => {
+          commit('reset')
+          router.push('/makegame')
+          router.go()
         })
       } catch (error) {
         swal.fire({
           icon: 'error',
           title: '失敗',
-          text: '創建桌遊失敗'
+          text: '製作桌遊失敗'
+        })
+      }
+    },
+
+    async getOneGame ({ rootState, commit }, gameId) {
+      try {
+        if (gameId !== rootState.game._id) {
+          const { data } = await serverAPI.post('/games/getOneGame', { gameId }, {
+            headers: {
+              authorization: 'Bearer ' + rootState.user.token
+            }
+          })
+          commit('update', data.result)
+        }
+      } catch (error) {
+        swal.fire({
+          icon: 'error',
+          title: '失敗',
+          text: '取得失敗'
         })
       }
     }

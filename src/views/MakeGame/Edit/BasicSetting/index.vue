@@ -20,6 +20,7 @@
             theme="material"
             placeholder="點擊或拖曳選擇圖片"
             bottom-text="點擊或拖曳修改圖片"
+            :style="{background: `url(${$store.state.game.image}) no-repeat center / cover`}"
           />
         </div>
         <div class="col-12 col-md-9 col-xxl-6">

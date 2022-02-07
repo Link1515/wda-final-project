@@ -95,9 +95,26 @@ li {
     border-radius: 10px;
     overflow: hidden;
     box-shadow: 5px 5px 10px rgba(143, 174, 189, 0.5);
+    height: 100%;
+    transition: box-shadow .5s;
 
     img {
       cursor: pointer;
+      transition: transform .5s;
+    }
+
+    .p-card-header {
+    overflow: hidden;
+    img {
+      height: 300px;
+    }
+  }
+  }
+
+  .p-card:hover {
+    box-shadow: 10px 10px 15px rgba(143, 174, 189, 0.8);
+    img {
+      transform: scale(1.2);
     }
   }
 
@@ -109,6 +126,16 @@ li {
     padding-left: 1rem;
     padding-right: 1rem;
     border-radius: 9999px;
+  }
+}
+
+@media (min-width: 992px) {
+  #app{
+    .p-card .p-card-header {
+      img {
+        height: 200px;
+      }
+    }
   }
 }
 

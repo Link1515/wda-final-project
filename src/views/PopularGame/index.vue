@@ -23,6 +23,7 @@
         </Card>
       </div>
     </div>
+
     <Dialog :visible.sync="modelDisplay" position="left" :showHeader="false" modal dismissableMask>
       <img @click="showModel" src="https://andyventure.com/wp-content/uploads/boardgame_salem_1692.webp" style="width: 300px">
       <p>Lorem ipsum dolor sit amet consectetur adipisicing elit. Fuga totam, beatae ipsa maiores possimus quo impedit eos tempora laboriosam minus natus quisquam, amet aut ducimus. Iure vel perspiciatis quod eligendi labore cupiditate aliquam. Maxime ipsa eius quo hic explicabo? Dolore eaque laborum doloremque vel rerum eum molestiae, error, eligendi expedita illo minus esse, quam cumque maiores a omnis voluptatum enim est? Id, eaque atque dolorum incidunt iste odit excepturi sint voluptate et veniam itaque nostrum quisquam autem soluta laborum vitae, dolor dignissimos enim quaerat laudantium, error perferendis laboriosam doloribus eum. Modi deserunt aliquid, quod nulla sunt quae, pariatur cupiditate dicta fuga explicabo ab. Pra</p>
