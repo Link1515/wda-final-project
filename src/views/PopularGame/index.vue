@@ -6,27 +6,43 @@
       </template>
     </Title>
     <div class="row g-5">
-      <div class="col-12 col-md-6 col-lg-4 col-xl-3" v-for="i in 10" :key="i">
+      <div class="col-12 col-md-6 col-lg-4 col-xl-3" v-for="(game, index) in gameList" :key="game._id">
         <Card>
           <template #header>
-            <img @click="showModel" src="https://andyventure.com/wp-content/uploads/boardgame_salem_1692.webp">
+            <img v-if="game.image" :src="game.image" @click="showDialog(index)">
+            <img v-else src="@/assets/images/image-placeholder.png" @click="showDialog(index)"/>
           </template>
           <template #title>
-            獵巫鎮
+            {{ game.name }}
           </template>
           <template #content>
             <Rating v-model="val" :readonly="true" :cancel="false"/>
           </template>
           <template #footer>
-            <ToggleButton v-model="liked" onIcon="pi pi-heart-fill" offIcon="pi pi-heart"/>
+            <ToggleButton v-model="game.likedByUser" onIcon="pi pi-heart-fill" offIcon="pi pi-heart"/>
           </template>
         </Card>
       </div>
     </div>
 
-    <Dialog :visible.sync="modelDisplay" position="left" :showHeader="false" modal dismissableMask>
-      <img @click="showModel" src="https://andyventure.com/wp-content/uploads/boardgame_salem_1692.webp" style="width: 300px">
-      <p>Lorem ipsum dolor sit amet consectetur adipisicing elit. Fuga totam, beatae ipsa maiores possimus quo impedit eos tempora laboriosam minus natus quisquam, amet aut ducimus. Iure vel perspiciatis quod eligendi labore cupiditate aliquam. Maxime ipsa eius quo hic explicabo? Dolore eaque laborum doloremque vel rerum eum molestiae, error, eligendi expedita illo minus esse, quam cumque maiores a omnis voluptatum enim est? Id, eaque atque dolorum incidunt iste odit excepturi sint voluptate et veniam itaque nostrum quisquam autem soluta laborum vitae, dolor dignissimos enim quaerat laudantium, error perferendis laboriosam doloribus eum. Modi deserunt aliquid, quod nulla sunt quae, pariatur cupiditate dicta fuga explicabo ab. Pra</p>
+    <InfiniteLoading @infinite="infiniteHandler">
+      <template #spinner>
+        <div>載入中...</div>
+      </template>
+      <template #no-more>
+        <div class="mt-4">資料已全部載入</div>
+      </template>
+      <template #no-results>
+        <div class="mt-4">載入失敗</div>
+      </template>
+    </InfiniteLoading>
+
+    <Dialog @show="loadData" :visible.sync="dialogDisplay" position="center" :showHeader="false" modal dismissableMask >
+      <div style="width: 600px">
+        <img v-if="dialogData.image" :src="dialogData.image">
+        <img v-else src="@/assets/images/image-placeholder.png"/>
+        <p>{{ dialogData.description }}</p>
+      </div>
     </Dialog>
   </div>
 </template>
@@ -34,22 +50,63 @@
 <script>
 import Rating from 'primevue/rating'
 import ToggleButton from 'primevue/togglebutton'
+import InfiniteLoading from 'vue-infinite-loading'
 
 export default {
+  name: 'PopularGame',
   components: {
     Rating,
-    ToggleButton
+    ToggleButton,
+    InfiniteLoading
   },
   data () {
     return {
       val: 3,
       liked: false,
-      modelDisplay: false
+      dialogDisplay: false,
+      dialogData: {
+        gameIndex: '',
+        image: '',
+        description: ''
+      },
+      page: 1,
+      gameList: []
     }
   },
   methods: {
-    showModel () {
-      this.modelDisplay = !this.modelDisplay
+    showDialog (gameIndex) {
+      this.dialogData.gameIndex = gameIndex
+      this.dialogDisplay = !this.dialogDisplay
+    },
+    async loadData () {
+      this.dialogData.image = this.gameList[this.dialogData.gameIndex].image
+      this.dialogData.description = this.gameList[this.dialogData.gameIndex].description
+    },
+    async infiniteHandler ($state) {
+      try {
+        const { data } = await this.serverAPI.get('/games', {
+          params: {
+            page: this.page
+          }
+        })
+        if (data.result.length) {
+          this.page++
+          console.log(data.result)
+          for (const game of data.result) {
+            game.likedByUser = false
+          }
+          this.gameList.push(...data.result)
+          $state.loaded()
+        } else {
+          $state.complete()
+        }
+      } catch (error) {
+        this.$swal({
+          icon: 'error',
+          title: '失敗',
+          text: '取得失敗'
+        })
+      }
     }
   }
 }
@@ -82,6 +139,17 @@ export default {
 
   .p-highlight {
     background-color: transparent;
+  }
+
+  .p-dialog {
+    border-radius: 10px;
+    overflow: hidden;
+
+    .p-dialog-content {
+      padding-left: 0;
+      padding-right: 0;
+      text-align: center;
+    }
   }
 }
 </style>

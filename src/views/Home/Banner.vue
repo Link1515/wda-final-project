@@ -20,14 +20,20 @@
       </div>
     </div>
     <div class="mt-5 mb-3 banner_buttonBox">
-      <Button label="立即開始！" class="start_btn p-button-rounded p-button-raised p-button-lg" />
+      <Button @click="startGame" label="立即開始！" class="start_btn p-button-rounded p-button-raised p-button-lg" />
     </div>
   </div>
 </template>
 
 <script>
 export default {
-  name: 'Banner'
+  name: 'Banner',
+  methods: {
+    startGame () {
+      this.$router.push('/play')
+    }
+  }
+
 }
 </script>
 

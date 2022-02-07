@@ -9,7 +9,8 @@ export default {
     account: '',
     email: '',
     token: '',
-    role: ''
+    role: '',
+    favoriteGame: []
   },
   mutations: {
     login (state, userInfo) {
@@ -18,6 +19,7 @@ export default {
       state.email = userInfo.email
       state.token = userInfo.token
       state.role = userInfo.role
+      state.favoriteGame = userInfo.favoriteGame
     },
     logout (state) {
       state._id = ''

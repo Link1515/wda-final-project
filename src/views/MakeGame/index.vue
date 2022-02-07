@@ -4,7 +4,12 @@
       <template #text>自製遊戲</template>
     </Title>
     <div class="row g-5" v-show="showMakegameHome">
-        <div class="col-12 col-md-6 col-lg-4 col-xl-3" v-for="game in userMadeGame" :key="game._id">
+        <div class="col-12 col-md-6 col-lg-4 col-xl-3">
+          <div class="addNewGame" @click="addNewGame">
+            <i class="pi pi-plus"></i>
+          </div>
+        </div>
+        <div class="col-12 col-md-6 col-lg-4 col-xl-3" v-for="game in userMadeGameList" :key="game._id">
           <Card>
             <template #header>
               <img v-if="game.image" :src="game.image" @click="editGame(game._id)">
@@ -14,11 +19,6 @@
               {{ game.name }}
             </template>
           </Card>
-        </div>
-        <div class="col-12 col-md-6 col-lg-4 col-xl-3">
-          <div class="addNewGame" @click="addNewGame">
-            <i class="pi pi-plus"></i>
-          </div>
         </div>
       </div>
     <router-view />
@@ -31,7 +31,7 @@ export default {
   name: 'MakeGame',
   data () {
     return {
-      userMadeGame: []
+      userMadeGameList: []
     }
   },
   computed: {
@@ -56,7 +56,7 @@ export default {
           authorization: 'Bearer ' + this.userInfo.token
         }
       })
-      this.userMadeGame = data.result
+      this.userMadeGameList = data.result
     } catch (error) {
       this.$swal({
         icon: 'error',

@@ -134,7 +134,7 @@ export default {
           }
         }
 
-        if (rootState.game._id.length < 0) {
+        if (!rootState.game._id.length) {
           await serverAPI.post('/games/create', fd, {
             headers: {
               authorization: 'Bearer ' + rootState.user.token
@@ -142,7 +142,7 @@ export default {
           })
         } else {
           fd.append('_id', rootState.game._id)
-          await serverAPI.patch('/games/update/' + rootState.game._id, fd, {
+          await serverAPI.patch('/games/update', fd, {
             headers: {
               authorization: 'Bearer ' + rootState.user.token
             }
