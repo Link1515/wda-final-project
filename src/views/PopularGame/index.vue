@@ -19,7 +19,7 @@
             <Rating v-model="val" :readonly="true" :cancel="false"/>
           </template>
           <template #footer>
-            <ToggleButton v-model="game.likedByUser" onIcon="pi pi-heart-fill" offIcon="pi pi-heart"/>
+            <ToggleButton v-model="game.likedByUser" @change="setFavGame(game.likedByUser, game._id)" onIcon="pi pi-heart-fill" offIcon="pi pi-heart"/>
           </template>
         </Card>
       </div>
@@ -78,7 +78,14 @@ export default {
       this.dialogData.gameIndex = gameIndex
       this.dialogDisplay = !this.dialogDisplay
     },
-    async loadData () {
+    setFavGame (isFav, gameId) {
+      if (isFav) {
+        this.$store.dispatch('user/addFavGame', gameId)
+      } else {
+        this.$store.dispatch('user/removeFavGame', gameId)
+      }
+    },
+    loadData () {
       this.dialogData.image = this.gameList[this.dialogData.gameIndex].image
       this.dialogData.description = this.gameList[this.dialogData.gameIndex].description
     },
@@ -91,10 +98,18 @@ export default {
         })
         if (data.result.length) {
           this.page++
-          console.log(data.result)
-          for (const game of data.result) {
-            game.likedByUser = false
+          const favGame = JSON.parse(JSON.stringify(this.userInfo.favoriteGame))
+
+          for (const FG of favGame) {
+            for (const game of data.result) {
+              game.likedByUser = false
+              if (game._id === FG.game) {
+                game.likedByUser = true
+                break
+              }
+            }
           }
+
           this.gameList.push(...data.result)
           $state.loaded()
         } else {

@@ -27,6 +27,7 @@ export default {
       state.email = ''
       state.token = ''
       state.role = ''
+      state.favoriteGame = []
     },
     extend (state, newToken) {
       state.token = newToken
@@ -36,6 +37,10 @@ export default {
       state.account = userInfo.account
       state.email = userInfo.email
       state.role = userInfo.role
+      state.favoriteGame = userInfo.favoriteGame
+    },
+    updateFavGame (state, newFavGame) {
+      state.favoriteGame = newFavGame
     }
   },
   actions: {
@@ -106,6 +111,36 @@ export default {
         commit('getInfo', data.result)
       } catch (error) {
         commit('logout')
+      }
+    },
+    async addFavGame ({ commit, state }, gameId) {
+      try {
+        const { data } = await serverAPI.post('/users/addFavGame/' + gameId, {}, {
+          headers: {
+            authorization: 'Bearer ' + state.token
+          }
+        })
+        commit('updateFavGame', data.result)
+      } catch (error) {
+        swal.fire({
+          icon: 'error',
+          title: '失敗'
+        })
+      }
+    },
+    async removeFavGame ({ commit, state }, gameId) {
+      try {
+        const { data } = await serverAPI.post('/users/removeFavGame/' + gameId, {}, {
+          headers: {
+            authorization: 'Bearer ' + state.token
+          }
+        })
+        commit('updateFavGame', data.result)
+      } catch (error) {
+        swal.fire({
+          icon: 'error',
+          title: '失敗'
+        })
       }
     }
   },

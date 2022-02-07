@@ -179,8 +179,7 @@ export default {
       } catch (error) {
         swal.fire({
           icon: 'error',
-          title: '失敗',
-          text: '取得失敗'
+          title: '失敗'
         })
       }
     }
