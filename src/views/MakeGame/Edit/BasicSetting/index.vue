@@ -23,14 +23,14 @@
             :style="{background: `url(${$store.state.game.image}) no-repeat center / cover`}"
           />
         </div>
-        <div class="col-12 col-md-9 col-xxl-6">
+        <div class="col-12 col-lg-9 col-xxl-6">
           <Textarea v-model="description" placeholder="桌遊描述" style="width: 100%; height: 150px; resize: none;"/>
         </div>
       </div>
       <!--
         設定陣營身分
       -->
-      <div class="col-12 col-md-9 borderBox">
+      <div class="col-12 col-lg-9 borderBox">
         <div class="d-flex justify-content-center flex-wrap mb-4">
           <label for="campRole" class="me-3 my-2">陣營身分 </label>
           <InputText
@@ -65,7 +65,7 @@
       <!--
         設定功能身分
       -->
-      <div class="col-12 col-md-9 borderBox position-relative" :class="{disabled: !enableFunRole}">
+      <div class="col-12 col-lg-9 borderBox position-relative" :class="{disabled: !enableFunRole}">
         <div class="d-flex justify-content-center flex-wrap mb-4">
           <Checkbox class="funIdentityCheckbox" v-model="enableFunRole" binary/>
           <label for="funRole" class="me-3 my-2">功能身分 </label>
@@ -260,6 +260,26 @@ export default {
   .p-inputtextarea {
     border-radius: 0;
     width: 80%;
+  }
+
+  .img-inputer {
+    width: 100%;
+  }
+}
+
+@media (min-width: 992px) {
+  #basicsetting {
+    .img-inputer {
+      width: 50%;
+    }
+  }
+}
+
+@media (min-width: 1400px) {
+  #basicsetting {
+    .img-inputer {
+      width: 100%;
+    }
   }
 }
 </style>

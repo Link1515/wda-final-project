@@ -19,7 +19,7 @@
             <Rating v-model="val" :readonly="true" :cancel="false"/>
           </template>
           <template #footer>
-            <ToggleButton v-model="game.likedByUser" @change="setFavGame(game.likedByUser, game._id)" onIcon="pi pi-heart-fill" offIcon="pi pi-heart"/>
+            <ToggleButton v-model="game.likedByUser" @change="setFavGame(game.likedByUser, game._id, game.name)" onIcon="pi pi-heart-fill" offIcon="pi pi-heart"/>
           </template>
         </Card>
       </div>
@@ -88,9 +88,9 @@ export default {
       this.dialogGameIndex = gameIndex
       this.dialogDisplay = !this.dialogDisplay
     },
-    setFavGame (isFav, gameId) {
+    setFavGame (isFav, gameId, gameName) {
       if (isFav) {
-        this.$store.dispatch('user/addFavGame', gameId)
+        this.$store.dispatch('user/addFavGame', { gameId, gameName })
       } else {
         this.$store.dispatch('user/removeFavGame', gameId)
       }

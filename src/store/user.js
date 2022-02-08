@@ -113,9 +113,9 @@ export default {
         commit('logout')
       }
     },
-    async addFavGame ({ commit, state }, gameId) {
+    async addFavGame ({ commit, state }, { gameId, gameName }) {
       try {
-        const { data } = await serverAPI.post('/users/addFavGame/' + gameId, {}, {
+        const { data } = await serverAPI.post('/users/addFavGame/' + gameId, { gameName }, {
           headers: {
             authorization: 'Bearer ' + state.token
           }

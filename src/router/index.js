@@ -18,7 +18,19 @@ const routes = [
   {
     path: '/play',
     name: 'Play',
-    component: Play
+    component: Play,
+    children: [
+      {
+        path: 'creategame',
+        name: 'CreateGame',
+        component: () => import(/* webpackChunkName: "CreateGame" */ '../views/Play/CreateGame.vue')
+      },
+      {
+        path: 'joingame',
+        name: 'JoinGame',
+        component: () => import(/* webpackChunkName: "JoinGame" */ '../views/Play/JoinGame.vue')
+      }
+    ]
   },
   {
     path: '/populargame',

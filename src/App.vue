@@ -106,7 +106,7 @@ li {
     .p-card-header {
     overflow: hidden;
     img {
-      height: 300px;
+      height: 200px;
     }
   }
   }
@@ -128,15 +128,4 @@ li {
     border-radius: 9999px;
   }
 }
-
-@media (min-width: 992px) {
-  #app{
-    .p-card .p-card-header {
-      img {
-        height: 200px;
-      }
-    }
-  }
-}
-
 </style>
