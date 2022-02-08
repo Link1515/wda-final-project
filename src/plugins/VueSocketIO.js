@@ -1,0 +1,9 @@
+import Vue from 'vue'
+import VueSocketIO from 'vue-socket.io'
+
+Vue.use(new VueSocketIO({
+  connection: process.env.VUE_APP_SERVERAPI,
+  options: {
+    autoConnect: false
+  }
+}))

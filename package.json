@@ -33,6 +33,7 @@
     "vue-img-inputer": "^2.1.6",
     "vue-infinite-loading": "^2.4.5",
     "vue-router": "^3.2.0",
+    "vue-socket.io": "^3.0.10",
     "vue-sweetalert2": "^5.0.2",
     "vuedraggable": "^2.24.3",
     "vuelidate": "^0.7.7",

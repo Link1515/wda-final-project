@@ -13,9 +13,9 @@
         </div>
         <div class="d-flex flex-column flex-md-row align-items-center mb-3">
           <span class="mb-2 mb-md-0">遊戲間 ID</span>
-          <InputText v-model="roomId" class="ms-3 flex-grow-1"/>
+          <InputText v-model.number="roomId" class="ms-3 flex-grow-1"/>
         </div>
-        <Button label="加入" class="p-button-rounded p-button-raised mt-3"/>
+        <Button @click="joinRoom" label="加入" class="p-button-rounded p-button-raised mt-3"/>
       </div>
     </div>
   </div>
@@ -29,6 +29,12 @@ export default {
     return {
       roomId: '',
       playerName: ''
+    }
+  },
+  methods: {
+    joinRoom () {
+      this.$socket.connect()
+      this.$socket.emit('joinRoom', this.roomId)
     }
   },
   watch: {
