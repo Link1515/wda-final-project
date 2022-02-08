@@ -8,8 +8,14 @@ Vue.use(Vuex)
 
 export default new Vuex.Store({
   modules: { user, game },
-  plugins: [createPersistedState({
-    key: 'userInfo',
-    paths: ['user.token']
-  })]
+  plugins: [
+    createPersistedState({
+      key: 'userInfo',
+      paths: ['user.token']
+    }),
+    createPersistedState({
+      key: 'game',
+      paths: ['game']
+    })
+  ]
 })

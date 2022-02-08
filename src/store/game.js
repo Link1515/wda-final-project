@@ -12,8 +12,8 @@ export default {
     image: '',
     author: '',
     playerRange: [3, 8],
-    goodCompRoleList: [],
-    badCompRoleList: [],
+    goodCampRoleList: [],
+    badCampRoleList: [],
     enableFunRole: false,
     funRoleList: [],
     stepList: [],
@@ -27,8 +27,8 @@ export default {
       state.image = ''
       state.author = ''
       state.playerRange = [3, 8]
-      state.goodCompRoleList = []
-      state.badCompRoleList = []
+      state.goodCampRoleList = []
+      state.badCampRoleList = []
       state.enableFunRole = false
       state.funRoleList = []
       state.stepList = []
@@ -41,8 +41,8 @@ export default {
       state.image = newData.image
       state.author = newData.author
       state.playerRange = newData.playerRange
-      state.goodCompRoleList = newData.goodCompRoleList
-      state.badCompRoleList = newData.badCompRoleList
+      state.goodCampRoleList = newData.goodCampRoleList
+      state.badCampRoleList = newData.badCampRoleList
       state.enableFunRole = newData.enableFunRole
       state.funRoleList = newData.funRoleList
       state.stepList = newData.stepList
@@ -215,9 +215,9 @@ export default {
 
 function roleListNameTranslator (roleListType) {
   switch (roleListType) {
-    case 'goodCompRoleList':
+    case 'goodCampRoleList':
       return '好人陣營'
-    case 'badCompRoleList':
+    case 'badCampRoleList':
       return '壞人陣營'
     case 'funRoleList':
       return '功能身分'

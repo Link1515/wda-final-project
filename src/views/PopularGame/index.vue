@@ -42,10 +42,16 @@
         <img v-if="gameList[dialogGameIndex].image" :src="gameList[dialogGameIndex].image">
         <img v-else src="@/assets/images/image-placeholder.png"/>
         <div class="dialogText">
-          <h2>{{ gameList[dialogGameIndex].name }}</h2>
+          <h1>{{ gameList[dialogGameIndex].name }}</h1>
           <h4>遊玩人數: {{ gameList[dialogGameIndex].playerRange[0] }} ~ {{ gameList[dialogGameIndex].playerRange[1] }}</h4>
-          <p>好人陣營: <span v-for="role in gameList[dialogGameIndex].goodCampRoleList" :key="role.id">{{ role.name }}</span></p>
           <p>{{ gameList[dialogGameIndex].description }}</p>
+          <p>好人陣營: <span v-for="role in gameList[dialogGameIndex].goodCampRoleList" :key="role.id">{{ role.name }} / </span></p>
+          <p>壞人陣營: <span v-for="role in gameList[dialogGameIndex].badCampRoleList" :key="role.id">{{ role.name }} / </span></p>
+          <p v-if="gameList[dialogGameIndex].enableFunRole">功能身分: <span v-for="role in gameList[dialogGameIndex].funRoleList" :key="role.id">{{ role.name }} / </span></p>
+        </div>
+        <div class="dialogStep">
+          <h2>遊戲步驟</h2>
+          <StepList :list="gameList[dialogGameIndex].stepList"/>
         </div>
       </div>
     </Dialog>
@@ -57,12 +63,15 @@ import Rating from 'primevue/rating'
 import ToggleButton from 'primevue/togglebutton'
 import InfiniteLoading from 'vue-infinite-loading'
 
+import StepList from '@/components/StepList'
+
 export default {
   name: 'PopularGame',
   components: {
     Rating,
     ToggleButton,
-    InfiniteLoading
+    InfiniteLoading,
+    StepList
   },
   data () {
     return {

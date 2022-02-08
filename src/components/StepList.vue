@@ -1,6 +1,6 @@
 <template>
   <ul id="steplist">
-    <li v-for="step in $store.getters['game/stepListDisplayHelper']" :key="step.id">
+    <li v-for="step in List" :key="step.id">
       <template v-if="step.mode === '語音'">
         {{ step.data }}
       </template>
@@ -22,13 +22,16 @@
 
 <script>
 export default {
-
+  name: 'StepList',
+  props: ['List']
 }
 </script>
 
 <style lang="scss">
 #steplist {
-  padding: 3rem;
+  text-align: center;
+  border-radius: 10px;
+  padding: 1rem 5rem;
   background-color: #fff;
 
   li + li {

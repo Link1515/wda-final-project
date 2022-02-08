@@ -271,15 +271,15 @@ export default {
       if (this.$store.state.game.enableFunRole) {
         return [
           { type: 'all', name: '所有人' },
-          { type: 'goodCompRoleList', name: '好人陣營' },
-          { type: 'badCompRoleList', name: '壞人陣營' },
+          { type: 'goodCampRoleList', name: '好人陣營' },
+          { type: 'badCampRoleList', name: '壞人陣營' },
           { type: 'funRoleList', name: '功能身分' }
         ]
       }
       return [
         { type: 'all', name: '所有人' },
-        { type: 'goodCompRoleList', name: '好人陣營' },
-        { type: 'badCompRoleList', name: '壞人陣營' }
+        { type: 'goodCampRoleList', name: '好人陣營' },
+        { type: 'badCampRoleList', name: '壞人陣營' }
       ]
     }
   },

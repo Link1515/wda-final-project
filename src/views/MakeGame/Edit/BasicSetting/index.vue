@@ -32,35 +32,35 @@
       -->
       <div class="col-12 col-md-9 borderBox">
         <div class="d-flex justify-content-center flex-wrap mb-4">
-          <label for="compRole" class="me-3 my-2">陣營身分 </label>
+          <label for="campRole" class="me-3 my-2">陣營身分 </label>
           <InputText
-            @keydown.enter="addRoleList('goodCompRoleList', compRole)"
-            @keydown.ctrl="addRoleList('badCompRoleList', compRole)"
-            id="compRole"
-            v-model="compRole.name"
+            @keydown.enter="addRoleList('goodCampRoleList', campRole)"
+            @keydown.ctrl="addRoleList('badCampRoleList', campRole)"
+            id="campRole"
+            v-model="campRole.name"
             class="mb-2"
           ></InputText>
           <div>
             <Button
-              @click="addRoleList('goodCompRoleList', compRole)"
+              @click="addRoleList('goodCampRoleList', campRole)"
               class="p-button-rounded ms-2 setBtn goodColor"
               v-tooltip.top="'Enter 鍵快速加入'"
               tabindex="-1"
             >設為好人</Button>
             <Button
-              @click="addRoleList('badCompRoleList', compRole)"
+              @click="addRoleList('badCampRoleList', campRole)"
               class="p-button-rounded ms-2 setBtn badColor"
               v-tooltip.top="'Ctrl 鍵快速加入'"
               tabindex="-1"
             >設為壞人</Button>
           </div>
         </div>
-        <Textarea v-model="compRole.description" :autoResize="true" rows="5" placeholder="身分描述" class="mb-3"/>
-        <div class="error" v-if="!$v.goodCompRoleList.required && $v.goodCompRoleList.$error">至少需要一名好人角色</div>
-        <div class="error" v-if="!$v.badCompRoleList.required && $v.badCompRoleList.$error">至少需要一名壞人角色</div>
+        <Textarea v-model="campRole.description" :autoResize="true" rows="5" placeholder="身分描述" class="mb-3"/>
+        <div class="error" v-if="!$v.goodCampRoleList.required && $v.goodCampRoleList.$error">至少需要一名好人角色</div>
+        <div class="error" v-if="!$v.badCampRoleList.required && $v.badCampRoleList.$error">至少需要一名壞人角色</div>
         <hr class="my-4 mx-5">
-        <RoleList listType="goodCompRoleList" class="goodComp mb-3 mx-5"/>
-        <RoleList listType="badCompRoleList" class="badComp mb-3 mx-5"/>
+        <RoleList listType="goodCampRoleList" class="goodCamp mb-3 mx-5"/>
+        <RoleList listType="badCampRoleList" class="badCamp mb-3 mx-5"/>
       </div>
       <!--
         設定功能身分
@@ -113,7 +113,7 @@ export default {
   },
   data () {
     return {
-      compRole: {
+      campRole: {
         name: '',
         description: ''
       },
@@ -127,10 +127,10 @@ export default {
     name: {
       required
     },
-    goodCompRoleList: {
+    goodCampRoleList: {
       required
     },
-    badCompRoleList: {
+    badCampRoleList: {
       required
     }
   },
@@ -140,7 +140,7 @@ export default {
         this.$toast.add({ severity: 'error', summary: '錯誤', detail: '未輸入名稱', life: 3000 })
         return
       }
-      const listTypeTC = listType === 'goodCompRoleList' ? '好人陣營' : listType === 'badCompRoleList' ? '壞人陣營' : '功能身分'
+      const listTypeTC = listType === 'goodCampRoleList' ? '好人陣營' : listType === 'badCampRoleList' ? '壞人陣營' : '功能身分'
       for (const item of this[listType]) {
         if (item.name === roleData.name) {
           this.$toast.add({ severity: 'error', summary: '錯誤', detail: `${listTypeTC} ${roleData.name} 已存在`, life: 3000 })
@@ -149,8 +149,8 @@ export default {
       }
       this.$store.commit('game/addRoleList', { listType, ...roleData })
       this.$toast.add({ severity: 'success', summary: '成功', detail: `${roleData.name} 成功加入 ${listTypeTC}`, life: 3000 })
-      this.compRole.name = ''
-      this.compRole.description = ''
+      this.campRole.name = ''
+      this.campRole.description = ''
       this.funRole.name = ''
       this.funRole.description = ''
     },
@@ -200,7 +200,7 @@ export default {
         this.$store.commit('game/setFunRoleState', value)
       }
     },
-    ...mapState('game', ['goodCompRoleList', 'badCompRoleList', 'funRoleList'])
+    ...mapState('game', ['goodCampRoleList', 'badCampRoleList', 'funRoleList'])
   }
 }
 </script>
@@ -224,11 +224,11 @@ export default {
     border: none;
   }
 
-  .goodColor,.goodComp .p-accordion-header-link{
+  .goodColor,.goodCamp .p-accordion-header-link{
     background-color: #a1dcff;
   }
 
-  .badColor, .badComp .p-accordion-header-link{
+  .badColor, .badCamp .p-accordion-header-link{
     background-color: #ffc4c8;
   }
 

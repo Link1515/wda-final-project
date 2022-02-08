@@ -2,7 +2,7 @@
   <div id="voicesetting">
     <div class="row" style="padding-bottom: 8rem">
       <div class="col-12 col-lg-6">
-        <StepList/>
+        <StepList :list="$store.getters['game/stepListDisplayHelper']"/>
       </div>
       <div class="col-12 col-lg-6 controlPanel">
         <VSelect v-model="voiceType" :options="voiceOptions" value="value"/>

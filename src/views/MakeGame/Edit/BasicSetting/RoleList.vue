@@ -96,7 +96,7 @@ export default {
     }
   },
   computed: {
-    ...mapState('game', ['goodCompRoleList', 'badCompRoleList', 'funRoleList'])
+    ...mapState('game', ['goodCampRoleList', 'badCampRoleList', 'funRoleList'])
   }
 }
 </script>

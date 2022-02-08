@@ -7,28 +7,32 @@
     </Title>
     <div class="row g-5 justify-content-evenly">
       <div class="col-8 col-lg-4">
-        <Card>
-          <template #header>
-            <FontAwesomeIcon :icon="['fas','gamepad']" size="10x"></FontAwesomeIcon>
-          </template>
-          <template #footer>
-            <div class="play_texticon py-2">
-              創建遊戲
-            </div>
-          </template>
-        </Card>
+        <div @click="createGame">
+          <Card class="createGame">
+            <template #header>
+              <FontAwesomeIcon :icon="['fas','gamepad']" size="10x"></FontAwesomeIcon>
+            </template>
+            <template #footer>
+              <div class="play_texticon py-2">
+                創建遊戲
+              </div>
+            </template>
+          </Card>
+        </div>
       </div>
       <div class="col-8 col-lg-4">
-        <Card>
-          <template #header>
-            <FontAwesomeIcon :icon="['fas','running']" size="10x" transform="filp-h"></FontAwesomeIcon>
-          </template>
-          <template #footer>
-            <div class="play_texticon py-2">
-              加入遊戲
-            </div>
-          </template>
-        </Card>
+        <div @click="joinGame">
+          <Card class="joinGame">
+            <template #header>
+              <FontAwesomeIcon :icon="['fas','running']" size="10x" transform="filp-h"></FontAwesomeIcon>
+            </template>
+            <template #footer>
+              <div class="play_texticon py-2">
+                加入遊戲
+              </div>
+            </template>
+          </Card>
+        </div>
       </div>
     </div>
   </div>
@@ -36,13 +40,26 @@
 
 <script>
 export default {
-  name: 'play'
+  name: 'play',
+  methods: {
+    createGame () {
+      console.log('hi')
+    },
+    joinGame () {
+      console.log('hi2')
+    }
+  }
 }
 </script>
 
 <style lang="scss">
 #play {
   padding-bottom: 6rem;
+
+  .createGame,
+  .joinGame {
+    cursor: pointer;
+  }
 
   .p-card {
     margin: auto;
