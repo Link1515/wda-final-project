@@ -37,11 +37,16 @@
       </template>
     </InfiniteLoading>
 
-    <Dialog @show="loadData" :visible.sync="dialogDisplay" position="center" :showHeader="false" modal dismissableMask >
-      <div style="width: 600px">
-        <img v-if="dialogData.image" :src="dialogData.image">
+    <Dialog :visible.sync="dialogDisplay" position="center" :showHeader="false" modal dismissableMask >
+      <div style="width: 600px" v-if="gameList[dialogGameIndex]">
+        <img v-if="gameList[dialogGameIndex].image" :src="gameList[dialogGameIndex].image">
         <img v-else src="@/assets/images/image-placeholder.png"/>
-        <p>{{ dialogData.description }}</p>
+        <div class="dialogText">
+          <h2>{{ gameList[dialogGameIndex].name }}</h2>
+          <h4>遊玩人數: {{ gameList[dialogGameIndex].playerRange[0] }} ~ {{ gameList[dialogGameIndex].playerRange[1] }}</h4>
+          <p>好人陣營: <span v-for="role in gameList[dialogGameIndex].goodCampRoleList" :key="role.id">{{ role.name }}</span></p>
+          <p>{{ gameList[dialogGameIndex].description }}</p>
+        </div>
       </div>
     </Dialog>
   </div>
@@ -64,18 +69,14 @@ export default {
       val: 3,
       liked: false,
       dialogDisplay: false,
-      dialogData: {
-        gameIndex: '',
-        image: '',
-        description: ''
-      },
+      dialogGameIndex: '',
       page: 1,
       gameList: []
     }
   },
   methods: {
     showDialog (gameIndex) {
-      this.dialogData.gameIndex = gameIndex
+      this.dialogGameIndex = gameIndex
       this.dialogDisplay = !this.dialogDisplay
     },
     setFavGame (isFav, gameId) {
@@ -84,10 +85,6 @@ export default {
       } else {
         this.$store.dispatch('user/removeFavGame', gameId)
       }
-    },
-    loadData () {
-      this.dialogData.image = this.gameList[this.dialogData.gameIndex].image
-      this.dialogData.description = this.gameList[this.dialogData.gameIndex].description
     },
     async infiniteHandler ($state) {
       try {
@@ -100,8 +97,9 @@ export default {
           this.page++
           const favGame = JSON.parse(JSON.stringify(this.userInfo.favoriteGame))
 
-          for (const FG of favGame) {
-            for (const game of data.result) {
+          for (const game of data.result) {
+            game.likedByUser = false
+            for (const FG of favGame) {
               game.likedByUser = false
               if (game._id === FG.game) {
                 game.likedByUser = true
@@ -133,6 +131,12 @@ export default {
 
   .p-card-content {
     padding: 0;
+  }
+
+  .p-card-title {
+    text-overflow : ellipsis;
+    white-space : nowrap;
+    overflow: hidden;
   }
 
   .p-button {
