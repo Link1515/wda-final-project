@@ -63,6 +63,7 @@ export default {
 <style lang="scss">
 #play {
   padding-bottom: 6rem;
+  padding: 0 4rem 6rem;
 
   .createGame,
   .joinGame {

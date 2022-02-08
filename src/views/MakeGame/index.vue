@@ -70,7 +70,7 @@ export default {
 
 <style lang="scss">
 #makegame {
-  padding: 0 4rem 6rem;
+  padding: 0 2rem 6rem;
 
   .p-card-content {
     padding: 0;
@@ -96,6 +96,12 @@ export default {
     &:hover i {
       transform: scale(1.2);
     }
+  }
+}
+
+@media (min-width: 992px) {
+  #makegame {
+    padding: 0 4rem 6rem;
   }
 }
 </style>

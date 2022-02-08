@@ -63,7 +63,7 @@ li {
 .subViewBox {
   background-color: #fff;
   border-radius: 10px;
-  padding: 3rem;
+  padding: 3rem 0;
 }
 
 .borderBox {

@@ -16,7 +16,6 @@
 
 <script>
 import VSelect from '@alfsnd/vue-bootstrap-select'
-
 import StepList from '@/components/StepList'
 
 export default {

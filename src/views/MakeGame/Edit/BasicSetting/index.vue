@@ -7,7 +7,8 @@
       </div>
       <div class="col-9 col-xl-4 d-grid">
         <div class="d-flex flex-column align-items-xl-center flex-xl-row">
-          <label class="me-3 mb-3 mb-xl-0">遊玩人數: <span class="playerNum">{{ playerRange[0] }}</span> ~ <span class="playerNum">{{ playerRange[1] }}</span> 人</label>
+          <label class="me-3 mb-3 mb-xl-0">遊玩人數</label>
+          <div class="me-3 mb-3 mb-xl-0"><span class="playerNum">{{ playerRange[0] }}</span> ~ <span class="playerNum">{{ playerRange[1] }}</span> 人</div>
           <Slider class="flex-grow-1" v-model="playerRange" :range="true" :max="20" :min="2"></Slider>
         </div>
       </div>
@@ -30,9 +31,9 @@
       <!--
         設定陣營身分
       -->
-      <div class="col-12 col-lg-9 borderBox">
+      <div class="col-11 col-lg-9 borderBox">
         <div class="d-flex justify-content-center flex-wrap mb-4">
-          <label for="campRole" class="me-3 my-2">陣營身分 </label>
+          <label for="campRole" class="me-3 my-2">陣營身分</label>
           <InputText
             @keydown.enter="addRoleList('goodCampRoleList', campRole)"
             @keydown.ctrl="addRoleList('badCampRoleList', campRole)"
@@ -43,13 +44,13 @@
           <div>
             <Button
               @click="addRoleList('goodCampRoleList', campRole)"
-              class="p-button-rounded ms-2 setBtn goodColor"
+              class="p-button-rounded mb-2 ms-2 setBtn goodColor"
               v-tooltip.top="'Enter 鍵快速加入'"
               tabindex="-1"
             >設為好人</Button>
             <Button
               @click="addRoleList('badCampRoleList', campRole)"
-              class="p-button-rounded ms-2 setBtn badColor"
+              class="p-button-rounded mb-2 ms-2 setBtn badColor"
               v-tooltip.top="'Ctrl 鍵快速加入'"
               tabindex="-1"
             >設為壞人</Button>
@@ -59,13 +60,13 @@
         <div class="error" v-if="!$v.goodCampRoleList.required && $v.goodCampRoleList.$error">至少需要一名好人角色</div>
         <div class="error" v-if="!$v.badCampRoleList.required && $v.badCampRoleList.$error">至少需要一名壞人角色</div>
         <hr class="my-4 mx-5">
-        <RoleList listType="goodCampRoleList" class="goodCamp mb-3 mx-5"/>
-        <RoleList listType="badCampRoleList" class="badCamp mb-3 mx-5"/>
+        <RoleList listType="goodCampRoleList" class="goodCamp mb-3 mx-md-5"/>
+        <RoleList listType="badCampRoleList" class="badCamp mb-3 mx-md-5"/>
       </div>
       <!--
         設定功能身分
       -->
-      <div class="col-12 col-lg-9 borderBox position-relative" :class="{disabled: !enableFunRole}">
+      <div class="col-11 col-lg-9 borderBox position-relative" :class="{disabled: !enableFunRole}">
         <div class="d-flex justify-content-center flex-wrap mb-4">
           <Checkbox class="funIdentityCheckbox" v-model="enableFunRole" binary/>
           <label for="funRole" class="me-3 my-2">功能身分 </label>

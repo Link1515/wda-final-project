@@ -168,14 +168,12 @@ export default {
 
     async getOneGame ({ rootState, commit }, gameId) {
       try {
-        if (gameId !== rootState.game._id) {
-          const { data } = await serverAPI.post('/games/getOneGame', { gameId }, {
-            headers: {
-              authorization: 'Bearer ' + rootState.user.token
-            }
-          })
-          commit('update', data.result)
-        }
+        const { data } = await serverAPI.post('/games/getOneGame', { gameId }, {
+          headers: {
+            authorization: 'Bearer ' + rootState.user.token
+          }
+        })
+        commit('update', data.result)
       } catch (error) {
         swal.fire({
           icon: 'error',
@@ -209,6 +207,9 @@ export default {
         }
       })
       return newStepList
+    },
+    test (state) {
+      return { ...state }
     }
   }
 }
