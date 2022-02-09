@@ -29,6 +29,11 @@ const routes = [
         path: 'joingame',
         name: 'JoinGame',
         component: () => import(/* webpackChunkName: "JoinGame" */ '../views/Play/JoinGame.vue')
+      },
+      {
+        path: 'room',
+        name: 'Room',
+        component: () => import(/* webpackChunkName: "Room" */ '../views/Play/Room.vue')
       }
     ]
   },

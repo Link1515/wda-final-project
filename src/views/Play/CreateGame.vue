@@ -64,7 +64,15 @@ export default {
       this.$v.$touch()
 
       this.$socket.connect()
-      this.$socket.emit('createRoom', this.playerName)
+      if (this.$socket.connected) {
+        this.$socket.emit('createRoom',
+          {
+            playerName: this.playerName,
+            playerAmount: this.playerAmount,
+            gameId: this.selectedGame.game
+          })
+        this.$router.push('/play/room')
+      }
     }
   },
   watch: {

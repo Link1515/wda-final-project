@@ -1,0 +1,57 @@
+<template>
+  <div id="room">
+    <Title>
+      <template #text>
+        等待玩家加入中 ... {{ joinedPlayerAmount }} / {{ playerAmount }}
+      </template>
+    </Title>
+    <div class="subViewBox">
+      <h2 style="margin: 0; text-align: center;">遊戲間 ID: <span class="roomId">{{ roomId }} <i class="pi pi-copy"></i></span></h2>
+      <DataTable>
+        <Column />
+      </DataTable>
+    </div>
+  </div>
+</template>
+
+<script>
+import DataTable from 'primevue/datatable'
+import Column from 'primevue/column'
+
+import { mapState } from 'vuex'
+
+export default {
+  components: {
+    DataTable,
+    Column
+  },
+  sockets: {
+    roomSetting ({ roomId, playerAmount }) {
+      this.$store.commit('room/roomSetting', { roomId, playerAmount })
+    }
+  },
+  computed: {
+    ...mapState('room', ['roomId', 'playerAmount', 'joinedPlayerAmount', 'playerList'])
+  }
+}
+</script>
+
+<style lang="scss">
+  #room {
+    .roomId {
+      display: inline-block;
+      padding: 0.5rem 1rem;
+      background-color: var(--color-info);
+      border-radius: 9999px;
+
+      i {
+        cursor: pointer;
+        font-size: 1.4rem;
+        transition: transform .3s;
+        &:hover {
+          transform: scale(1.1);
+        }
+      }
+    }
+  }
+</style>

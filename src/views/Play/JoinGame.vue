@@ -53,6 +53,11 @@ export default {
       this.$socket.emit('joinRoom', this.roomId)
     }
   },
+  sockets: {
+    error (msg) {
+      console.log(msg)
+    }
+  },
   watch: {
     selectedGame () {
       this.$store.dispatch('game/getOneGame', this.selectedGame.game)
