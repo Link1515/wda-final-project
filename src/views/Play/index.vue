@@ -7,7 +7,7 @@
         </template>
       </Title>
       <div class="row g-5 justify-content-evenly">
-        <div class="col-8 col-lg-4">
+        <div class="col-md-8 col-lg-5 col-xxl-4">
           <div @click="createGame">
             <Card class="createGame">
               <template #header>
@@ -21,7 +21,7 @@
             </Card>
           </div>
         </div>
-        <div class="col-8 col-lg-4">
+        <div class="col-md-8 col-lg-5 col-xxl-4">
           <div @click="joinGame">
             <Card class="joinGame">
               <template #header>
@@ -74,6 +74,14 @@ export default {
     margin: auto;
     text-align: center;
     overflow: hidden;
+
+    svg {
+      transition: .5s;
+    }
+
+    &:hover svg {
+      transform: scale(1.2);
+    }
   }
 
   .p-card-header {

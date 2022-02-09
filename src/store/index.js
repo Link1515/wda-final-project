@@ -11,7 +11,7 @@ export default new Vuex.Store({
   plugins: [
     createPersistedState({
       key: 'userInfo',
-      paths: ['user.token']
+      paths: ['user.account', 'user.token']
     }),
     createPersistedState({
       key: 'game',

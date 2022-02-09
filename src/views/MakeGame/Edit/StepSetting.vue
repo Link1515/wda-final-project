@@ -3,7 +3,7 @@
     <div class="stepSetting_header">
       <Button @click="showConfigPanel" label="新增流程" icon="pi pi-plus-circle" class="p-button-lg p-button-rounded p-button-raised"/>
     </div>
-    <div class="error" v-if="!$v.stepList.required && $v.stepList.$error" style="text-align: center">至少需要一個步驟</div>
+    <div class="invalidMsg" v-if="!$v.stepList.required && $v.stepList.$error" style="text-align: center">至少需要一個步驟</div>
     <Draggable
       tag="ul"
       v-model="stepList"
@@ -301,10 +301,6 @@ export default {
 
 <style lang="scss">
 #stepSetting {
-  .error {
-    color: red
-  }
-
   textarea {
     border-radius: 0 !important;
   }

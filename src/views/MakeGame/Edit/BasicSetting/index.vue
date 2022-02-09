@@ -12,7 +12,7 @@
           <Slider class="flex-grow-1" v-model="playerRange" :range="true" :max="20" :min="2"></Slider>
         </div>
       </div>
-      <div class="error" v-if="!$v.name.required && $v.name.$error">必須輸入桌遊名稱</div>
+      <div class="invalidMsg" v-if="!$v.name.required && $v.name.$error">必須輸入桌遊名稱</div>
       <div class="row justify-content-center mt-4" style="gap: 1.5rem">
         <div class="col-12 col-xxl-3">
           <ImgInputer
@@ -57,8 +57,8 @@
           </div>
         </div>
         <Textarea v-model="campRole.description" :autoResize="true" rows="5" placeholder="身分描述" class="mb-3"/>
-        <div class="error" v-if="!$v.goodCampRoleList.required && $v.goodCampRoleList.$error">至少需要一名好人角色</div>
-        <div class="error" v-if="!$v.badCampRoleList.required && $v.badCampRoleList.$error">至少需要一名壞人角色</div>
+        <div class="invalidMsg" v-if="!$v.goodCampRoleList.required && $v.goodCampRoleList.$error">至少需要一名好人角色</div>
+        <div class="invalidMsg" v-if="!$v.badCampRoleList.required && $v.badCampRoleList.$error">至少需要一名壞人角色</div>
         <hr class="my-4 mx-5">
         <RoleList listType="goodCampRoleList" class="goodCamp mb-3 mx-md-5"/>
         <RoleList listType="badCampRoleList" class="badCamp mb-3 mx-md-5"/>
@@ -209,10 +209,6 @@ export default {
 <style lang="scss">
 #basicsetting {
   text-align: center;
-
-  .error {
-    color: red;
-  }
 
   .playerNum {
     padding: 0 10px;
