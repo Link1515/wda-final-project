@@ -11,6 +11,7 @@ import Card from 'primevue/card'
 import Dialog from 'primevue/dialog'
 import InputText from 'primevue/inputtext'
 import Textarea from 'primevue/textarea'
+import Toast from 'primevue/toast'
 
 // global directive
 import Tooltip from 'primevue/tooltip'
@@ -23,6 +24,7 @@ Vue.component('Card', Card)
 Vue.component('Dialog', Dialog)
 Vue.component('InputText', InputText)
 Vue.component('Textarea', Textarea)
+Vue.component('Toast', Toast)
 
 Vue.directive('tooltip', Tooltip)
 

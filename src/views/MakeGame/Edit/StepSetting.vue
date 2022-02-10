@@ -140,7 +140,6 @@ import Draggable from 'vuedraggable'
 import Dropdown from 'primevue/dropdown'
 import InputNumber from 'primevue/inputnumber'
 import Avatar from 'primevue/avatar'
-import Toast from 'primevue/toast'
 
 import { required } from 'vuelidate/lib/validators'
 
@@ -149,8 +148,7 @@ export default {
     Draggable,
     Dropdown,
     InputNumber,
-    Avatar,
-    Toast
+    Avatar
   },
   data () {
     return {
@@ -251,6 +249,9 @@ export default {
     },
     validate () {
       this.$v.stepList.$touch()
+      if (this.$v.stepList.$error) {
+        this.$toast.add({ severity: 'error', summary: '錯誤', detail: '缺少必要項目', life: 3000 })
+      }
       return !this.$v.stepList.$error
     }
   },

@@ -98,7 +98,6 @@
 <script>
 import Checkbox from 'primevue/checkbox'
 import Slider from 'primevue/slider'
-import Toast from 'primevue/toast'
 
 import { mapState } from 'vuex'
 import { required } from 'vuelidate/lib/validators'
@@ -109,7 +108,6 @@ export default {
   components: {
     Slider,
     Checkbox,
-    Toast,
     RoleList
   },
   data () {
@@ -157,6 +155,9 @@ export default {
     },
     validate () {
       this.$v.$touch()
+      if (this.$v.$error) {
+        this.$toast.add({ severity: 'error', summary: '錯誤', detail: '缺少必要項目', life: 3000 })
+      }
       return !this.$v.$error
     }
   },
