@@ -6,11 +6,11 @@
       </template>
     </Title>
     <div class="row g-5">
-      <div class="col-12 col-md-6 col-lg-4 col-xl-3" v-for="(game, index) in gameList" :key="game._id">
+      <div class="col-12 col-md-6 col-lg-4 col-xl-3" v-for="game in gameList" :key="game._id">
         <Card>
           <template #header>
-            <img v-if="game.image" :src="game.image" @click="showDialog(index)">
-            <img v-else src="@/assets/images/image-placeholder.png" @click="showDialog(index)"/>
+            <img v-if="game.image" :src="game.image" @click="showDialog(game._id)">
+            <img v-else src="@/assets/images/image-placeholder.png" @click="showDialog(game._id)"/>
           </template>
           <template #title>
             {{ game.name }}
@@ -38,20 +38,20 @@
     </InfiniteLoading>
 
     <Dialog :visible.sync="dialogDisplay" position="center" :showHeader="false" modal dismissableMask >
-      <div style="width: 600px" v-if="gameList[dialogGameIndex]">
-        <img v-if="gameList[dialogGameIndex].image" :src="gameList[dialogGameIndex].image">
+      <div style="width: 600px">
+        <img v-if="image" :src="image">
         <img v-else src="@/assets/images/image-placeholder.png"/>
         <div class="dialogText">
-          <h1>{{ gameList[dialogGameIndex].name }}</h1>
-          <h4>遊玩人數: {{ gameList[dialogGameIndex].playerRange[0] }} ~ {{ gameList[dialogGameIndex].playerRange[1] }}</h4>
-          <p>{{ gameList[dialogGameIndex].description }}</p>
-          <p>好人陣營: <span v-for="role in gameList[dialogGameIndex].goodCampRoleList" :key="role.id">{{ role.name }} / </span></p>
-          <p>壞人陣營: <span v-for="role in gameList[dialogGameIndex].badCampRoleList" :key="role.id">{{ role.name }} / </span></p>
-          <p v-if="gameList[dialogGameIndex].enableFunRole">功能身分: <span v-for="role in gameList[dialogGameIndex].funRoleList" :key="role.id">{{ role.name }} / </span></p>
+          <h1>{{ name }}</h1>
+          <h4>遊玩人數: {{ playerRange[0] }} ~ {{ playerRange[1] }}</h4>
+          <p>{{ description }}</p>
+          <p>好人陣營: <span v-for="role in goodCampRoleList" :key="role.id">{{ role.name }} / </span></p>
+          <p>壞人陣營: <span v-for="role in badCampRoleList" :key="role.id">{{ role.name }} / </span></p>
+          <p v-if="enableFunRole">功能身分: <span v-for="role in funRoleList" :key="role.id">{{ role.name }} / </span></p>
         </div>
         <div class="dialogStep">
           <h2>遊戲步驟</h2>
-          <StepList :list="gameList[dialogGameIndex].stepList"/>
+          <StepList :list="stepList"/>
         </div>
       </div>
     </Dialog>
@@ -63,6 +63,7 @@ import Rating from 'primevue/rating'
 import ToggleButton from 'primevue/togglebutton'
 import InfiniteLoading from 'vue-infinite-loading'
 
+import { mapState } from 'vuex'
 import StepList from '@/components/StepList'
 
 export default {
@@ -77,14 +78,13 @@ export default {
     return {
       val: 3,
       dialogDisplay: false,
-      dialogGameIndex: '',
       page: 1,
       gameList: []
     }
   },
   methods: {
-    showDialog (gameIndex) {
-      this.dialogGameIndex = gameIndex
+    showDialog (gameId) {
+      this.$store.dispatch('game/getOneGame', gameId)
       this.dialogDisplay = !this.dialogDisplay
     },
     setFavGame (isFav, gameId, gameName) {
@@ -129,6 +129,9 @@ export default {
         })
       }
     }
+  },
+  computed: {
+    ...mapState('game', ['name', 'description', 'image', 'playerRange', 'goodCampRoleList', 'badCampRoleList', 'enableFunRole', 'funRoleList', 'stepList'])
   }
 }
 </script>
