@@ -71,17 +71,8 @@ export default {
             gameId: this.selectedGame.game
           })
       }
-    }
-  },
-  sockets: {
-    roomSetting ({ roomId, playerAmount }) {
-      this.$router.push({
-        path: '/room',
-        query: {
-          roomId,
-          playerAmount
-        }
-      })
+
+      this.$router.push('/room')
     }
   },
   watch: {

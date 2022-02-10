@@ -18,31 +18,27 @@
 import DataTable from 'primevue/datatable'
 import Column from 'primevue/column'
 
+import { mapState } from 'vuex'
+
 export default {
   name: 'Room',
   components: {
     DataTable,
     Column
   },
-  data () {
-    return {
-      roomId: '',
-      playerAmount: '',
-      joinedPlayerAmount: '1',
-      playerList: []
-    }
+  computed: {
+    ...mapState('room', ['roomId', 'playerAmount', 'joinedPlayerAmount', 'playerList'])
   },
   beforeRouteEnter (to, from, next) {
     next(vm => {
       if (!vm.$socket.connected) {
         next('/play')
-        return
       }
 
-      if (JSON.stringify(to.query) !== '{}') {
-        vm.roomId = to.query.roomId
-        vm.playerAmount = to.query.playerAmount
-      }
+      // if (JSON.stringify(to.query) !== '{}') {
+      //   vm.roomId = to.query.roomId
+      //   vm.playerAmount = to.query.playerAmount
+      // }
     })
   }
 }

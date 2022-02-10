@@ -76,7 +76,6 @@ export default {
   data () {
     return {
       val: 3,
-      liked: false,
       dialogDisplay: false,
       dialogGameIndex: '',
       page: 1,

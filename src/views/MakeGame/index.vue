@@ -47,23 +47,29 @@ export default {
     editGame (gameId) {
       this.$store.dispatch('game/getOneGame', gameId)
       this.$router.push('/makegame/edit')
+    },
+    async updateData () {
+      try {
+        const { data } = await this.serverAPI.get('/games/getUserMadeGames', {
+          headers: {
+            authorization: 'Bearer ' + this.userInfo.token
+          }
+        })
+        this.userMadeGameList = data.result
+      } catch (error) {
+        this.$swal({
+          icon: 'error',
+          title: '錯誤',
+          text: '取得桌遊失敗'
+        })
+      }
     }
   },
   async created () {
-    try {
-      const { data } = await this.serverAPI.get('/games/getUserMadeGames', {
-        headers: {
-          authorization: 'Bearer ' + this.userInfo.token
-        }
-      })
-      this.userMadeGameList = data.result
-    } catch (error) {
-      this.$swal({
-        icon: 'error',
-        title: '錯誤',
-        text: '取得桌遊失敗'
-      })
-    }
+    this.updateData()
+  },
+  async updated () {
+    this.updateData()
   }
 }
 </script>

@@ -9,12 +9,12 @@
       <div class="mx-auto" style="width: max-content; text-align: center">
         <div class="d-flex flex-column flex-md-row align-items-center mb-2">
           <span class="mb-2 mb-md-0">您的暱稱</span>
-          <InputText v-model="playerName" class="ms-3 flex-grow-1"/>
+          <InputText v-model="playerName" @keydown.enter="joinRoom" class="ms-3 flex-grow-1"/>
         </div>
         <div class="invalidMsg mb-3" v-if="!$v.playerName.required && $v.playerName.$error">暱稱必填</div>
         <div class="d-flex flex-column flex-md-row align-items-center mb-2">
           <span class="mb-2 mb-md-0">遊戲間 ID</span>
-          <InputText v-model="roomId" class="ms-3 flex-grow-1" maxlength="6"/>
+          <InputText v-model="roomId" @keydown.enter="joinRoom" class="ms-3 flex-grow-1" maxlength="6"/>
         </div>
         <div class="invalidMsg mb-3" v-if="!$v.roomId.required && $v.roomId.$error">遊戲間 ID 必填</div>
         <div class="invalidMsg mb-3" v-if="!$v.roomId.minLength && $v.roomId.$error">遊戲間 ID 長度為 {{$v.roomId.$params.minLength.min}}</div>
@@ -49,24 +49,41 @@ export default {
       this.$v.$touch()
       if (this.$v.$error) return
 
-      this.$socket.connect()
-      this.$socket.emit('joinRoom', this.roomId)
+      this.$socket.emit('joinRoom', { roomId: this.roomId, playerName: this.playerName })
     }
   },
   sockets: {
+    joinRoomSuccess () {
+      this.$router.push('/room')
+    },
     error (msg) {
-      console.log(msg)
-    }
-  },
-  watch: {
-    selectedGame () {
-      this.$store.dispatch('game/getOneGame', this.selectedGame.game)
-      this.playerAmount = this.$store.state.game.playerRange[0]
+      this.$swal({
+        icon: 'error',
+        title: '錯誤',
+        text: msg
+      }).then(() => {
+        this.$v.$reset()
+        this.roomId = ''
+      })
     }
   },
   created () {
-    this.$store.commit('game/reset')
     this.playerName = this.userInfo.account
+  },
+  beforeRouteEnter (to, from, next) {
+    next(vm => {
+      if (vm.$socket.connected) {
+        next('/room')
+      } else {
+        vm.$socket.connect()
+      }
+    })
+  },
+  beforeRouteLeave (to, from, next) {
+    if (to.path !== '/room') {
+      this.$socket.disconnect()
+    }
+    next()
   }
 }
 </script>

@@ -7,9 +7,12 @@ export default {
     playerList: []
   },
   mutations: {
-    roomSetting (state, { roomId, playerAmount }) {
+    SOCKET_joinRoomSuccess (state, { roomId, playerAmount }) {
       state.roomId = roomId
       state.playerAmount = playerAmount
+    },
+    SOCKET_updateRoomData (state, { joinedPlayerAmount }) {
+      state.joinedPlayerAmount = joinedPlayerAmount
     }
   }
 }
