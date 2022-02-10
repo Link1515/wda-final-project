@@ -3,7 +3,9 @@
     <ScrollPanel style="height: 100vh">
       <div class="container">
         <Navbar />
-        <router-view />
+        <keep-alive include="Room">
+          <router-view />
+        </keep-alive>
       </div>
       <Footer/>
     </ScrollPanel>

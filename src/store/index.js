@@ -17,10 +17,6 @@ export default new Vuex.Store({
     createPersistedState({
       key: 'game',
       paths: ['game']
-    }),
-    createPersistedState({
-      key: 'room',
-      paths: ['room']
     })
   ]
 })

@@ -63,7 +63,6 @@ export default {
     createRoom () {
       this.$v.$touch()
 
-      this.$socket.connect()
       if (this.$socket.connected) {
         this.$socket.emit('createRoom',
           {
@@ -71,8 +70,18 @@ export default {
             playerAmount: this.playerAmount,
             gameId: this.selectedGame.game
           })
-        this.$router.push('/play/room')
       }
+    }
+  },
+  sockets: {
+    roomSetting ({ roomId, playerAmount }) {
+      this.$router.push({
+        path: '/room',
+        query: {
+          roomId,
+          playerAmount
+        }
+      })
     }
   },
   watch: {
@@ -84,6 +93,21 @@ export default {
   created () {
     this.$store.commit('game/reset')
     this.playerName = this.userInfo.account
+  },
+  beforeRouteEnter (to, from, next) {
+    next(vm => {
+      if (vm.$socket.connected) {
+        next('/room')
+      } else {
+        vm.$socket.connect()
+      }
+    })
+  },
+  beforeRouteLeave (to, from, next) {
+    if (to.path !== '/room') {
+      this.$socket.disconnect()
+    }
+    next()
   }
 }
 </script>

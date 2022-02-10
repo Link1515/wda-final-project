@@ -1,5 +1,5 @@
 <template>
-  <div id="room">
+  <div id="room" class="viewBox">
     <Title>
       <template #text>
         等待玩家加入中 ... {{ joinedPlayerAmount }} / {{ playerAmount }}
@@ -18,26 +18,40 @@
 import DataTable from 'primevue/datatable'
 import Column from 'primevue/column'
 
-import { mapState } from 'vuex'
-
 export default {
+  name: 'Room',
   components: {
     DataTable,
     Column
   },
-  sockets: {
-    roomSetting ({ roomId, playerAmount }) {
-      this.$store.commit('room/roomSetting', { roomId, playerAmount })
+  data () {
+    return {
+      roomId: '',
+      playerAmount: '',
+      joinedPlayerAmount: '1',
+      playerList: []
     }
   },
-  computed: {
-    ...mapState('room', ['roomId', 'playerAmount', 'joinedPlayerAmount', 'playerList'])
+  beforeRouteEnter (to, from, next) {
+    next(vm => {
+      if (!vm.$socket.connected) {
+        next('/play')
+        return
+      }
+
+      if (JSON.stringify(to.query) !== '{}') {
+        vm.roomId = to.query.roomId
+        vm.playerAmount = to.query.playerAmount
+      }
+    })
   }
 }
 </script>
 
 <style lang="scss">
   #room {
+    padding: 0 4rem 6rem;
+
     .roomId {
       display: inline-block;
       padding: 0.5rem 1rem;

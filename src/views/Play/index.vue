@@ -6,7 +6,7 @@
           立即開始！
         </template>
       </Title>
-      <div class="row g-5 justify-content-evenly">
+      <div class="row g-5 justify-content-evenly" v-if="!$socket.connected">
         <div class="col-md-8 col-lg-5 col-xxl-4">
           <div @click="createGame">
             <Card class="createGame">
@@ -36,8 +36,24 @@
           </div>
         </div>
       </div>
+      <div class="row g-5 justify-content-evenly" v-else>
+        <div class="col-md-8 col-lg-5 col-xxl-4">
+          <div @click="backToGame">
+            <Card class="backToGame">
+              <template #header>
+                <FontAwesomeIcon :icon="['fas','undo']" size="10x"></FontAwesomeIcon>
+              </template>
+              <template #footer>
+                <div class="play_texticon py-2">
+                  返回遊戲
+                </div>
+              </template>
+            </Card>
+          </div>
+        </div>
+      </div>
     </template>
-    <router-view />
+    <router-view/>
   </div>
 </template>
 
@@ -50,12 +66,24 @@ export default {
     },
     joinGame () {
       this.$router.push('/play/joingame').catch(() => {})
+    },
+    backToGame () {
+      this.$router.push('/room').catch(() => {})
     }
   },
   computed: {
     showPlayHome () {
       return this.$route.path === '/play'
     }
+  },
+  beforeRouteEnter (to, from, next) {
+    next(vm => {
+      if (vm.$socket.connected) {
+        next('/room')
+      } else {
+        next()
+      }
+    })
   }
 }
 </script>
@@ -66,7 +94,8 @@ export default {
   padding: 0 4rem 6rem;
 
   .createGame,
-  .joinGame {
+  .joinGame,
+  .backToGame {
     cursor: pointer;
   }
 

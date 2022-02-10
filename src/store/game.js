@@ -155,7 +155,6 @@ export default {
         }).then(() => {
           commit('reset')
           router.push('/makegame')
-          router.go()
         })
       } catch (error) {
         swal.fire({

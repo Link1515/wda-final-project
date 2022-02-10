@@ -1,11 +1,6 @@
 import Vue from 'vue'
 import VueRouter from 'vue-router'
 import Home from '../views/Home'
-import Play from '../views/Play'
-import PopularGame from '../views/PopularGame'
-import MakeGame from '../views/MakeGame'
-import Edit from '../views/MakeGame/Edit'
-import NotFound from '../views/NotFound'
 
 Vue.use(VueRouter)
 
@@ -18,46 +13,46 @@ const routes = [
   {
     path: '/play',
     name: 'Play',
-    component: Play,
+    component: () => import(/* webpackChunkName: "Play" */ '../views/Play'),
     children: [
       {
         path: 'creategame',
         name: 'CreateGame',
-        component: () => import(/* webpackChunkName: "CreateGame" */ '../views/Play/CreateGame.vue')
+        component: () => import(/* webpackChunkName: "CreateGame" */ '../views/Play/CreateGame')
       },
       {
         path: 'joingame',
         name: 'JoinGame',
-        component: () => import(/* webpackChunkName: "JoinGame" */ '../views/Play/JoinGame.vue')
-      },
-      {
-        path: 'room',
-        name: 'Room',
-        component: () => import(/* webpackChunkName: "Room" */ '../views/Play/Room.vue')
+        component: () => import(/* webpackChunkName: "JoinGame" */ '../views/Play/JoinGame')
       }
     ]
   },
   {
+    path: '/room',
+    name: 'Room',
+    component: () => import(/* webpackChunkName: "Room" */ '../views/Room')
+  },
+  {
     path: '/populargame',
     name: 'PopularGame',
-    component: PopularGame
+    component: () => import(/* webpackChunkName: "PopularGame" */ '../views/PopularGame')
   },
   {
     path: '/makegame',
     name: 'MakeGame',
-    component: MakeGame,
+    component: () => import(/* webpackChunkName: "MakeGame" */ '../views/MakeGame'),
     children: [
       {
         path: 'edit',
         name: 'Edit',
-        component: Edit
+        component: () => import(/* webpackChunkName: "Edit" */ '../views/MakeGame/Edit')
       }
     ]
   },
   {
     path: '*',
     name: 'NotFound',
-    component: NotFound
+    component: () => import(/* webpackChunkName: "NotFound" */ '../views/NotFound')
   }
   // {
   //   path: '/about',
