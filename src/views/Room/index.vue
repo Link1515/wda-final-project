@@ -11,21 +11,35 @@
         <input type="hidden" ref="roomIdInput" :value="roomId">
       </h2>
       <DataTable stripedRows :value="playerList" class="mb-5">
+        <Column field="role" :bodyStyle="{ textAlign: 'center' }">
+          <template #body="slotProps">
+            <FontAwesomeIcon v-if="slotProps.data.role === 1" :icon="['fas','crown']" style="color: #fa0"></FontAwesomeIcon>
+          </template>
+        </Column>
         <Column field="name" header="玩家暱稱" :bodyStyle="{ textAlign: 'center' }">
           <template #body="slotProps">
-            <span :class="{ self: $socket.playerName === slotProps.data.name }">{{ slotProps.data.name }}</span>
+            <span :class="{ self: $socket.id === slotProps.data.socketId }">{{ slotProps.data.name }}</span>
           </template>
         </Column>
         <Column field="ready" header="準備狀態" :bodyStyle="{ textAlign: 'center' }">
           <template #body="slotProps">
-            {{ slotProps.data.ready ? 'OK' : '準備中' }}
+            <i v-if="slotProps.data.ready" class="pi pi-check"></i>
+            <img v-else src="@/assets/images/loading.svg" style="width: 32px; height: 32px">
           </template>
         </Column>
       </DataTable>
 
       <div class="btns">
-        <Button label="準備" class="p-button-rounded p-button-raised p-button-success mx-2"/>
-        <Button label="離開" class="p-button-rounded p-button-raised p-button-danger mx-2"/>
+        <Button
+          :label="selfReadyState ? '取消準備' : '準備'"
+          @click="toggleReady"
+          class="p-button-rounded p-button-raised mx-2"
+          :class="{ 'p-button-success': !selfReadyState, 'p-button-secondary': selfReadyState}"
+        />
+        <Button
+          label="離開"
+          @click="leaveRoom"
+          class="p-button-rounded p-button-raised p-button-danger mx-2"/>
       </div>
     </div>
     <Toast position="top-center"/>
@@ -36,7 +50,7 @@
 import DataTable from 'primevue/datatable'
 import Column from 'primevue/column'
 
-import { mapState } from 'vuex'
+import { mapState, mapGetters } from 'vuex'
 
 export default {
   name: 'Room',
@@ -54,10 +68,18 @@ export default {
       this.$toast.add({ severity: 'success', summary: '成功', detail: '成功複製遊戲間 ID', life: 3000 })
       roomIdInput.setAttribute('type', 'hidden')
       window.getSelection().removeAllRanges()
+    },
+    toggleReady () {
+      this.$socket.emit('toggleReady')
+    },
+    leaveRoom () {
+      this.$socket.disconnect()
+      this.$router.push('/play')
     }
   },
   computed: {
-    ...mapState('room', ['roomId', 'playerAmount', 'joinedPlayerAmount', 'playerList'])
+    ...mapState('room', ['roomId', 'playerAmount', 'joinedPlayerAmount', 'playerList']),
+    ...mapGetters('room', ['selfReadyState'])
   },
   beforeRouteEnter (to, from, next) {
     next(vm => {
@@ -94,7 +116,8 @@ export default {
     }
 
     .self {
-      color: red;
+      color: rgb(243, 61, 61);
+      font-weight: bold;
     }
 
     .p-datatable {
@@ -103,6 +126,10 @@ export default {
 
     .p-column-header-content {
       justify-content: center;
+    }
+
+    .p-progress-spinner {
+      height: 1rem;
     }
   }
 

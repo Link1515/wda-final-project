@@ -15,7 +15,6 @@ export default {
     },
     SOCKET_updateRoomData (state, { joinedPlayerAmount, playerList }) {
       state.joinedPlayerAmount = joinedPlayerAmount
-      console.log(playerList)
       state.playerList = playerList
     },
     SOCKET_error (_, msg) {
@@ -23,10 +22,12 @@ export default {
         icon: 'error',
         title: '錯誤',
         text: msg
-      }).then(() => {
-        this.$v.$reset()
-        this.roomId = ''
       })
+    }
+  },
+  getters: {
+    selfReadyState (state, _, rootState) {
+      return state.playerList.filter(player => player.playerId === rootState.user._id)[0]?.ready
     }
   }
 }
