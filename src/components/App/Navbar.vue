@@ -219,7 +219,7 @@ export default {
 
 // ----- p-menubar -----
   .p-menubar {
-    border-radius: 12px 12px 0 0;
+    border-radius: 8px 8px 0 0;
     border: none;
     padding: 1rem 3rem;
   }

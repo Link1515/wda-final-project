@@ -33,6 +33,7 @@
         <Button @click="createRoom" label="創建" class="p-button-rounded p-button-raised mt-3"/>
       </div>
     </div>
+    <Toast position="top-center" />
   </div>
 </template>
 
@@ -62,10 +63,15 @@ export default {
   methods: {
     createRoom () {
       this.$v.$touch()
+      if (this.$v.$error) {
+        this.$toast.add({ severity: 'error', summary: '錯誤', detail: '缺少必要項目', life: 3000 })
+        return
+      }
 
       if (this.$socket.connected) {
         this.$socket.emit('createRoom',
           {
+            playerId: this.userInfo._id,
             playerName: this.playerName,
             playerAmount: this.playerAmount,
             gameId: this.selectedGame.game

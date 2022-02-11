@@ -12,7 +12,7 @@
 }
 
 h3 {
-  color: #ccc;
+  color: #fff;
   text-align: center;
   font-weight: normal;
 }

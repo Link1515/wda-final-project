@@ -59,17 +59,17 @@ li {
 .viewBox{
   overflow: hidden;
   background-color: var(--color-info);
-  border-radius: 0 0 12px 12px;
+  border-radius: 0 0 8px 8px;
 }
 
 .subViewBox {
   background-color: #fff;
-  border-radius: 10px;
+  border-radius: 8px;
   padding: 3rem 0;
 }
 
 .borderBox {
-  border-radius: 10px;
+  border-radius: 8px;
   border: 2px solid #000;
   padding: 2rem;
 }
@@ -96,7 +96,7 @@ li {
     text-align: center;
     border-radius: 10px;
     overflow: hidden;
-    box-shadow: 5px 5px 10px rgba(143, 174, 189, 0.5);
+    box-shadow: 5px 5px 10px #74b2d1;
     height: 100%;
     transition: box-shadow .5s;
 
@@ -114,7 +114,7 @@ li {
   }
 
   .p-card:hover {
-    box-shadow: 10px 10px 15px rgba(143, 174, 189, 0.8);
+    box-shadow: 10px 10px 15px #74b2d1;
     img {
       transform: scale(1.2);
     }

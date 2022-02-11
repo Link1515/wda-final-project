@@ -21,6 +21,7 @@
         <Button @click="joinRoom" label="加入" class="p-button-rounded p-button-raised mt-3"/>
       </div>
     </div>
+    <Toast position="top-center" />
   </div>
 </template>
 
@@ -47,24 +48,24 @@ export default {
   methods: {
     joinRoom () {
       this.$v.$touch()
-      if (this.$v.$error) return
+      if (this.$v.$error) {
+        this.$toast.add({ severity: 'error', summary: '錯誤', detail: '缺少必要項目', life: 3000 })
+        return
+      }
 
-      this.$socket.emit('joinRoom', { roomId: this.roomId, playerName: this.playerName })
+      if (this.$socket.connected) {
+        this.$socket.emit('joinRoom',
+          {
+            playerId: this.userInfo._id,
+            playerName: this.playerName,
+            roomId: this.roomId
+          })
+      }
     }
   },
   sockets: {
     joinRoomSuccess () {
       this.$router.push('/room')
-    },
-    error (msg) {
-      this.$swal({
-        icon: 'error',
-        title: '錯誤',
-        text: msg
-      }).then(() => {
-        this.$v.$reset()
-        this.roomId = ''
-      })
     }
   },
   created () {
