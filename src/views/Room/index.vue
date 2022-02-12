@@ -29,17 +29,25 @@
         </Column>
       </DataTable>
 
-      <div class="btns">
+      <div class="btns mb-5">
         <Button
-          :label="selfReadyState ? '取消準備' : '準備'"
+          :label="playerData.ready ? '取消準備' : '準備'"
           @click="toggleReady"
           class="p-button-rounded p-button-raised mx-2"
-          :class="{ 'p-button-success': !selfReadyState, 'p-button-secondary': selfReadyState}"
+          :class="{ 'p-button-success': !playerData.ready, 'p-button-secondary': playerData.ready}"
         />
         <Button
           label="離開"
           @click="leaveRoom"
           class="p-button-rounded p-button-raised p-button-danger mx-2"/>
+      </div>
+      <div style="text-align: center">
+        <Button
+          v-if="playerData.role === 1"
+          label="開始遊戲"
+          class="p-button-rounded p-button-raised p-button-lg mx-2"
+          :disabled="!everyoneReady"
+        />
       </div>
     </div>
     <Toast position="top-center"/>
@@ -77,9 +85,14 @@ export default {
       this.$router.push('/play')
     }
   },
+  sockets: {
+    roomAnnouncement (msg) {
+      this.$toast.add({ severity: 'info', detail: msg, life: 3000 })
+    }
+  },
   computed: {
     ...mapState('room', ['roomId', 'playerAmount', 'joinedPlayerAmount', 'playerList']),
-    ...mapGetters('room', ['selfReadyState'])
+    ...mapGetters('room', ['playerData', 'everyoneReady'])
   },
   beforeRouteEnter (to, from, next) {
     next(vm => {

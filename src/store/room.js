@@ -26,8 +26,25 @@ export default {
     }
   },
   getters: {
-    selfReadyState (state, _, rootState) {
-      return state.playerList.filter(player => player.playerId === rootState.user._id)[0]?.ready
+    playerData (state, _, rootState) {
+      return state.playerList.filter(player => player.playerId === rootState.user._id)[0]
+    },
+    everyoneReady (state) {
+      let everyoneReady = true
+
+      if (state.joinedPlayerAmount !== state.playerAmount) {
+        everyoneReady = false
+        return everyoneReady
+      }
+
+      for (const player of state.playerList) {
+        if (!player.ready) {
+          everyoneReady = false
+          break
+        }
+      }
+
+      return everyoneReady
     }
   }
 }
