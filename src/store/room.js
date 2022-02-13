@@ -4,13 +4,15 @@ export default {
   namespaced: true,
   state: {
     roomId: '',
+    gameInfo: {},
     playerAmount: 0,
     joinedPlayerAmount: 1,
     playerList: []
   },
   mutations: {
-    SOCKET_joinRoomSuccess (state, { roomId, playerAmount }) {
+    SOCKET_joinRoomSuccess (state, { roomId, gameInfo, playerAmount }) {
       state.roomId = roomId
+      state.gameInfo = gameInfo
       state.playerAmount = playerAmount
     },
     SOCKET_updateRoomData (state, { joinedPlayerAmount, playerList }) {

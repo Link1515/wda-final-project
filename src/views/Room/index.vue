@@ -2,10 +2,11 @@
   <div id="room" class="viewBox">
     <Title>
       <template #text>
-        等待玩家加入中 ... {{ joinedPlayerAmount }} / {{ playerAmount }}
+        <span v-if="joinedPlayerAmount === playerAmount">玩家已全部加入!</span>
+        <span v-else>等待玩家加入中 ... {{ joinedPlayerAmount }} / {{ playerAmount }}</span>
       </template>
     </Title>
-    <div class="subViewBox">
+    <div class="subViewBox mb-5">
       <h2 style="margin: 0 auto 2rem; text-align: center;">
         遊戲間 ID: <span class="roomId">{{ roomId }}<i @click="copyRoomId" class="pi pi-copy ms-3"></i></span>
         <input type="hidden" ref="roomIdInput" :value="roomId">
@@ -28,8 +29,7 @@
           </template>
         </Column>
       </DataTable>
-
-      <div class="btns mb-5">
+      <div class="btns mb-5" v-if="playerData">
         <Button
           :label="playerData.ready ? '取消準備' : '準備'"
           @click="toggleReady"
@@ -39,16 +39,44 @@
         <Button
           label="離開"
           @click="leaveRoom"
-          class="p-button-rounded p-button-raised p-button-danger mx-2"/>
-      </div>
-      <div style="text-align: center">
-        <Button
-          v-if="playerData.role === 1"
-          label="開始遊戲"
-          class="p-button-rounded p-button-raised p-button-lg mx-2"
-          :disabled="!everyoneReady"
+          class="p-button-rounded p-button-raised p-button-danger mx-2"
         />
       </div>
+    </div>
+
+    <div class="subViewBox">
+      <h2 style="margin: 0 auto 2rem; text-align: center;">初始配置</h2>
+      <hr>
+      <div class="row">
+        <div class="col-12" style="text-align: center">
+          <ToggleButton
+            v-model="camp"
+            onLabel="好人陣營"
+            offLabel="壞人陣營"
+            onIcon="pi pi-check"
+            offIcon="pi pi-times"
+          />
+        </div>
+        <div class="col-12">
+          <div class="d-flex flex-column flex-md-row align-items-center mb-3">
+            <div class="flex-shrink-0 mb-2 mb-md-0">陣營身分</div>
+            <VSelect
+              v-model="campRole"
+              :options="[...gameInfo.goodCampRoleList, ...gameInfo.badCampRoleList]"
+              textProp="name"
+            />
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div style="text-align: center" v-if="playerData">
+      <Button
+        v-if="playerData.role === 1"
+        label="開始遊戲"
+        class="p-button-rounded p-button-raised p-button-lg mx-2"
+        :disabled="!everyoneReady"
+      />
     </div>
     <Toast position="top-center"/>
   </div>
@@ -57,14 +85,23 @@
 <script>
 import DataTable from 'primevue/datatable'
 import Column from 'primevue/column'
-
+import ToggleButton from 'primevue/togglebutton'
+import VSelect from '@alfsnd/vue-bootstrap-select'
 import { mapState, mapGetters } from 'vuex'
 
 export default {
   name: 'Room',
   components: {
     DataTable,
-    Column
+    Column,
+    ToggleButton,
+    VSelect
+  },
+  data () {
+    return {
+      camp: true,
+      campRole: ''
+    }
   },
   methods: {
     copyRoomId () {
@@ -91,7 +128,7 @@ export default {
     }
   },
   computed: {
-    ...mapState('room', ['roomId', 'playerAmount', 'joinedPlayerAmount', 'playerList']),
+    ...mapState('room', ['roomId', 'gameInfo', 'playerAmount', 'joinedPlayerAmount', 'playerList']),
     ...mapGetters('room', ['playerData', 'everyoneReady'])
   },
   beforeRouteEnter (to, from, next) {
