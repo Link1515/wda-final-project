@@ -30,7 +30,14 @@ const routes = [
   {
     path: '/room',
     name: 'Room',
-    component: () => import(/* webpackChunkName: "Room" */ '../views/Room')
+    component: () => import(/* webpackChunkName: "Room" */ '../views/Room'),
+    children: [
+      {
+        path: 'start',
+        name: 'Start',
+        component: () => import(/* webpackChunkName: "Start" */ '../views/Room/Start')
+      }
+    ]
   },
   {
     path: '/populargame',

@@ -1,117 +1,124 @@
 <template>
   <div id="room" class="viewBox routerviewHeight">
-    <Title>
-      <template #text>
-        <span v-if="joinedPlayerAmount === playerAmount">玩家已全部加入!</span>
-        <span v-else>等待玩家加入中 ... {{ joinedPlayerAmount }} / {{ playerAmount }}</span>
-      </template>
-    </Title>
-    <div class="subViewBox mb-5">
-      <h2 style="margin: 0 auto 2rem; text-align: center;">
-        遊戲間 ID: <span class="roomId">{{ roomId }}<i @click="copyRoomId" class="pi pi-copy ms-3"></i></span>
-        <input type="hidden" ref="roomIdInput" :value="roomId">
-      </h2>
-      <DataTable stripedRows :value="playerList" class="mb-5">
-        <Column field="role" :bodyStyle="{ textAlign: 'center' }">
-          <template #body="slotProps">
-            <FontAwesomeIcon v-if="slotProps.data.role === 1" :icon="['fas','crown']" style="color: #fa0"></FontAwesomeIcon>
-          </template>
-        </Column>
-        <Column field="name" header="玩家暱稱" :bodyStyle="{ textAlign: 'center' }">
-          <template #body="slotProps">
-            <span :class="{ self: $socket.id === slotProps.data.socketId }">{{ slotProps.data.name }}</span>
-          </template>
-        </Column>
-        <Column field="ready" header="準備狀態" :bodyStyle="{ textAlign: 'center' }">
-          <template #body="slotProps">
-            <i v-if="slotProps.data.ready" class="pi pi-check" style="font-size: 24px; display: inline-block; height: 32px"></i>
-            <img v-else src="@/assets/images/loading.svg" style="width: 32px; height: 32px">
-          </template>
-        </Column>
-      </DataTable>
-      <div class="btns" v-if="playerData">
+    <div v-if="$route.path === '/room'">
+      <Title>
+        <template #text>
+          <span v-if="joinedPlayerAmount === playerAmount">玩家已全部加入!</span>
+          <span v-else>等待玩家加入中 ... {{ joinedPlayerAmount }} / {{ playerAmount }}</span>
+        </template>
+      </Title>
+      <div class="subViewBox mb-5">
+        <h2 style="margin: 0 auto 2rem; text-align: center;">
+          遊戲間 ID: <span class="roomId">{{ roomId }}<i @click="copyRoomId" class="pi pi-copy ms-3"></i></span>
+          <input type="hidden" ref="roomIdInput" :value="roomId">
+        </h2>
+        <DataTable stripedRows :value="playerList" class="mb-5">
+          <Column field="role" :bodyStyle="{ textAlign: 'center' }">
+            <template #body="slotProps">
+              <FontAwesomeIcon v-if="slotProps.data.role === 1" :icon="['fas','crown']" style="color: #fa0"></FontAwesomeIcon>
+            </template>
+          </Column>
+          <Column field="name" header="玩家頭像" :bodyStyle="{ textAlign: 'center' }">
+            <template #body="slotProps">
+              <Avatar v-if="slotProps.data.avatar" :image="slotProps.data.avatar" class="mr-2" size="large" shape="circle"/>
+              <Avatar v-else icon="pi pi-user" class="mr-2" size="large" shape="circle"/>
+            </template>
+          </Column>
+          <Column field="name" header="玩家暱稱" :bodyStyle="{ textAlign: 'center' }">
+            <template #body="slotProps">
+              <span :class="{ self: $socket.id === slotProps.data.socketId }">{{ slotProps.data.name }}</span>
+            </template>
+          </Column>
+          <Column field="ready" header="準備狀態" :bodyStyle="{ textAlign: 'center' }">
+            <template #body="slotProps">
+              <i v-if="slotProps.data.ready" class="pi pi-check" style="font-size: 24px; display: inline-block; height: 32px"></i>
+              <img v-else src="@/assets/images/loading.svg" style="width: 32px; height: 32px">
+            </template>
+          </Column>
+        </DataTable>
+        <div class="btns" v-if="playerData">
+          <Button
+            :label="playerData.ready ? '取消準備' : '準備'"
+            @click="toggleReady"
+            class="p-button-rounded p-button-raised mx-2"
+            :class="{ 'p-button-success': !playerData.ready, 'p-button-secondary': playerData.ready}"
+          />
+          <Button
+            label="離開"
+            @click="leaveRoom"
+            class="p-button-rounded p-button-raised p-button-danger mx-2"
+          />
+        </div>
+      </div>
+      <!-- 初始配置 -->
+      <div class="subViewBox mb-5">
+        <div class="room_basicSetting">
+          <h2 style="margin: 0 auto 1rem; text-align: center;">初始配置</h2>
+          <hr class="mb-4">
+          <h2 style="text-align: center">{{ gameInfo.name }}</h2>
+          <div class="mx-auto mb-3" style="max-width: 600px">
+            <img v-if="gameInfo.image" :src="gameInfo.image">
+            <img v-else src="@/assets/images/image-placeholder.png">
+          </div>
+          <div class="col-12 mb-3" style="text-align: center;">
+            <SelectButton v-model="camp" :options="campOptions" optionLabel="name"/>
+          </div>
+          <!-- 陣營身分 -->
+          <div class="mx-auto" style="width: max-content">
+            <div class="d-flex flex-column flex-md-row align-items-center mb-3">
+              <div class="flex-shrink-0 mb-2 mb-md-0">陣營身分</div>
+              <VSelect
+                v-model="campRole"
+                :options="camp.value ? gameInfo.goodCampRoleList : gameInfo.badCampRoleList"
+                textProp="name"
+                class="VSelectWidth ms-md-3"
+              />
+            </div>
+          </div>
+          <div class="invalidMsg mb-3" v-show="$v.campRole.$error" style="text-align: center">必須選擇陣營身分</div>
+          <Card class="col-md-10 mx-auto mb-5" v-if="campRole.description">
+            <template #title>
+              {{ campRole.name }}
+            </template>
+            <template #content>
+              {{ campRole.description }}
+            </template>
+          </Card>
+          <!-- 功能身分 -->
+          <div class="mx-auto" style="width: max-content">
+            <div v-if="gameInfo.enableFunRole" class="d-flex flex-column flex-md-row align-items-center mb-3">
+              <div class="flex-shrink-0 mb-2 mb-md-0">功能身分</div>
+              <VSelect
+                v-model="funRole"
+                :options="gameInfo.funRoleList"
+                textProp="name"
+                class="VSelectWidth ms-md-3"
+              />
+            </div>
+          </div>
+          <div class="invalidMsg mb-3" v-show="gameInfo.enableFunRole && $v.funRole.$error" style="text-align: center">必須選擇功能身分</div>
+          <Card class="col-md-10 mx-auto" v-if="funRole.description">
+            <template #title>
+              {{ funRole.name }}
+            </template>
+            <template #content>
+              {{ funRole.description }}
+            </template>
+          </Card>
+        </div>
+      </div>
+      <div style="text-align: center" v-if="playerData">
         <Button
-          :label="playerData.ready ? '取消準備' : '準備'"
-          @click="toggleReady"
-          class="p-button-rounded p-button-raised mx-2"
-          :class="{ 'p-button-success': !playerData.ready, 'p-button-secondary': playerData.ready}"
-        />
-        <Button
-          label="離開"
-          @click="leaveRoom"
-          class="p-button-rounded p-button-raised p-button-danger mx-2"
+          v-if="playerData.role === 1"
+          @click="start"
+          label="開始遊戲"
+          class="p-button-rounded p-button-raised p-button-lg mx-2"
+          :disabled="!everyoneReady"
         />
       </div>
+      <Toast position="top-center"/>
     </div>
-
-    <!-- 初始配置 -->
-    <div class="subViewBox mb-5">
-      <div class="room_basicSetting">
-        <h2 style="margin: 0 auto 1rem; text-align: center;">初始配置</h2>
-        <hr class="mb-4">
-        <h2 style="text-align: center">{{ gameInfo.name }}</h2>
-        <div class="mx-auto mb-3" style="max-width: 600px">
-          <img v-if="gameInfo.image" :src="gameInfo.image">
-          <img v-else src="@/assets/images/image-placeholder.png">
-        </div>
-        <div class="col-12 mb-3" style="text-align: center;">
-          <SelectButton v-model="camp" :options="campOptions" optionLabel="name"/>
-        </div>
-        <!-- 陣營身分 -->
-        <div class="mx-auto" style="width: max-content">
-          <div class="d-flex flex-column flex-md-row align-items-center mb-3">
-            <div class="flex-shrink-0 mb-2 mb-md-0">陣營身分</div>
-            <VSelect
-              v-model="campRole"
-              :options="camp.value ? gameInfo.goodCampRoleList : gameInfo.badCampRoleList"
-              textProp="name"
-              class="VSelectWidth ms-md-3"
-            />
-          </div>
-        </div>
-        <div class="invalidMsg mb-3" v-show="$v.campRole.$error" style="text-align: center">必須選擇陣營身分</div>
-        <Card class="col-md-10 mx-auto mb-5" v-if="campRole.description">
-          <template #title>
-            {{ campRole.name }}
-          </template>
-          <template #content>
-            {{ campRole.description }}
-          </template>
-        </Card>
-        <!-- 功能身分 -->
-        <div class="mx-auto" style="width: max-content">
-          <div v-if="gameInfo.enableFunRole" class="d-flex flex-column flex-md-row align-items-center mb-3">
-            <div class="flex-shrink-0 mb-2 mb-md-0">功能身分</div>
-            <VSelect
-              v-model="funRole"
-              :options="gameInfo.funRoleList"
-              textProp="name"
-              class="VSelectWidth ms-md-3"
-            />
-          </div>
-        </div>
-        <div class="invalidMsg mb-3" v-show="gameInfo.enableFunRole && $v.funRole.$error" style="text-align: center">必須選擇功能身分</div>
-        <Card class="col-md-10 mx-auto" v-if="funRole.description">
-          <template #title>
-            {{ funRole.name }}
-          </template>
-          <template #content>
-            {{ funRole.description }}
-          </template>
-        </Card>
-      </div>
-    </div>
-
-    <div style="text-align: center" v-if="playerData">
-      <Button
-        v-if="playerData.role === 1"
-        @click="start"
-        label="開始遊戲"
-        class="p-button-rounded p-button-raised p-button-lg mx-2"
-        :disabled="!everyoneReady"
-      />
-    </div>
-    <Toast position="top-center"/>
+    <router-view />
   </div>
 </template>
 
@@ -119,6 +126,7 @@
 import DataTable from 'primevue/datatable'
 import Column from 'primevue/column'
 import SelectButton from 'primevue/selectbutton'
+import Avatar from 'primevue/avatar'
 import VSelect from '@alfsnd/vue-bootstrap-select'
 import { mapState, mapGetters } from 'vuex'
 
@@ -128,7 +136,8 @@ export default {
     DataTable,
     Column,
     SelectButton,
-    VSelect
+    VSelect,
+    Avatar
   },
   data () {
     return {
