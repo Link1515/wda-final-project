@@ -1,5 +1,5 @@
 <template>
-  <div id="makegame" class="viewBox">
+  <div id="makegame" class="viewBox routerviewHeight">
     <Title>
       <template #text>自製遊戲</template>
     </Title>

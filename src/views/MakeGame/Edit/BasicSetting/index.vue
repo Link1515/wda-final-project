@@ -86,7 +86,7 @@
         </div>
         <Textarea v-model="funRole.description" :autoResize="true" rows="5" placeholder="身分描述" :disabled="!enableFunRole"/>
         <hr class="my-4 mx-5">
-        <RoleList listType="funRoleList" class="funRole mb-3 mx-5" v-show="enableFunRole"/>
+        <RoleList listType="funRoleList" class="funRole mb-3 mx-md-5" v-show="enableFunRole"/>
       </div>
     </div>
 

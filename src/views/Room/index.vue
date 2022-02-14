@@ -1,5 +1,5 @@
 <template>
-  <div id="room" class="viewBox">
+  <div id="room" class="viewBox routerviewHeight">
     <Title>
       <template #text>
         <span v-if="joinedPlayerAmount === playerAmount">玩家已全部加入!</span>
@@ -24,12 +24,12 @@
         </Column>
         <Column field="ready" header="準備狀態" :bodyStyle="{ textAlign: 'center' }">
           <template #body="slotProps">
-            <i v-if="slotProps.data.ready" class="pi pi-check"></i>
+            <i v-if="slotProps.data.ready" class="pi pi-check" style="font-size: 24px; display: inline-block; height: 32px"></i>
             <img v-else src="@/assets/images/loading.svg" style="width: 32px; height: 32px">
           </template>
         </Column>
       </DataTable>
-      <div class="btns mb-5" v-if="playerData">
+      <div class="btns" v-if="playerData">
         <Button
           :label="playerData.ready ? '取消準備' : '準備'"
           @click="toggleReady"
@@ -44,29 +44,59 @@
       </div>
     </div>
 
-    <div class="subViewBox">
-      <h2 style="margin: 0 auto 2rem; text-align: center;">初始配置</h2>
-      <hr>
-      <div class="row">
-        <div class="col-12" style="text-align: center">
-          <ToggleButton
-            v-model="camp"
-            onLabel="好人陣營"
-            offLabel="壞人陣營"
-            onIcon="pi pi-check"
-            offIcon="pi pi-times"
-          />
+    <!-- 初始配置 -->
+    <div class="subViewBox mb-5">
+      <div class="room_basicSetting">
+        <h2 style="margin: 0 auto 1rem; text-align: center;">初始配置</h2>
+        <hr class="mb-4">
+        <h2 style="text-align: center">{{ gameInfo.name }}</h2>
+        <div class="mx-auto mb-3" style="max-width: 600px">
+          <img v-if="gameInfo.image" :src="gameInfo.image">
+          <img v-else src="@/assets/images/image-placeholder.png">
         </div>
-        <div class="col-12">
+        <div class="col-12 mb-3" style="text-align: center;">
+          <SelectButton v-model="camp" :options="campOptions" optionLabel="name"/>
+        </div>
+        <!-- 陣營身分 -->
+        <div class="mx-auto" style="width: max-content">
           <div class="d-flex flex-column flex-md-row align-items-center mb-3">
             <div class="flex-shrink-0 mb-2 mb-md-0">陣營身分</div>
             <VSelect
               v-model="campRole"
-              :options="[...gameInfo.goodCampRoleList, ...gameInfo.badCampRoleList]"
+              :options="camp.value ? gameInfo.goodCampRoleList : gameInfo.badCampRoleList"
               textProp="name"
+              class="VSelectWidth ms-md-3"
             />
           </div>
         </div>
+        <Card class="col-md-10 mx-auto mb-5" v-if="campRole.description">
+          <template #title>
+            {{ campRole.name }}
+          </template>
+          <template #content>
+            {{ campRole.description }}
+          </template>
+        </Card>
+        <!-- 功能身分 -->
+        <div class="mx-auto" style="width: max-content">
+          <div v-if="gameInfo.enableFunRole" class="d-flex flex-column flex-md-row align-items-center mb-3">
+            <div class="flex-shrink-0 mb-2 mb-md-0">功能身分</div>
+            <VSelect
+              v-model="funRole"
+              :options="gameInfo.funRoleList"
+              textProp="name"
+              class="VSelectWidth ms-md-3"
+            />
+          </div>
+        </div>
+        <Card class="col-md-10 mx-auto" v-if="funRole.description">
+          <template #title>
+            {{ funRole.name }}
+          </template>
+          <template #content>
+            {{ funRole.description }}
+          </template>
+        </Card>
       </div>
     </div>
 
@@ -85,7 +115,7 @@
 <script>
 import DataTable from 'primevue/datatable'
 import Column from 'primevue/column'
-import ToggleButton from 'primevue/togglebutton'
+import SelectButton from 'primevue/selectbutton'
 import VSelect from '@alfsnd/vue-bootstrap-select'
 import { mapState, mapGetters } from 'vuex'
 
@@ -94,13 +124,18 @@ export default {
   components: {
     DataTable,
     Column,
-    ToggleButton,
+    SelectButton,
     VSelect
   },
   data () {
     return {
-      camp: true,
-      campRole: ''
+      campOptions: [
+        { name: '🙂 好人陣營', value: true },
+        { name: '😈 壞人陣營', value: false }
+      ],
+      camp: { name: '🙂 好人陣營', value: true },
+      campRole: '選擇陣營身分',
+      funRole: '選擇功能身分'
     }
   },
   methods: {
@@ -120,6 +155,7 @@ export default {
     leaveRoom () {
       this.$socket.disconnect()
       this.$router.push('/play')
+      this.$destroy()
     }
   },
   sockets: {
@@ -130,6 +166,11 @@ export default {
   computed: {
     ...mapState('room', ['roomId', 'gameInfo', 'playerAmount', 'joinedPlayerAmount', 'playerList']),
     ...mapGetters('room', ['playerData', 'everyoneReady'])
+  },
+  watch: {
+    camp () {
+      this.campRole = '選擇陣營身分'
+    }
   },
   beforeRouteEnter (to, from, next) {
     next(vm => {
@@ -142,52 +183,64 @@ export default {
 </script>
 
 <style lang="scss">
+#room {
+  padding: 0 2rem 6rem;
+
+  .roomId {
+    display: inline-block;
+    padding: 0.5rem 1rem;
+    background-color: var(--color-info);
+    border-radius: 9999px;
+
+    i {
+      cursor: pointer;
+      font-size: 1.4rem;
+      transition: transform .3s;
+      &:hover {
+        transform: scale(1.1);
+      }
+    }
+  }
+
+  .btns {
+    text-align: center;
+  }
+
+  .self {
+    color: rgb(243, 61, 61);
+    font-weight: bold;
+  }
+
+  .VSelectWidth {
+    width: 215px;
+  }
+
+  .p-datatable,
+  .room_basicSetting {
+    margin: 0 2rem;
+  }
+
+  .p-column-header-content {
+    justify-content: center;
+  }
+
+  .p-progress-spinner {
+    height: 1rem;
+  }
+}
+
+@media (min-width: 768px) {
   #room {
     padding: 0 4rem 6rem;
+  }
+}
 
-    .roomId {
-      display: inline-block;
-      padding: 0.5rem 1rem;
-      background-color: var(--color-info);
-      border-radius: 9999px;
-
-      i {
-        cursor: pointer;
-        font-size: 1.4rem;
-        transition: transform .3s;
-        &:hover {
-          transform: scale(1.1);
-        }
-      }
-    }
-
-    .btns {
-      text-align: center;
-    }
-
-    .self {
-      color: rgb(243, 61, 61);
-      font-weight: bold;
-    }
-
-    .p-datatable {
-      margin: 0 2rem;
-    }
-
-    .p-column-header-content {
-      justify-content: center;
-    }
-
-    .p-progress-spinner {
-      height: 1rem;
+@media (min-width: 992px) {
+  #room {
+    .p-datatable,
+    .room_basicSetting {
+      margin: 0 12rem;
     }
   }
-
-  @media (min-width: 992px) {
-    #room {
-      .p-datatable {
-        margin: 0 12rem;
-      }
-    }
-  }
+}
 </style>

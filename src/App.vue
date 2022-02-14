@@ -56,6 +56,10 @@ li {
   list-style: none;
 }
 
+.routerviewHeight {
+  min-height: calc(100vh - 82px)
+}
+
 .viewBox{
   overflow: hidden;
   background-color: var(--color-info);

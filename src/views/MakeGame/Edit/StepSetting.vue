@@ -372,6 +372,7 @@ export default {
   }
 
   .p-dialog-footer {
+    margin-top: -3px;
     text-align: center;
   }
 

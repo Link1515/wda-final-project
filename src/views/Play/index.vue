@@ -1,12 +1,12 @@
 <template>
-  <div id="play" class="viewBox">
+  <div id="play" class="viewBox routerviewHeight">
     <template v-if="showPlayHome">
       <Title>
         <template #text>
           立即開始！
         </template>
       </Title>
-      <div class="row g-5 justify-content-evenly" v-if="!$socket.connected">
+      <div class="row g-5 justify-content-evenly">
         <div class="col-md-8 col-lg-5 col-xxl-4">
           <div @click="createGame">
             <Card class="createGame">
@@ -21,7 +21,7 @@
             </Card>
           </div>
         </div>
-        <div class="col-md-8 col-lg-5 col-xxl-4">
+        <div class="col-md-8 col-lg-5 col-xxl-4 mb-5">
           <div @click="joinGame">
             <Card class="joinGame">
               <template #header>
@@ -36,7 +36,7 @@
           </div>
         </div>
       </div>
-      <div class="row g-5 justify-content-evenly" v-else>
+      <!-- <div class="row g-5 justify-content-evenly" v-else>
         <div class="col-md-8 col-lg-5 col-xxl-4">
           <div @click="backToGame">
             <Card class="backToGame">
@@ -51,7 +51,16 @@
             </Card>
           </div>
         </div>
-      </div>
+      </div> -->
+      <Card class="col-md-8 mx-auto">
+        <template #title>
+          說明
+        </template>
+        <template #content>
+          <p>創建遊戲: 從收藏桌遊中選擇桌遊，並創建遊戲間</p>
+          <p>加入遊戲: 向創建遊戲的房主取得遊戲間ID，即可加入遊戲</p>
+        </template>
+      </Card>
     </template>
     <router-view/>
   </div>
@@ -90,41 +99,39 @@ export default {
 
 <style lang="scss">
 #play {
-  padding-bottom: 6rem;
-  padding: 0 4rem 6rem;
+  padding: 0 2rem 6rem;
 
   .createGame,
-  .joinGame,
-  .backToGame {
+  .joinGame {
     cursor: pointer;
-  }
 
-  .p-card {
-    margin: auto;
-    text-align: center;
-    overflow: hidden;
+    .p-card {
+      margin: auto;
+      text-align: center;
+      overflow: hidden;
 
-    svg {
-      transition: .5s;
+      svg {
+        transition: .5s;
+      }
+
+      &:hover svg {
+        transform: scale(1.2);
+      }
     }
 
-    &:hover svg {
-      transform: scale(1.2);
+    .p-card-header {
+      padding: 3rem 0;
+      display: grid;
+      place-items: center;
     }
-  }
 
-  .p-card-header {
-    padding: 3rem 0;
-    display: grid;
-    place-items: center;
-  }
+    .p-card-body {
+      padding: 0;
+    }
 
-  .p-card-body {
-    padding: 0;
-  }
-
-  .p-card-content {
-    display: none;
+    .p-card-content {
+      display: none;
+    }
   }
 
   .play_texticon {
@@ -134,11 +141,19 @@ export default {
     font-size: 2rem;
     letter-spacing: 1rem;
   }
+}
 
-  @media (min-width: 1200px) {
+@media (min-width: 768px) {
+  #play {
+      padding: 0 4rem 6rem;
+  }
+}
+
+@media (min-width: 1200px) {
+  #play {
     .p-card-header {
       padding: 5rem 0;
-  }
+    }
   }
 }
 </style>

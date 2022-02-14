@@ -1,5 +1,5 @@
 <template>
-  <div id="populargame" class="viewBox">
+  <div id="populargame" class="viewBox routerviewHeight">
     <Title>
       <template #text>
         熱門遊戲
