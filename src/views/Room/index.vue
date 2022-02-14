@@ -69,6 +69,7 @@
             />
           </div>
         </div>
+        <div class="invalidMsg mb-3" v-show="$v.campRole.$error" style="text-align: center">必須選擇陣營身分</div>
         <Card class="col-md-10 mx-auto mb-5" v-if="campRole.description">
           <template #title>
             {{ campRole.name }}
@@ -89,6 +90,7 @@
             />
           </div>
         </div>
+        <div class="invalidMsg mb-3" v-show="gameInfo.enableFunRole && $v.funRole.$error" style="text-align: center">必須選擇功能身分</div>
         <Card class="col-md-10 mx-auto" v-if="funRole.description">
           <template #title>
             {{ funRole.name }}
@@ -103,6 +105,7 @@
     <div style="text-align: center" v-if="playerData">
       <Button
         v-if="playerData.role === 1"
+        @click="start"
         label="開始遊戲"
         class="p-button-rounded p-button-raised p-button-lg mx-2"
         :disabled="!everyoneReady"
@@ -138,6 +141,10 @@ export default {
       funRole: '選擇功能身分'
     }
   },
+  validations: {
+    campRole: { picked },
+    funRole: { picked }
+  },
   methods: {
     copyRoomId () {
       const roomIdInput = this.$refs.roomIdInput
@@ -150,12 +157,31 @@ export default {
       window.getSelection().removeAllRanges()
     },
     toggleReady () {
-      this.$socket.emit('toggleReady')
+      this.$v.$touch()
+      if (this.gameInfo.enableFunRole && this.$v.$error) {
+        this.$toast.add({ severity: 'error', summary: '錯誤', detail: '缺少必要項目', life: 3000 })
+        return
+      }
+      if (this.$v.campRole.$error) {
+        this.$toast.add({ severity: 'error', summary: '錯誤', detail: '缺少必要項目', life: 3000 })
+        return
+      }
+
+      this.$socket.emit('toggleReady',
+        {
+          camp: this.camp.value,
+          campRole: this.campRole.id,
+          funRole: this.funRole.id
+        })
     },
     leaveRoom () {
       this.$socket.disconnect()
+      this.$store.commit('room/reset')
       this.$router.push('/play')
       this.$destroy()
+    },
+    start () {
+      console.log('遊戲開始')
     }
   },
   sockets: {
@@ -179,6 +205,11 @@ export default {
       }
     })
   }
+}
+
+// validation function
+function picked (val) {
+  return typeof val === 'object'
 }
 </script>
 

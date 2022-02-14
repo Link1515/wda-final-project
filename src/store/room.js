@@ -10,6 +10,13 @@ export default {
     playerList: []
   },
   mutations: {
+    reset (state) {
+      state.roomId = ''
+      state.gameInfo = {}
+      state.playerAmount = 0
+      state.joinedPlayerAmount = 1
+      state.playerList = []
+    },
     SOCKET_joinRoomSuccess (state, { roomId, gameInfo, playerAmount }) {
       state.roomId = roomId
       state.gameInfo = gameInfo

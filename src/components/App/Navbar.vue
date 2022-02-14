@@ -191,6 +191,11 @@ export default {
       this.registerData.passwordAgain = ''
     }
   },
+  computed: {
+    gaming () {
+      return this.$store.state.room.roomId.length > 0
+    }
+  },
   watch: {
     userInfo: {
       immediate: true,
@@ -202,6 +207,15 @@ export default {
         } else {
           this.navItems = [this.navItems[0], this.navItems[1], this.navItems[2]]
         }
+      }
+    },
+    gaming (val) {
+      if (val) {
+        this.navItems.shift()
+        this.navItems.unshift({ label: '返回遊戲', to: '/room' })
+      } else {
+        this.navItems.shift()
+        this.navItems.unshift({ label: '立即開始', to: '/play' })
       }
     }
   }
