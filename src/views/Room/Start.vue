@@ -26,9 +26,15 @@
           <DataTable stripedRows :value="gameInfo.stepList">
             <Column :bodyStyle="{ textAlign: 'center' }">
               <template #body="slotProps">
-                <span v-if="slotProps.data.mode === '語音'">{{ slotProps.data.data }}</span>
-                <span v-else-if="slotProps.data.mode === '顯示'">顯示 {{ translateRoleType(slotProps.data.data.roleListType) }} {{translateRoleName(slotProps.data.data.roleListType, slotProps.data.data.roleId)}}</span>
-                {{slotProps.data}}
+                <span v-if="slotProps.data.mode === '語音'">
+                  {{ slotProps.data.data }}
+                </span>
+                <span v-else-if="slotProps.data.mode === '顯示'">
+                  顯示 {{ translateRoleType(slotProps.data.data.roleListType) }} {{translateRoleName(slotProps.data.data.roleListType, slotProps.data.data.roleId)}}，時間 {{slotProps.data.data.timer}} 秒
+                </span>
+                <span v-else-if="slotProps.data.mode === '標記'">
+                  {{ translateRoleType(slotProps.data.data.conductingRoleListType) }} {{translateRoleName(slotProps.data.data.conductingRoleListType, slotProps.data.data.conductingRoleId)}} 執行標記，時間 {{slotProps.data.data.timer}} 秒
+                </span>
               </template>
             </Column>
           </DataTable>

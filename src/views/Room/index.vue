@@ -36,23 +36,19 @@
             </template>
           </Column>
         </DataTable>
-        <div class="btns" v-if="playerData">
+        <div style="text-align: center" v-if="playerData">
           <Button
-            :label="playerData.ready ? '取消準備' : '準備'"
-            @click="toggleReady"
-            class="p-button-rounded p-button-raised mx-2"
-            :class="{ 'p-button-success': !playerData.ready, 'p-button-secondary': playerData.ready}"
-          />
-          <Button
-            label="離開"
-            @click="leaveRoom"
-            class="p-button-rounded p-button-raised p-button-danger mx-2"
+            v-if="playerData.role === 1"
+            @click="start"
+            label="開始遊戲"
+            class="p-button-rounded p-button-raised p-button-lg mx-2"
+            :disabled="!everyoneReady"
           />
         </div>
       </div>
       <!-- 初始配置 -->
       <div class="subViewBox mb-5">
-        <div class="room_basicSetting">
+        <div class="room_basicSetting mb-5">
           <h2 style="margin: 0 auto 1rem; text-align: center;">初始配置</h2>
           <hr class="mb-4">
           <h2 style="text-align: center">{{ gameInfo.name }}</h2>
@@ -106,15 +102,19 @@
             </template>
           </Card>
         </div>
-      </div>
-      <div style="text-align: center" v-if="playerData">
-        <Button
-          v-if="playerData.role === 1"
-          @click="start"
-          label="開始遊戲"
-          class="p-button-rounded p-button-raised p-button-lg mx-2"
-          :disabled="!everyoneReady"
-        />
+        <div class="btns" v-if="playerData">
+          <Button
+            :label="playerData.ready ? '取消準備' : '準備'"
+            @click="toggleReady"
+            class="p-button-rounded p-button-raised mx-2"
+            :class="{ 'p-button-success': !playerData.ready, 'p-button-secondary': playerData.ready}"
+          />
+          <Button
+            label="離開"
+            @click="leaveRoom"
+            class="p-button-rounded p-button-raised p-button-danger mx-2"
+          />
+        </div>
       </div>
       <Toast position="top-center"/>
     </div>
