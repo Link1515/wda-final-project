@@ -99,7 +99,6 @@ function stepOthers (msg, step) {
 }
 
 function timer (msg, time) {
-  console.log(time)
   return new Promise((resolve, reject) => {
     msg.onend = resolve
     msg.text = time

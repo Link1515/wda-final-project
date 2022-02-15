@@ -24,7 +24,7 @@
         </TabPanel>
         <TabPanel header="遊戲流程">
           <DataTable stripedRows :value="gameInfo.stepList">
-            <Column :bodyStyle="{ textAlign: 'center' }">
+            <Column :bodyStyle="{ textAlign: 'center', justifyContent: 'center' }">
               <template #body="slotProps">
                 <span v-if="slotProps.data.mode === '語音'">
                   {{ slotProps.data.data }}
@@ -38,6 +38,16 @@
               </template>
             </Column>
           </DataTable>
+        </TabPanel>
+        <TabPanel header="流程控制" v-if="playerData.role === 1">
+          <div class="row g-3" style="text-align: center">
+            <div class="col-12">
+              <Button label="播放" @click="runStep" icon="pi pi-caret-right" class="p-button-rounded p-button-raised p-button-lg"/>
+            </div>
+            <div class="col-12">
+              <Button label="重置" icon="pi pi-replay" class="p-button-rounded p-button-raised p-button-lg p-button-secondary"/>
+            </div>
+          </div>
         </TabPanel>
       </TabView>
     </div>
@@ -67,6 +77,9 @@ export default {
     ...mapGetters('room', ['playerData'])
   },
   methods: {
+    runStep () {
+      this.$socket.emit('runStep')
+    },
     translateRoleType (RoleType) {
       switch (RoleType) {
         case 'goodCampRoleList':
