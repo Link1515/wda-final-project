@@ -21,13 +21,14 @@ export default {
       state.msg = null
     },
     async SOCKET_joinRoomSuccess (state, { roomId, gameInfo, playerAmount }) {
-      const voices = await getVoices()
-      const voiceType = voices.filter(v => v.name.includes(state.gameInfo.voiceType))[0]
-      state.msg = new SpeechSynthesisUtterance()
-      state.msgmsg.voice = voiceType
       state.roomId = roomId
       state.gameInfo = gameInfo
       state.playerAmount = playerAmount
+
+      const voices = await getVoices()
+      const voiceType = voices.filter(v => v.name.includes(state.gameInfo.voiceType))[0]
+      state.msg = new SpeechSynthesisUtterance()
+      state.msg.voice = voiceType
     },
     SOCKET_updateRoomData (state, { joinedPlayerAmount, playerList }) {
       state.joinedPlayerAmount = joinedPlayerAmount
@@ -35,21 +36,39 @@ export default {
     }
   },
   actions: {
-    async SOCKET_runStep ({ state }) {
+    async SOCKET_runStep ({ state }, gameStep) {
       const stepList = state.gameInfo.stepList
-      for (let i = 0; i < stepList.length; i++) {
-        switch (stepList[i].mode) {
-          case '語音':
-            await stepVoice(state.msg, stepList[i])
-            break
-          case '顯示':
-            await stepShow(stepList[i], stepList[i].data.timer * 1000)
-            break
-          case '標記':
-            await stepMark()
-            break
-        }
+      let showPlayers
+
+      switch (stepList[gameStep].mode) {
+        case '語音':
+          await stepVoice(state.msg, stepList[gameStep])
+          break
+        case '顯示':
+          if (stepList[gameStep].data.roleListType === 'all') {
+            showPlayers = state.playerList
+          } else if (stepList[gameStep].data.roleListType === 'funRoleList') {
+            showPlayers = state.playerList.filter(player => player.funRoleId === stepList[gameStep].data.roleId)
+          } else if (stepList[gameStep].data.roleListType === 'goodCampRoleList') {
+            if (stepList[gameStep].data.roleId === 'all') {
+              showPlayers = state.playerList.filter(player => player.camp === true)
+            } else {
+              showPlayers = state.playerList.filter(player => player.campRoleId === stepList[gameStep].data.roleId)
+            }
+          } else if (stepList[gameStep].data.roleListType === 'badCampRoleList') {
+            if (stepList[gameStep].data.roleId === 'all') {
+              showPlayers = state.playerList.filter(player => player.camp === false)
+            } else {
+              showPlayers = state.playerList.filter(player => player.campRoleId === stepList[gameStep].data.roleId)
+            }
+          }
+          await stepShow(showPlayers, stepList[gameStep].data.timer * 1000)
+          break
+        case '標記':
+          await stepMark()
+          break
       }
+      vm.$socket.emit('stepDone')
     },
     SOCKET_error (_, msg) {
       swal.fire({
@@ -105,13 +124,21 @@ function stepVoice (msg, step) {
   })
 }
 
-function stepShow (step, timer) {
+function stepShow (showPlayers, timer) {
   return new Promise((resolve, reject) => {
     let timerInterval
+    let playersHtml = ''
+
+    showPlayers.map(player => {
+      playersHtml += `<div class="col-3">${player.name}</div>`
+    })
+
+    const html = `
+      <div id="timeBar" style="background: blue; height: 5px"></div>
+      <div class="row flex-wrap justify-content-center" style="width: 100%">${playersHtml}</div>
+    `
     swal.fire({
-      html: `
-        <div id="timeBar" style="background: blue; height: 5px"></div>
-      `,
+      html,
       timer,
       allowOutsideClick: false,
       showConfirmButton: false,

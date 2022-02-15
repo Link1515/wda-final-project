@@ -57,7 +57,7 @@
             <img v-else src="@/assets/images/image-placeholder.png">
           </div>
           <div class="col-12 mb-3" style="text-align: center;">
-            <SelectButton v-model="camp" :options="campOptions" optionLabel="name"/>
+            <SelectButton v-model="camp" :options="campOptions" :disabled="playerData.ready" optionLabel="name"/>
           </div>
           <!-- 陣營身分 -->
           <div class="mx-auto" style="width: max-content">
@@ -68,6 +68,7 @@
                 :options="camp.value ? gameInfo.goodCampRoleList : gameInfo.badCampRoleList"
                 textProp="name"
                 class="VSelectWidth ms-md-3"
+                :disabled="playerData.ready"
               />
             </div>
           </div>
@@ -89,6 +90,7 @@
                 :options="gameInfo.funRoleList"
                 textProp="name"
                 class="VSelectWidth ms-md-3"
+                :disabled="playerData.ready"
               />
             </div>
           </div>
@@ -179,8 +181,8 @@ export default {
       this.$socket.emit('toggleReady',
         {
           camp: this.camp.value,
-          campRole: this.campRole.id,
-          funRole: this.funRole.id
+          campRoleId: this.campRole.id,
+          funRoleId: this.funRole.id
         })
     },
     leaveRoom () {

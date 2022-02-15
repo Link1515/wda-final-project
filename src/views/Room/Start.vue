@@ -45,7 +45,7 @@
               <Button label="播放" @click="runStep" icon="pi pi-caret-right" class="p-button-rounded p-button-raised p-button-lg"/>
             </div>
             <div class="col-12">
-              <Button label="重置" icon="pi pi-replay" class="p-button-rounded p-button-raised p-button-lg p-button-secondary"/>
+              <Button label="重置" @click="resetStep" icon="pi pi-replay" class="p-button-rounded p-button-raised p-button-lg p-button-secondary"/>
             </div>
           </div>
         </TabPanel>
@@ -80,6 +80,10 @@ export default {
     runStep () {
       this.$socket.emit('runStep')
     },
+    resetStep () {
+      speechSynthesis.cancel()
+      this.$socket.emit('resetStep')
+    },
     translateRoleType (RoleType) {
       switch (RoleType) {
         case 'goodCampRoleList':
@@ -91,9 +95,11 @@ export default {
       }
     },
     translateRoleName (roleType, roleId) {
-      for (const role of this.gameInfo[roleType]) {
-        if (role.id === roleId) {
-          return role.name
+      if (this.gameInfo[roleType]) {
+        for (const role of this.gameInfo[roleType]) {
+          if (role.id === roleId) {
+            return role.name
+          }
         }
       }
     }

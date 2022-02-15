@@ -69,7 +69,7 @@
       <div class="col-11 col-lg-9 borderBox position-relative" :class="{disabled: !enableFunRole}">
         <div class="d-flex justify-content-center flex-wrap mb-4">
           <Checkbox class="funIdentityCheckbox" v-model="enableFunRole" binary/>
-          <label for="funRole" class="me-3 my-2">功能身分 </label>
+          <label for="funRole" class="me-3 my-2">功能身分</label>
           <InputText
             @keydown.enter="addRoleList('funRoleList', funRole)"
             id="funRole"
