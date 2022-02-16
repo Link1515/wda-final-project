@@ -14,7 +14,7 @@
         <div class="invalidMsg mb-3" v-if="!$v.playerName.required && $v.playerName.$error" style="text-align: center">暱稱必填</div>
         <div class="d-flex flex-column flex-md-row align-items-center mb-3">
           <div class="flex-shrink-0 mb-2 mb-md-0">選擇遊戲</div>
-          <VueSelect v-model="selectedGame" :options="$store.state.user.favoriteGame" :reduce="f => f.game" label="name" placeholder="---選擇遊戲---" class="flex-grow-1 ms-md-3"/>
+          <VueSelect v-model="selectedGame" :options="$store.state.user.favoriteGame" :reduce="f => f.game" label="name" placeholder="---選擇遊戲---" class="flex-grow-1 ms-md-3" style="width: 100%"/>
         </div>
         <div v-if="$store.state.game._id" class="d-flex align-items-center mb-3">
           <span>遊玩人數 {{ playerAmount }}</span>
@@ -82,9 +82,11 @@ export default {
     }
   },
   watch: {
-    selectedGame () {
-      this.$store.dispatch('game/getOneGame', this.selectedGame)
-      this.playerAmount = this.$store.state.game.playerRange[0]
+    selectedGame (value) {
+      if (value) {
+        this.$store.dispatch('game/getOneGame', this.selectedGame)
+        this.playerAmount = this.$store.state.game.playerRange[0]
+      }
     }
   },
   created () {

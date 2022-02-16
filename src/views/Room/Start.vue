@@ -66,7 +66,7 @@
       <div ref="stepShowCountDown" class="mb-5 mt-3" style="background: red; height: 5px"></div>
       <div class="row flex-wrap justify-content-center" style="text-align: center">
         <div class="col-3" v-for="player in showedPlayers" :key="player.playerId" @click="markedPlayer = player.playerId" style="position: relative;">
-          <div v-if="player.playerId === markedPlayer" class="mark">標記</div>
+          <div v-if="player.playerId === markedPlayer" class="mark">{{ markLabel }}</div>
           <Avatar
             icon="pi pi-user"
             class="mb-2" size="large" shape="circle"
@@ -106,7 +106,8 @@ export default {
       stepShowModal: false,
       stepMarkModal: false,
       showedPlayers: [],
-      markedPlayer: null
+      markedPlayer: null,
+      markLabel: null
     }
   },
   computed: {
@@ -154,6 +155,7 @@ export default {
         step.data.conductingRoleId === this.playerData.campRoleId ||
         step.data.conductingRoleId === this.playerData.funRoleId) {
         this.currentStepTitle = `${this.translateRoleType(step.data.conductingRoleListType)} ${this.translateRoleName(step.data.conductingRoleListType, step.data.conductingRoleId)} 執行標記，時間 ${step.data.timer} 秒`
+        this.markLabel = step.data.label
         const totalTime = timer
 
         return new Promise((resolve, reject) => {
@@ -271,6 +273,8 @@ export default {
 
 .mark {
     position: absolute;
+    left: 50%;
+    transform: translate(-50%, -120%);
     color: red;
     border: 2px solid red;
 }
