@@ -63,11 +63,11 @@
           <div class="mx-auto" style="width: max-content">
             <div class="d-flex flex-column flex-md-row align-items-center mb-3">
               <div class="flex-shrink-0 mb-2 mb-md-0">陣營身分</div>
-              <VSelect
+              <VueSelect
                 v-model="campRole"
                 :options="camp.value ? gameInfo.goodCampRoleList : gameInfo.badCampRoleList"
-                textProp="name"
-                class="VSelectWidth ms-md-3"
+                label="name" class="VueSelectWidth ms-md-3"
+                placeholder="選擇陣營身分"
                 :disabled="playerData.ready"
               />
             </div>
@@ -85,11 +85,11 @@
           <div class="mx-auto" style="width: max-content">
             <div v-if="gameInfo.enableFunRole" class="d-flex flex-column flex-md-row align-items-center mb-3">
               <div class="flex-shrink-0 mb-2 mb-md-0">功能身分</div>
-              <VSelect
+              <VueSelect
                 v-model="funRole"
                 :options="gameInfo.funRoleList"
-                textProp="name"
-                class="VSelectWidth ms-md-3"
+                label="name" class="VueSelectWidth ms-md-3"
+                placeholder="選擇功能身分"
                 :disabled="playerData.ready"
               />
             </div>
@@ -129,7 +129,6 @@ import DataTable from 'primevue/datatable'
 import Column from 'primevue/column'
 import SelectButton from 'primevue/selectbutton'
 import Avatar from 'primevue/avatar'
-import VSelect from '@alfsnd/vue-bootstrap-select'
 import { mapState, mapGetters } from 'vuex'
 
 export default {
@@ -138,7 +137,6 @@ export default {
     DataTable,
     Column,
     SelectButton,
-    VSelect,
     Avatar
   },
   data () {
@@ -148,8 +146,8 @@ export default {
         { name: '😈 壞人陣營', value: false }
       ],
       camp: { name: '🙂 好人陣營', value: true },
-      campRole: '選擇陣營身分',
-      funRole: '選擇功能身分'
+      campRole: '',
+      funRole: ''
     }
   },
   validations: {
@@ -253,7 +251,7 @@ function picked (val) {
     font-weight: bold;
   }
 
-  .VSelectWidth {
+  .VueSelectWidth {
     width: 215px;
   }
 

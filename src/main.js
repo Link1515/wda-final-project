@@ -15,6 +15,7 @@ import './plugins/Vuelidate.js'
 import './plugins/VueSweetAlert.js'
 import './plugins/VueImgInputer.js'
 import './plugins/VueSocketIO.js'
+import './plugins/VueSelect.js'
 // global component
 import Title from './components/Title.vue'
 // mixin

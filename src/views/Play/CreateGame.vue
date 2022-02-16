@@ -14,7 +14,7 @@
         <div class="invalidMsg mb-3" v-if="!$v.playerName.required && $v.playerName.$error" style="text-align: center">暱稱必填</div>
         <div class="d-flex flex-column flex-md-row align-items-center mb-3">
           <div class="flex-shrink-0 mb-2 mb-md-0">選擇遊戲</div>
-          <VSelect v-model="selectedGame" :options="$store.state.user.favoriteGame" textProp="name" class="ms-md-3"/>
+          <VueSelect v-model="selectedGame" :options="$store.state.user.favoriteGame" :reduce="f => f.game" label="name" placeholder="---選擇遊戲---" class="flex-grow-1 ms-md-3"/>
         </div>
         <div v-if="$store.state.game._id" class="d-flex align-items-center mb-3">
           <span>遊玩人數 {{ playerAmount }}</span>
@@ -41,19 +41,17 @@
 
 <script>
 import { required } from 'vuelidate/lib/validators'
-import VSelect from '@alfsnd/vue-bootstrap-select'
 import Slider from 'primevue/slider'
 
 export default {
   name: 'CreateGame',
   components: {
-    VSelect,
     Slider
   },
   data () {
     return {
       playerName: '',
-      selectedGame: '---收藏遊戲---',
+      selectedGame: '',
       playerAmount: 0
     }
   },
@@ -76,7 +74,7 @@ export default {
             playerId: this.userInfo._id,
             playerName: this.playerName,
             playerAmount: this.playerAmount,
-            gameId: this.selectedGame.game
+            gameId: this.selectedGame
           })
       }
 
@@ -85,7 +83,7 @@ export default {
   },
   watch: {
     selectedGame () {
-      this.$store.dispatch('game/getOneGame', this.selectedGame.game)
+      this.$store.dispatch('game/getOneGame', this.selectedGame)
       this.playerAmount = this.$store.state.game.playerRange[0]
     }
   },

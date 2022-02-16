@@ -5,7 +5,7 @@
         <StepList :list="$store.getters['game/stepListDisplayHelper']"/>
       </div>
       <div class="col-12 col-lg-6 controlPanel">
-        <VSelect v-model="voiceType" :options="voiceOptions" value="value"/>
+        <VueSelect v-model="voiceType" :options="voiceOptions" :reduce="v => v.value"/>
         <div class="mt-4" style="text-align:center">
           <Button @click="playStep" icon="pi pi-play" class="p-button-rounded p-button-raised p-button-lg" />
         </div>
@@ -15,17 +15,21 @@
 </template>
 
 <script>
-import VSelect from '@alfsnd/vue-bootstrap-select'
 import StepList from '@/components/StepList'
 
 export default {
   components: {
-    StepList,
-    VSelect
+    StepList
   },
   data () {
     return {
-      voiceOptions: ['Google 國語', 'Microsoft Hanhan', 'Microsoft Yating', 'Microsoft Zhiwei']
+      // voiceOptions: ['Google 國語', 'Microsoft Hanhan', 'Microsoft Yating', 'Microsoft Zhiwei']
+      voiceOptions: [
+        { label: 'Google 小姐', value: 'Google 國語' },
+        { label: 'Microsoft 小姐1', value: 'Microsoft Yating' },
+        { label: 'Microsoft 小姐2', value: 'Microsoft Hanhan' },
+        { label: 'Microsoft 先生', value: 'Microsoft Zhiwei' }
+      ]
     }
   },
   methods: {
