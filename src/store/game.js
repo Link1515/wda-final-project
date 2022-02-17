@@ -194,6 +194,8 @@ export default {
           case '顯示':
             step.iconType = 'pi pi-eye'
             step.iconColor = '#ACBA9D'
+            step.conductingRoleListName = roleListNameTranslator(step.data.conductingRoleListType)
+            step.conductingRoleName = roleNameTranslator(state, step.data.conductingRoleListType, step.data.conductingRoleId)
             step.roleListName = roleListNameTranslator(step.data.roleListType)
             step.roleName = roleNameTranslator(state, step.data.roleListType, step.data.roleId)
             break

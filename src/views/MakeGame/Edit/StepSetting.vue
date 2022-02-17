@@ -22,6 +22,8 @@
           <p>
             <span v-if="step.mode === '語音'">{{ step.data }}</span>
             <span v-if="step.mode === '顯示'">
+              執行角色: {{ step.conductingRoleListName }} {{ step.conductingRoleName }}
+              <br>
               顯示角色: {{ step.roleListName }} {{ step.roleName }}
               <br>
               時間: {{ step.data.timer }} 秒
@@ -65,6 +67,22 @@
         />
         <!-- ************** 顯示 ************** -->
         <template v-if="configModel.mode === '顯示'">
+          <p>執行角色</p>
+          <Dropdown
+            v-model="$v.configModel.showPlayer.conductingRoleListType.$model"
+            :options="roleListType"
+            optionLabel="name"
+            optionValue="type"
+            placeholder="選擇陣營"
+          />
+          <Dropdown
+            v-if="configModel.showPlayer.conductingRoleListType && configModel.showPlayer.conductingRoleListType !== 'all'"
+            v-model="$v.configModel.showPlayer.conductingRoleId.$model"
+            :options="[{name: '全部', id: 'all'}, ...$store.state.game[configModel.showPlayer.conductingRoleListType]]"
+            optionLabel="name"
+            optionValue="id"
+            placeholder="選擇執行角色"
+          />
           <p>顯示角色</p>
           <Dropdown
             v-model="$v.configModel.showPlayer.roleListType.$model"
@@ -156,13 +174,15 @@ export default {
       deleteStep: [],
       configs: [
         { mode: '語音', intro: '透過語音撥放以下輸入的文字' },
-        { mode: '顯示', intro: '顯示指定身分' },
+        { mode: '顯示', intro: '顯示指定身分，只有執行角色能看到顯示的玩家' },
         { mode: '標記', intro: '執行時可以標記指定的玩家，需要自訂標籤，如: 死亡、警長保護...等' }
       ],
       configModel: {
         mode: '',
         audioText: '',
         showPlayer: {
+          conductingRoleListType: '',
+          conductingRoleId: '',
           roleListType: '',
           roleId: '',
           timer: 5
@@ -180,6 +200,8 @@ export default {
     configModel: {
       audioText: { required },
       showPlayer: {
+        conductingRoleListType: { required },
+        conductingRoleId: { required },
         roleListType: { required },
         roleId: { required }
       },
@@ -209,7 +231,12 @@ export default {
           break
         case '顯示':
           if (this.$v.configModel.showPlayer.$invalid) {
-            this.$toast.add({ severity: 'error', summary: '錯誤', detail: '未選擇顯示角色', life: 3000 })
+            if (this.$v.configModel.showPlayer.conductingRoleListType.$invalid || this.$v.configModel.showPlayer.conductingRoleId.$invalid) {
+              this.$toast.add({ severity: 'error', summary: '錯誤', detail: '未選擇執行角色', life: 3000 })
+            }
+            if (this.$v.configModel.showPlayer.roleListType.$invalid || this.$v.configModel.showPlayer.roleId.$invalid) {
+              this.$toast.add({ severity: 'error', summary: '錯誤', detail: '未選擇顯示角色', life: 3000 })
+            }
             return
           }
           data = this.configModel.showPlayer
@@ -235,6 +262,8 @@ export default {
         mode: '',
         audioText: '',
         showPlayer: {
+          conductingRoleListType: '',
+          conductingRoleId: '',
           roleListType: '',
           roleId: '',
           timer: 5
