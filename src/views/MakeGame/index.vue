@@ -3,7 +3,7 @@
     <Title>
       <template #text>自製遊戲</template>
     </Title>
-    <div class="row g-5" v-show="showMakegameHome">
+    <div class="row g-5" v-if="showMakegameHome">
         <div class="col-12 col-md-6 col-lg-4 col-xl-3">
           <div class="addNewGame" @click="addNewGame">
             <i class="pi pi-plus"></i>

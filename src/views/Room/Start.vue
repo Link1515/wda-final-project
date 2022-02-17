@@ -3,7 +3,7 @@
     <div class="subViewBox">
       <TabView>
         <TabPanel header="在線玩家">
-          <DataTable stripedRows :value="playerList">
+          <DataTable stripedRows :value="playerList" class="mb-3">
             <Column field="role" :bodyStyle="{ textAlign: 'center' }">
               <template #body="slotProps">
                 <FontAwesomeIcon v-if="slotProps.data.role === 1" :icon="['fas','crown']" style="color: #fa0"></FontAwesomeIcon>
@@ -21,6 +21,9 @@
               </template>
             </Column>
           </DataTable>
+          <div style="text-align: center">
+            <Button label="離開房間" @click="leaveRoom" class="p-button-rounded p-button-raised p-button-danger"/>
+          </div>
         </TabPanel>
         <TabPanel header="遊戲流程">
           <DataTable stripedRows :value="gameInfo.stepList">
@@ -30,7 +33,7 @@
                   {{ slotProps.data.data }}
                 </span>
                 <span v-else-if="slotProps.data.mode === '顯示'">
-                  顯示 {{ translateRoleType(slotProps.data.data.roleListType) }} {{translateRoleName(slotProps.data.data.roleListType, slotProps.data.data.roleId)}}，時間 {{slotProps.data.data.timer}} 秒
+                  {{ translateRoleType(slotProps.data.data.conductingRoleListType) }} {{translateRoleName(slotProps.data.data.conductingRoleListType, slotProps.data.data.conductingRoleId)}} 執行顯示 {{ translateRoleType(slotProps.data.data.roleListType) }} {{translateRoleName(slotProps.data.data.roleListType, slotProps.data.data.roleId)}}，時間 {{slotProps.data.data.timer}} 秒
                 </span>
                 <span v-else-if="slotProps.data.mode === '標記'">
                   {{ translateRoleType(slotProps.data.data.conductingRoleListType) }} {{translateRoleName(slotProps.data.data.conductingRoleListType, slotProps.data.data.conductingRoleId)}} 執行標記，時間 {{slotProps.data.data.timer}} 秒
@@ -46,6 +49,9 @@
             </div>
             <div class="col-12">
               <Button label="重置" @click="resetStep" icon="pi pi-replay" class="p-button-rounded p-button-raised p-button-lg p-button-secondary"/>
+            </div>
+            <div class="col-12">
+              <Button label="返回設定" @click="backToSetting" icon="pi pi-arrow-left" class="p-button-rounded p-button-raised p-button-lg p-button-secondary"/>
             </div>
           </div>
         </TabPanel>
@@ -136,6 +142,15 @@ export default {
     ...mapGetters('room', ['playerData'])
   },
   methods: {
+    backToSetting () {
+      this.$socket.emit('backToSetting')
+    },
+    leaveRoom () {
+      this.$socket.disconnect()
+      this.$store.commit('room/reset')
+      this.$router.push('/play')
+      this.$destroy()
+    },
     startStep () {
       this.$socket.emit('startStep')
     },
@@ -240,14 +255,15 @@ export default {
     }
   },
   sockets: {
+    backToSetting () {
+      this.$router.push('/room')
+    },
     async runStep (gameStep) {
       this.markedResultModal = false
       if (!this.stepRunning) this.stepRunning = true
       const stepList = this.gameInfo.stepList
       const msg = this.msg
       const playerList = this.playerList
-
-      console.log(gameStep)
 
       if (stepList[gameStep]) {
         switch (stepList[gameStep].mode) {

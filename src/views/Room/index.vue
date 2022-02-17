@@ -52,7 +52,8 @@
           <h2 style="margin: 0 auto 1rem; text-align: center;">初始配置</h2>
           <hr class="mb-4">
           <h2 style="text-align: center">{{ gameInfo.name }}</h2>
-          <div class="mx-auto mb-3" style="max-width: 600px">
+          <p class="mb-5" style="text-align: center">{{ gameInfo.description }}</p>
+          <div class="mx-auto mb-5" style="max-width: 600px">
             <img v-if="gameInfo.image" :src="gameInfo.image">
             <img v-else src="@/assets/images/image-placeholder.png">
           </div>
@@ -65,7 +66,7 @@
               <div class="flex-shrink-0 mb-2 mb-md-0">陣營身分</div>
               <VueSelect
                 v-model="campRole"
-                :options="camp.value ? gameInfo.goodCampRoleList : gameInfo.badCampRoleList"
+                :options="camp.value === 'goodCampRoleList' ? gameInfo.goodCampRoleList : gameInfo.badCampRoleList"
                 label="name" class="VueSelectWidth ms-md-3"
                 placeholder="選擇陣營身分"
                 :disabled="playerData.ready"
@@ -190,12 +191,15 @@ export default {
       this.$destroy()
     },
     start () {
-      console.log('遊戲開始')
+      this.$socket.emit('start')
     }
   },
   sockets: {
     roomAnnouncement (msg) {
       this.$toast.add({ severity: 'info', detail: msg, life: 3000 })
+    },
+    start () {
+      this.$router.push('/room/start')
     }
   },
   computed: {
