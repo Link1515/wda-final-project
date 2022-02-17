@@ -162,29 +162,32 @@ export default {
       })
     },
     stepShow (step, timer) {
-      this.currentStepTitle = `顯示 ${this.translateRoleType(step.data.roleListType)} ${this.translateRoleName(step.data.roleListType, step.data.roleId)}，時間 ${step.data.timer} 秒`
-      const totalTime = timer
+      if (step.data.conductingRoleListType === 'all' ||
+        (step.data.conductingRoleListType === this.playerData.camp && step.data.conductingRoleId === 'all') ||
+        step.data.conductingRoleId === this.playerData.campRoleId ||
+        step.data.conductingRoleId === this.playerData.funRoleId) {
+        this.currentStepTitle = `${this.translateRoleType(step.data.conductingRoleListType)} ${this.translateRoleName(step.data.conductingRoleListType, step.data.conductingRoleId)} 執行顯示 ${this.translateRoleType(step.data.roleListType)} ${this.translateRoleName(step.data.roleListType, step.data.roleId)}，時間 ${step.data.timer} 秒`
+        const totalTime = timer
 
-      return new Promise((resolve, reject) => {
-        this.stepShowModal = true
+        return new Promise((resolve, reject) => {
+          this.stepShowModal = true
 
-        this.intervalTimer = setInterval(() => {
-          timer -= 10
-          if (this.$refs.stepShowCountDown) {
-            this.$refs.stepShowCountDown.style.width = parseInt((timer / totalTime) * 100) + '%'
-          }
+          this.intervalTimer = setInterval(() => {
+            timer -= 10
+            if (this.$refs.stepShowCountDown) {
+              this.$refs.stepShowCountDown.style.width = parseInt((timer / totalTime) * 100) + '%'
+            }
 
-          if (timer < 0) {
-            clearInterval(this.intervalTimer)
-            this.stepShowModal = false
-            resolve()
-          }
-        }, 10)
-      })
+            if (timer < 0) {
+              clearInterval(this.intervalTimer)
+              this.stepShowModal = false
+              resolve()
+            }
+          }, 10)
+        })
+      }
     },
     stepMark (step, timer) {
-      console.log(step.data.conductingRoleListType === this.playerData.camp)
-      console.log(this.playerData.camp)
       if (step.data.conductingRoleListType === 'all' ||
         (step.data.conductingRoleListType === this.playerData.camp && step.data.conductingRoleId === 'all') ||
         step.data.conductingRoleId === this.playerData.campRoleId ||
