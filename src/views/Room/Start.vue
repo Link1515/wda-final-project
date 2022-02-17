@@ -55,7 +55,7 @@
     <VueModal v-model="stepShowModal" :enableClose="false" :title="currentStepTitle">
       <div ref="stepShowCountDown" class="mb-5 mt-3" style="background: red; height: 5px"></div>
       <div class="row flex-wrap justify-content-center" style="text-align: center">
-        <div class="col-3" v-for="player in showedPlayers" :key="player.playerId">
+        <div class="col-3" v-for="player in showedPlayers" :key="player.socketId">
           <Avatar icon="pi pi-user" class="mb-2" size="large" shape="circle"/>
           <div>{{ player.name }}</div>
         </div>
@@ -65,8 +65,8 @@
     <VueModal v-model="stepMarkModal" :enableClose="false" :title="currentStepTitle">
       <div ref="stepShowCountDown" class="mb-5 mt-3" style="background: red; height: 5px"></div>
       <div class="row flex-wrap justify-content-center" style="text-align: center">
-        <div class="col-3" v-for="player in showedPlayers" :key="player.playerId" @click="markedPlayer = player.playerId" style="position: relative;">
-          <div v-if="player.playerId === markedPlayer" class="mark">{{ markLabel }}</div>
+        <div class="col-3" v-for="player in showedPlayers" :key="player.socketId" @click="mark(player.socketId)" style="position: relative;">
+          <div v-if="markedPlayers.includes(player.socketId)" class="mark" :class="{self: player.socketId === myMarkedPlayer}">{{ markLabel }}</div>
           <Avatar
             icon="pi pi-user"
             class="mb-2" size="large" shape="circle"
@@ -105,9 +105,13 @@ export default {
       currentStepTitle: '',
       stepShowModal: false,
       stepMarkModal: false,
+
       showedPlayers: [],
-      markedPlayer: null,
-      markLabel: null
+      myMarkedPlayer: null,
+      markedPlayers: [],
+      markLabel: null,
+
+      intervalTimer: null
     }
   },
   computed: {
@@ -121,6 +125,17 @@ export default {
     resetStep () {
       speechSynthesis.cancel()
       this.$socket.emit('resetStep')
+    },
+    mark (socketId) {
+      this.markedPlayers.push(socketId)
+
+      const index = this.markedPlayers.findIndex(id => id === this.myMarkedPlayer)
+      if (index >= 0) {
+        this.markedPlayers.splice(index, 1)
+      }
+
+      this.$socket.emit('updateMarkedPlayers', this.markedPlayers)
+      this.myMarkedPlayer = socketId
     },
     stepVoice (msg, step) {
       return new Promise((resolve, reject) => {
@@ -136,14 +151,14 @@ export default {
       return new Promise((resolve, reject) => {
         this.stepShowModal = true
 
-        const intervalTimer = setInterval(() => {
+        this.intervalTimer = setInterval(() => {
           timer -= 10
           if (this.$refs.stepShowCountDown) {
             this.$refs.stepShowCountDown.style.width = parseInt((timer / totalTime) * 100) + '%'
           }
 
           if (timer < 0) {
-            clearInterval(intervalTimer)
+            clearInterval(this.intervalTimer)
             this.stepShowModal = false
             resolve()
           }
@@ -161,16 +176,16 @@ export default {
         return new Promise((resolve, reject) => {
           this.stepMarkModal = true
 
-          const intervalTimer = setInterval(() => {
+          this.intervalTimer = setInterval(() => {
             timer -= 10
             if (this.$refs.stepShowCountDown) {
               this.$refs.stepShowCountDown.style.width = parseInt((timer / totalTime) * 100) + '%'
             }
 
             if (timer < 0) {
-              clearInterval(intervalTimer)
+              clearInterval(this.intervalTimer)
               this.stepMarkModal = false
-              this.markedPlayer = null
+              this.myMarkedPlayer = null
               resolve()
             }
           }, 10)
@@ -238,12 +253,16 @@ export default {
           break
       }
 
-      this.$socket.emit('stepDone')
+      this.$socket.emit('stepDone', this.showedPlayers)
     },
     resetStep () {
+      clearInterval(this.intervalTimer)
       this.stepShowModal = false
       this.stepMarkModal = false
       this.stepRunning = false
+    },
+    updateMarkedPlayers (markedPlayers) {
+      this.markedPlayers = markedPlayers
     }
   }
 }
@@ -275,7 +294,11 @@ export default {
     position: absolute;
     left: 50%;
     transform: translate(-50%, -120%);
-    color: red;
-    border: 2px solid red;
+    color: #faa;
+    border: 2px solid #faa;
+    &.self {
+      color: red;
+      border-color: red;
+    }
 }
 </style>
