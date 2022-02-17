@@ -55,7 +55,7 @@
     <VueModal v-model="stepShowModal" :enableClose="false" :title="currentStepTitle">
       <div ref="stepShowCountDown" class="mb-5 mt-3" style="background: red; height: 5px"></div>
       <div class="row flex-wrap justify-content-center" style="text-align: center">
-        <div class="col-3" v-for="player in showedPlayers" :key="player.socketId">
+        <div class="col-3" v-for="player in shownPlayers" :key="player.socketId">
           <Avatar icon="pi pi-user" class="mb-2" size="large" shape="circle"/>
           <div>{{ player.name }}</div>
         </div>
@@ -65,14 +65,29 @@
     <VueModal v-model="stepMarkModal" :enableClose="false" :title="currentStepTitle">
       <div ref="stepShowCountDown" class="mb-5 mt-3" style="background: red; height: 5px"></div>
       <div class="row flex-wrap justify-content-center" style="text-align: center">
-        <div class="col-3" v-for="player in showedPlayers" :key="player.socketId" @click="mark(player.socketId)" style="position: relative;">
-          <div v-if="markedPlayers.includes(player.socketId)" class="mark" :class="{self: player.socketId === myMarkedPlayer}">{{ markLabel }}</div>
+        <div class="col-3" v-for="player in shownPlayers" :key="player.socketId" @click="mark(player.socketId)" style="position: relative;">
+          <div v-if="markedPlayers.includes(player.socketId)" class="mark self" :class="{self: player.socketId === myMarkedPlayer}">{{ markLabel }}</div>
           <Avatar
             icon="pi pi-user"
             class="mb-2" size="large" shape="circle"
             style="cursor: pointer;"
           />
           <div>{{ player.name }}</div>
+        </div>
+      </div>
+    </VueModal>
+
+    <VueModal v-model="markedResultModal" :enableClose="true" :title="currentStepTitle">
+      <div class="mb-5 mt-3"></div>
+      <div class="row flex-wrap justify-content-center" style="text-align: center">
+        <div class="col-3" v-for="(result,index) in markedResult" :key="index" style="position: relative;">
+          <div class="mark">{{ result.markLabel }}</div>
+          <Avatar
+            icon="pi pi-user"
+            class="mb-2" size="large" shape="circle"
+            style="cursor: pointer;"
+          />
+          <div>{{ result.player.name }}</div>
         </div>
       </div>
     </VueModal>
@@ -105,11 +120,13 @@ export default {
       currentStepTitle: '',
       stepShowModal: false,
       stepMarkModal: false,
+      markedResultModal: false,
 
-      showedPlayers: [],
+      shownPlayers: [],
       myMarkedPlayer: null,
       markedPlayers: [],
       markLabel: null,
+      markedResult: [],
 
       intervalTimer: null
     }
@@ -218,42 +235,48 @@ export default {
   },
   sockets: {
     async runStep (gameStep) {
+      this.markedResultModal = false
       if (!this.stepRunning) this.stepRunning = true
       const stepList = this.gameInfo.stepList
       const msg = this.msg
       const playerList = this.playerList
 
-      switch (stepList[gameStep].mode) {
-        case '語音':
-          await this.stepVoice(msg, stepList[gameStep])
-          break
-        case '顯示':
-          if (stepList[gameStep].data.roleListType === 'all') {
-            this.showedPlayers = playerList
-          } else if (stepList[gameStep].data.roleListType === 'funRoleList') {
-            this.showedPlayers = playerList.filter(player => player.funRoleId === stepList[gameStep].data.roleId)
-          } else if (stepList[gameStep].data.roleListType === 'goodCampRoleList') {
-            if (stepList[gameStep].data.roleId === 'all') {
-              this.showedPlayers = playerList.filter(player => player.camp === true)
-            } else {
-              this.showedPlayers = playerList.filter(player => player.campRoleId === stepList[gameStep].data.roleId)
+      console.log(gameStep)
+
+      if (stepList[gameStep]) {
+        switch (stepList[gameStep].mode) {
+          case '語音':
+            await this.stepVoice(msg, stepList[gameStep])
+            break
+          case '顯示':
+            if (stepList[gameStep].data.roleListType === 'all') {
+              this.shownPlayers = playerList
+            } else if (stepList[gameStep].data.roleListType === 'funRoleList') {
+              this.shownPlayers = playerList.filter(player => player.funRoleId === stepList[gameStep].data.roleId)
+            } else if (stepList[gameStep].data.roleListType === 'goodCampRoleList') {
+              if (stepList[gameStep].data.roleId === 'all') {
+                this.shownPlayers = playerList.filter(player => player.camp === true)
+              } else {
+                this.shownPlayers = playerList.filter(player => player.campRoleId === stepList[gameStep].data.roleId)
+              }
+            } else if (stepList[gameStep].data.roleListType === 'badCampRoleList') {
+              if (stepList[gameStep].data.roleId === 'all') {
+                this.shownPlayers = playerList.filter(player => player.camp === false)
+              } else {
+                this.shownPlayers = playerList.filter(player => player.campRoleId === stepList[gameStep].data.roleId)
+              }
             }
-          } else if (stepList[gameStep].data.roleListType === 'badCampRoleList') {
-            if (stepList[gameStep].data.roleId === 'all') {
-              this.showedPlayers = playerList.filter(player => player.camp === false)
-            } else {
-              this.showedPlayers = playerList.filter(player => player.campRoleId === stepList[gameStep].data.roleId)
-            }
-          }
-          await this.stepShow(stepList[gameStep], stepList[gameStep].data.timer * 1000)
-          break
-        case '標記':
-          this.showedPlayers = playerList
-          await this.stepMark(stepList[gameStep], stepList[gameStep].data.timer * 1000)
-          break
+            await this.stepShow(stepList[gameStep], stepList[gameStep].data.timer * 1000)
+            break
+          case '標記':
+            this.shownPlayers = playerList
+            this.$socket.emit('updateShownPlayers', this.shownPlayers)
+            await this.stepMark(stepList[gameStep], stepList[gameStep].data.timer * 1000)
+            break
+        }
       }
 
-      this.$socket.emit('stepDone', this.showedPlayers)
+      this.$socket.emit('stepDone')
     },
     resetStep () {
       clearInterval(this.intervalTimer)
@@ -263,6 +286,11 @@ export default {
     },
     updateMarkedPlayers (markedPlayers) {
       this.markedPlayers = markedPlayers
+    },
+    showMarkedResult (markedResult) {
+      this.currentStepTitle = '結果'
+      this.markedResult = markedResult
+      this.markedResultModal = true
     }
   }
 }
