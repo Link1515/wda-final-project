@@ -66,7 +66,7 @@
       <div ref="stepShowCountDown" class="mb-5 mt-3" style="background: red; height: 5px"></div>
       <div class="row flex-wrap justify-content-center" style="text-align: center">
         <div class="col-3" v-for="player in shownPlayers" :key="player.socketId" @click="mark(player.socketId)" style="position: relative;">
-          <div v-if="markedPlayers.includes(player.socketId)" class="mark self" :class="{self: player.socketId === myMarkedPlayer}">{{ markLabel }}</div>
+          <div v-if="markedPlayers.includes(player.socketId)" class="mark" :class="{self: player.socketId === myMarkedPlayer}">{{ markLabel }}</div>
           <Avatar
             icon="pi pi-user"
             class="mb-2" size="large" shape="circle"
@@ -81,7 +81,7 @@
       <div class="mb-5 mt-3"></div>
       <div class="row flex-wrap justify-content-center" style="text-align: center">
         <div class="col-3" v-for="(result,index) in markedResult" :key="index" style="position: relative;">
-          <div class="mark">{{ result.markLabel }}</div>
+          <div class="mark self">{{ result.markLabel }}</div>
           <Avatar
             icon="pi pi-user"
             class="mb-2" size="large" shape="circle"
@@ -183,7 +183,10 @@ export default {
       })
     },
     stepMark (step, timer) {
+      console.log(step.data.conductingRoleListType === this.playerData.camp)
+      console.log(this.playerData.camp)
       if (step.data.conductingRoleListType === 'all' ||
+        (step.data.conductingRoleListType === this.playerData.camp && step.data.conductingRoleId === 'all') ||
         step.data.conductingRoleId === this.playerData.campRoleId ||
         step.data.conductingRoleId === this.playerData.funRoleId) {
         this.currentStepTitle = `${this.translateRoleType(step.data.conductingRoleListType)} ${this.translateRoleName(step.data.conductingRoleListType, step.data.conductingRoleId)} 執行標記，時間 ${step.data.timer} 秒`
@@ -255,13 +258,13 @@ export default {
               this.shownPlayers = playerList.filter(player => player.funRoleId === stepList[gameStep].data.roleId)
             } else if (stepList[gameStep].data.roleListType === 'goodCampRoleList') {
               if (stepList[gameStep].data.roleId === 'all') {
-                this.shownPlayers = playerList.filter(player => player.camp === true)
+                this.shownPlayers = playerList.filter(player => player.camp === 'goodCampRoleList')
               } else {
                 this.shownPlayers = playerList.filter(player => player.campRoleId === stepList[gameStep].data.roleId)
               }
             } else if (stepList[gameStep].data.roleListType === 'badCampRoleList') {
               if (stepList[gameStep].data.roleId === 'all') {
-                this.shownPlayers = playerList.filter(player => player.camp === false)
+                this.shownPlayers = playerList.filter(player => player.camp === 'badCampRoleList')
               } else {
                 this.shownPlayers = playerList.filter(player => player.campRoleId === stepList[gameStep].data.roleId)
               }
@@ -288,9 +291,11 @@ export default {
       this.markedPlayers = markedPlayers
     },
     showMarkedResult (markedResult) {
-      this.currentStepTitle = '結果'
-      this.markedResult = markedResult
-      this.markedResultModal = true
+      if (markedResult.length) {
+        this.currentStepTitle = '結果'
+        this.markedResult = markedResult
+        this.markedResultModal = true
+      }
     }
   }
 }
@@ -319,6 +324,8 @@ export default {
 }
 
 .mark {
+    padding: 0.125rem 0.25rem;
+    border-radius: 5px;
     position: absolute;
     left: 50%;
     transform: translate(-50%, -120%);
@@ -326,7 +333,7 @@ export default {
     border: 2px solid #faa;
     &.self {
       color: red;
-      border-color: red;
+      border: 2px solid red;
     }
 }
 </style>

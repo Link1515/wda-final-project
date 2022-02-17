@@ -142,10 +142,10 @@ export default {
   data () {
     return {
       campOptions: [
-        { name: '🙂 好人陣營', value: true },
-        { name: '😈 壞人陣營', value: false }
+        { name: '🙂 好人陣營', value: 'goodCampRoleList' },
+        { name: '😈 壞人陣營', value: 'badCampRoleList' }
       ],
-      camp: { name: '🙂 好人陣營', value: true },
+      camp: { name: '🙂 好人陣營', value: 'goodCampRoleList' },
       campRole: '',
       funRole: ''
     }
