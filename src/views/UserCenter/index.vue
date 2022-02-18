@@ -33,10 +33,6 @@ export default {
           to: '/usercenter/editpassword'
         },
         {
-          label: '收藏桌遊',
-          to: '/usercenter/favgame'
-        },
-        {
           label: '錯誤回報',
           to: '/usercenter/bugreport'
         }

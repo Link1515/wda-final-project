@@ -73,11 +73,6 @@ const routes = [
         component: () => import(/* webpackChunkName: "EditPassword" */ '../views/UserCenter/EditPassword')
       },
       {
-        path: 'favgame',
-        name: 'FavGame',
-        component: () => import(/* webpackChunkName: "FavGame" */ '../views/UserCenter/FavGame')
-      },
-      {
         path: 'bugreport',
         name: 'BugReport',
         component: () => import(/* webpackChunkName: "BugReport" */ '../views/UserCenter/BugReport')
