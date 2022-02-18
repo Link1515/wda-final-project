@@ -36,22 +36,6 @@
           </div>
         </div>
       </div>
-      <!-- <div class="row g-5 justify-content-evenly" v-else>
-        <div class="col-md-8 col-lg-5 col-xxl-4">
-          <div @click="backToGame">
-            <Card class="backToGame">
-              <template #header>
-                <FontAwesomeIcon :icon="['fas','undo']" size="10x"></FontAwesomeIcon>
-              </template>
-              <template #footer>
-                <div class="play_texticon py-2">
-                  返回遊戲
-                </div>
-              </template>
-            </Card>
-          </div>
-        </div>
-      </div> -->
       <Card class="col-md-8 mx-auto">
         <template #title>
           說明

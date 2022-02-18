@@ -57,18 +57,37 @@ const routes = [
     ]
   },
   {
+    path: '/usercenter',
+    name: 'UserCenter',
+    component: () => import(/* webpackChunkName: "UserCenter" */ '../views/UserCenter'),
+    children: [
+      {
+        path: 'editinfo',
+        name: 'EditInfo',
+        component: () => import(/* webpackChunkName: "EditInfo" */ '../views/UserCenter/EditInfo')
+      },
+      {
+        path: 'editpassword',
+        name: 'EditPassword',
+        component: () => import(/* webpackChunkName: "EditPassword" */ '../views/UserCenter/EditPassword')
+      },
+      {
+        path: 'favgame',
+        name: 'FavGame',
+        component: () => import(/* webpackChunkName: "FavGame" */ '../views/UserCenter/FavGame')
+      },
+      {
+        path: 'bugreport',
+        name: 'BugReport',
+        component: () => import(/* webpackChunkName: "BugReport" */ '../views/UserCenter/BugReport')
+      }
+    ]
+  },
+  {
     path: '*',
     name: 'NotFound',
     component: () => import(/* webpackChunkName: "NotFound" */ '../views/NotFound')
   }
-  // {
-  //   path: '/about',
-  //   name: 'About',
-  //   // route level code-splitting
-  //   // this generates a separate chunk (about.[hash].js) for this route
-  //   // which is lazy-loaded when the route is visited.
-  //   component: () => import(/* webpackChunkName: "about" */ '../views/About.vue')
-  // }
 ]
 
 const router = new VueRouter({

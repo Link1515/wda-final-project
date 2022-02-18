@@ -18,6 +18,7 @@
     "@fortawesome/vue-fontawesome": "^2.0.6",
     "@kouts/vue-modal": "^2.1.4",
     "axios": "^0.25.0",
+    "babel-helper-vue-jsx-merge-props": "^2.0.3",
     "core-js": "^3.6.5",
     "nanoid": "^3.2.0",
     "primeicons": "^5.0.0",

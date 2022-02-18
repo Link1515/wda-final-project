@@ -116,9 +116,6 @@ export default {
         {
           label: '熱門遊戲',
           to: '/populargame'
-        },
-        {
-          label: '關於我們'
         }
       ],
       tabActiveIndex: 0
@@ -201,11 +198,11 @@ export default {
       immediate: true,
       handler (newValue) {
         if (newValue.isLogin) {
-          this.navItems = [this.navItems[0], this.navItems[1], this.navItems[2],
-            { label: '自製遊戲', to: '/makegame' }, { label: '會員中心' }]
+          this.navItems = [this.navItems[0], this.navItems[1],
+            { label: '自製遊戲', to: '/makegame' }, { label: '會員中心', to: '/usercenter' }]
           this.displayPanel = false
         } else {
-          this.navItems = [this.navItems[0], this.navItems[1], this.navItems[2]]
+          this.navItems = [this.navItems[0], this.navItems[1]]
         }
       }
     },
