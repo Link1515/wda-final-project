@@ -8,6 +8,7 @@ export default {
     _id: '',
     account: '',
     nickname: '',
+    avatar: '',
     email: '',
     token: '',
     role: '',
@@ -18,6 +19,7 @@ export default {
       state._id = userInfo._id
       state.account = userInfo.account
       state.nickname = userInfo.nickname
+      state.avatar = userInfo.avatar
       state.email = userInfo.email
       state.token = userInfo.token
       state.role = userInfo.role
@@ -27,6 +29,7 @@ export default {
       state._id = ''
       state.account = ''
       state.nickname = ''
+      state.avatar = ''
       state.email = ''
       state.token = ''
       state.role = ''
@@ -39,6 +42,7 @@ export default {
       state._id = userInfo._id
       state.account = userInfo.account
       state.nickname = userInfo.nickname
+      state.avatar = userInfo.avatar
       state.email = userInfo.email
       state.role = userInfo.role
       state.favoriteGame = userInfo.favoriteGame
@@ -49,6 +53,9 @@ export default {
     updateUserInfo (state, userInfo) {
       state.account = userInfo.account
       state.nickname = userInfo.nickname
+    },
+    updataAvatar (state, avatar) {
+      state.avatar = avatar
     }
   },
   actions: {
@@ -119,6 +126,18 @@ export default {
         commit('getInfo', data.result)
       } catch (error) {
         commit('logout')
+      }
+    },
+    async updataAvatar ({ commit }) {
+      try {
+        const { data } = await serverAPI.get('/users/updateAvatar')
+        commit('updataAvatar', data.result)
+      } catch (error) {
+        swal.fire({
+          icon: 'error',
+          title: '錯誤',
+          text: '更新頭像失敗'
+        })
       }
     },
     async addFavGame ({ commit, state }, { gameId, gameName }) {

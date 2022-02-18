@@ -2,8 +2,32 @@
   <div id="editInfo">
     <div class="d-flex flex-column justify-content-center align-items-center mb-3">
       <h1>會員資料</h1>
-      <div class="mb-5">
-        <Avatar icon="pi pi-user" size="xlarge" shape="circle" />
+      <div class="mb-5" :class="{hideImgPreview: !newAvatar}">
+        <div v-if="!newAvatar" style="margin-bottom: 1.5rem;">
+          <Avatar v-if="!userInfo.avatar" icon="pi pi-user" size="xlarge" shape="circle" />
+          <Avatar v-else :image="userInfo.avatar" size="xlarge" shape="circle" />
+        </div>
+        <ImageUploader
+          :debug="1"
+          :maxWidth="512"
+          :maxSize="1"
+          :quality="0.7"
+          :autoRotate="true"
+          outputFormat="file"
+          :preview="true"
+          capture="environment"
+          accept="image/*"
+          @input="imgInput"
+        >
+          <template #upload-label>
+            <label for="fileInput">
+              <div class="inputTitle mb-3">
+                上傳照片
+              </div>
+            </label>
+            <div class="inputTitle" @click="imgClear">清空</div>
+          </template>
+        </ImageUploader>
       </div>
       <div class="d-flex flex-column flex-md-row align-items-center mb-2">
         <span class="mb-2 mb-md-0" v-tooltip.right="'遊戲中的預設名稱，沒有填寫的話會採用帳號'">暱稱</span>
@@ -25,17 +49,20 @@
 
 <script>
 import Avatar from 'primevue/avatar'
+import ImageUploader from 'vue-image-upload-resize'
 import { required, minLength } from 'vuelidate/lib/validators'
 
 export default {
   components: {
-    Avatar
+    Avatar,
+    ImageUploader
   },
   data () {
     return {
       sending: false,
       nickname: '',
-      account: ''
+      account: '',
+      newAvatar: ''
     }
   },
   validations: {
@@ -60,9 +87,17 @@ export default {
         }
 
         if (this.account !== this.userInfo.account ||
-        this.nickname !== this.userInfo.nickname) {
+        this.nickname !== this.userInfo.nickname ||
+        this.newAvatar) {
+          const fd = new FormData()
+          fd.append('account', this.account)
+          fd.append('nickname', this.nickname)
+          if (this.newAvatar) {
+            fd.append('image', this.newAvatar)
+          }
+
           this.sending = true
-          await this.serverAPI.patch('/users/editinfo', { nickname: this.nickname, account: this.account }, {
+          await this.serverAPI.patch('/users/editinfo', fd, {
             headers: {
               authorization: 'Bearer ' + this.userInfo.token
             }
@@ -76,6 +111,10 @@ export default {
           })
 
           this.$store.commit('user/updateUserInfo', { nickname: this.nickname, account: this.account })
+          if (this.newAvatar) {
+            this.$store.dispatch('user/updataAvatar')
+            this.newAvatar = ''
+          }
         } else {
           this.$toast.add({ severity: 'error', summary: '錯誤', detail: '資料無修改', life: 3000 })
         }
@@ -87,6 +126,12 @@ export default {
           text: error.response.data.message
         })
       }
+    },
+    imgInput (file) {
+      this.newAvatar = file
+    },
+    imgClear () {
+      this.newAvatar = ''
     }
   },
   created () {
@@ -98,6 +143,34 @@ export default {
 }
 </script>
 
-<style>
+<style lang="scss">
+  #editInfo {
+    #fileInput {
+      display: none;
+    }
 
+    .hideImgPreview .img-preview {
+      display: none;
+    }
+
+    .img-preview {
+      margin-bottom: 1.5rem;
+      width: 64px;
+      height: 64px;
+      object-fit: cover;
+      border-radius: 9999px;
+    }
+
+    .inputTitle {
+      padding: 2px 5px;
+      border: 1px solid #000;
+      border-radius: 5px;
+      cursor: pointer;
+      transition: transform 0.5s;
+
+      &:hover {
+        transform: scale(1.2);
+      }
+    }
+  }
 </style>

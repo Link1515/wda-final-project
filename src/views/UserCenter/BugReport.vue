@@ -31,6 +31,8 @@ export default {
   methods: {
     async sendReport () {
       try {
+        if (this.sending) return
+
         this.$v.$touch()
         if (this.$v.$error) {
           if (this.$v.title.$error) {

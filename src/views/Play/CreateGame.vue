@@ -73,6 +73,7 @@ export default {
           {
             playerId: this.userInfo._id,
             playerName: this.playerName,
+            avatar: this.userInfo.avatar,
             playerAmount: this.playerAmount,
             gameId: this.selectedGame
           })
