@@ -7,6 +7,7 @@ export default {
   state: {
     _id: '',
     account: '',
+    nickname: '',
     email: '',
     token: '',
     role: '',
@@ -16,6 +17,7 @@ export default {
     login (state, userInfo) {
       state._id = userInfo._id
       state.account = userInfo.account
+      state.nickname = userInfo.nickname
       state.email = userInfo.email
       state.token = userInfo.token
       state.role = userInfo.role
@@ -24,6 +26,7 @@ export default {
     logout (state) {
       state._id = ''
       state.account = ''
+      state.nickname = ''
       state.email = ''
       state.token = ''
       state.role = ''
@@ -35,12 +38,17 @@ export default {
     getInfo (state, userInfo) {
       state._id = userInfo._id
       state.account = userInfo.account
+      state.nickname = userInfo.nickname
       state.email = userInfo.email
       state.role = userInfo.role
       state.favoriteGame = userInfo.favoriteGame
     },
     updateFavGame (state, newFavGame) {
       state.favoriteGame = newFavGame
+    },
+    updateUserInfo (state, userInfo) {
+      state.account = userInfo.account
+      state.nickname = userInfo.nickname
     }
   },
   actions: {

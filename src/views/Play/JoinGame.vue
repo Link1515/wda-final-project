@@ -69,7 +69,7 @@ export default {
     }
   },
   created () {
-    this.playerName = this.userInfo.account
+    this.userInfo.nickname ? this.playerName = this.userInfo.nickname : this.playerName = this.userInfo.account
   },
   beforeRouteEnter (to, from, next) {
     next(vm => {

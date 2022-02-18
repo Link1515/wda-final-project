@@ -59,6 +59,7 @@ const routes = [
   {
     path: '/usercenter',
     name: 'UserCenter',
+    redirect: '/usercenter/editinfo',
     component: () => import(/* webpackChunkName: "UserCenter" */ '../views/UserCenter'),
     children: [
       {
