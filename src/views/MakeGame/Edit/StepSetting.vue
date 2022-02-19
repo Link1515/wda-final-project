@@ -318,6 +318,9 @@ export default {
         if (config.showPlayer.roleListType === 'all') {
           config.showPlayer.roleId = 'all'
         }
+        if (config.showPlayer.conductingRoleListType === 'all') {
+          config.showPlayer.conductingRoleId = 'all'
+        }
         if (config.markPlayer.conductingRoleListType === 'all') {
           config.markPlayer.conductingRoleId = 'all'
         }

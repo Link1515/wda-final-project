@@ -8,7 +8,7 @@
           <Avatar v-else :image="userInfo.avatar" size="xlarge" shape="circle" />
         </div>
         <ImageUploader
-          :debug="1"
+          :debug="0"
           :maxWidth="512"
           :maxSize="1"
           :quality="0.7"
@@ -87,6 +87,13 @@ export default {
         if (this.account !== this.userInfo.account ||
         this.nickname !== this.userInfo.nickname ||
         this.newAvatar) {
+          const result = await this.$swal({
+            icon: 'warning',
+            title: '是否要保存修改?',
+            showCancelButton: true
+          })
+          if (result.isDismissed) return
+
           const fd = new FormData()
           fd.append('account', this.account)
           fd.append('nickname', this.nickname)

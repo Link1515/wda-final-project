@@ -28,8 +28,8 @@
           <InputText readonly :value="gotUser.email" class="ms-md-3 flex-grow-1"/>
         </div>
         <div class="d-flex flex-column flex-md-row align-items-center">
-          <Button label="重設密碼" v-tooltip.bottom="'將該用戶密碼重設為 0000'" class="p-button-rounded p-button-raised mb-2 mb-md-0 mx-md-2"/>
-          <Button label="移除用戶" class="p-button-rounded p-button-raised p-button-danger mb-2 mb-md-0 mx-md-2"/>
+          <Button label="重設密碼" @click="resetUserPassword" v-tooltip.bottom="'將該用戶密碼重設為 0000'" class="p-button-rounded p-button-raised mb-2 mb-md-0 mx-md-2"/>
+          <Button label="移除用戶" @click="deleteUser" class="p-button-rounded p-button-raised p-button-danger mb-2 mb-md-0 mx-md-2"/>
         </div>
       </template>
     </div>
@@ -48,7 +48,6 @@ export default {
       ],
       searchType: '',
       searchStr: '',
-      searchResult: [],
       gotUser: null
     }
   },
@@ -74,6 +73,66 @@ export default {
         })
         this.searchStr = ''
         this.gotUser = data.result
+      } catch (error) {
+        this.$swal({
+          icon: 'error',
+          title: '錯誤',
+          text: error.response.data.message
+        })
+      }
+    },
+    async resetUserPassword () {
+      try {
+        const result = await this.$swal({
+          icon: 'warning',
+          title: '是否確定重設用戶密碼?',
+          showCancelButton: true
+        })
+        if (result.isDismissed) return
+
+        await this.serverAPI.patch('/users/resetUserPassword', {
+          userId: this.gotUser._id
+        }, {
+          headers: {
+            authorization: 'Bearer ' + this.userInfo.token
+          }
+        })
+
+        this.$swal({
+          icon: 'success',
+          title: '成功',
+          text: '成功重設'
+        })
+      } catch (error) {
+        this.$swal({
+          icon: 'error',
+          title: '失敗',
+          text: error.response.data.message
+        })
+      }
+    },
+    async deleteUser () {
+      try {
+        const result = await this.$swal({
+          icon: 'warning',
+          title: '是否確定刪除用戶?',
+          showCancelButton: true
+        })
+        if (result.isDismissed) return
+
+        await this.serverAPI.delete('/users/deleteUser/' + this.gotUser._id, {
+          headers: {
+            authorization: 'Bearer ' + this.userInfo.token
+          }
+        })
+
+        this.gotUser = null
+
+        this.$swal({
+          icon: 'success',
+          title: '成功',
+          text: '成功刪除用戶'
+        })
       } catch (error) {
         this.$swal({
           icon: 'error',

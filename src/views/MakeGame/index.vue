@@ -20,18 +20,35 @@
             </template>
           </Card>
         </div>
+
+        <InfiniteLoading @infinite="infiniteHandler">
+          <template #spinner>
+            <div>載入中...</div>
+          </template>
+          <template #no-more>
+            <div class="mt-4">資料已全部載入</div>
+          </template>
+          <template #no-results>
+            <div class="mt-4">載入失敗</div>
+          </template>
+        </InfiniteLoading>
       </div>
-    <router-view />
+    <router-view @updateList="updateList"/>
   </div>
 </template>
 
 <script>
+import InfiniteLoading from 'vue-infinite-loading'
 
 export default {
   name: 'MakeGame',
+  components: {
+    InfiniteLoading
+  },
   data () {
     return {
-      userMadeGameList: []
+      userMadeGameList: [],
+      page: 1
     }
   },
   computed: {
@@ -48,28 +65,36 @@ export default {
       this.$store.dispatch('game/getOneGame', gameId)
       this.$router.push('/makegame/edit')
     },
-    async updateData () {
+    async infiniteHandler ($state) {
       try {
         const { data } = await this.serverAPI.get('/games/getUserMadeGames', {
           headers: {
             authorization: 'Bearer ' + this.userInfo.token
+          },
+          params: {
+            page: this.page
           }
         })
-        this.userMadeGameList = data.result
+        if (data.result.length) {
+          this.page++
+
+          this.userMadeGameList.push(...data.result)
+          $state.loaded()
+        } else {
+          $state.complete()
+        }
       } catch (error) {
         this.$swal({
           icon: 'error',
-          title: '錯誤',
-          text: '取得桌遊失敗'
+          title: '失敗',
+          text: '取得失敗'
         })
       }
+    },
+    updateList () {
+      this.userMadeGameList = []
+      this.page = 1
     }
-  },
-  async created () {
-    this.updateData()
-  },
-  async updated () {
-    this.updateData()
   }
 }
 </script>

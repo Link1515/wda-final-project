@@ -286,9 +286,7 @@ export default {
 
 // ----- p-inputtext -----
   .p-inputtext+label {
-    &+label {
-      margin-left: 0.5rem;
-    }
+    margin-left: 0.5rem;
   }
 
 // ----- form -----

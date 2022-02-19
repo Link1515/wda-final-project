@@ -167,7 +167,7 @@ export default {
 
     async getOneGame ({ rootState, commit }, gameId) {
       try {
-        const { data } = await serverAPI.post('/games/getOneGame', { gameId }, {
+        const { data } = await serverAPI.get('/games/getGameById/' + gameId, {
           headers: {
             authorization: 'Bearer ' + rootState.user.token
           }

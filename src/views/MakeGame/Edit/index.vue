@@ -48,6 +48,7 @@ export default {
       return refToValidate.validate()
     },
     editGameFinish () {
+      this.$emit('updateList')
       this.$store.dispatch('game/editGameFinish')
     }
   }

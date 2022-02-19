@@ -56,6 +56,13 @@ export default {
           return
         }
 
+        const result = await this.$swal({
+          icon: 'warning',
+          title: '是否要保存修改?',
+          showCancelButton: true
+        })
+        if (result.isDismissed) return
+
         this.sending = true
         await this.serverAPI.patch('/users/editpassword', {
           account: this.userInfo.account,

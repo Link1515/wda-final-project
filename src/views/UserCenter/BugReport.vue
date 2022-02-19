@@ -43,6 +43,13 @@ export default {
           return
         }
 
+        const result = await this.$swal({
+          icon: 'warning',
+          title: '是否確定送出?',
+          showCancelButton: true
+        })
+        if (result.isDismissed) return
+
         this.sending = true
         await this.serverAPI.post('/reports/createReport',
           {
