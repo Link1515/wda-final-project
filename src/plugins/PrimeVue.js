@@ -12,6 +12,8 @@ import Dialog from 'primevue/dialog'
 import InputText from 'primevue/inputtext'
 import Textarea from 'primevue/textarea'
 import Toast from 'primevue/toast'
+import DataTable from 'primevue/datatable'
+import Column from 'primevue/column'
 
 // global directive
 import Tooltip from 'primevue/tooltip'
@@ -25,6 +27,8 @@ Vue.component('Dialog', Dialog)
 Vue.component('InputText', InputText)
 Vue.component('Textarea', Textarea)
 Vue.component('Toast', Toast)
+Vue.component('DataTable', DataTable)
+Vue.component('Column', Column)
 
 Vue.directive('tooltip', Tooltip)
 

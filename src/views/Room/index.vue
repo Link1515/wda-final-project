@@ -126,8 +126,6 @@
 </template>
 
 <script>
-import DataTable from 'primevue/datatable'
-import Column from 'primevue/column'
 import SelectButton from 'primevue/selectbutton'
 import Avatar from 'primevue/avatar'
 import { mapState, mapGetters } from 'vuex'
@@ -135,8 +133,6 @@ import { mapState, mapGetters } from 'vuex'
 export default {
   name: 'Room',
   components: {
-    DataTable,
-    Column,
     SelectButton,
     Avatar
   },
@@ -253,10 +249,6 @@ function picked (val) {
   .self {
     color: rgb(243, 61, 61);
     font-weight: bold;
-  }
-
-  .VueSelectWidth {
-    width: 215px;
   }
 
   .p-datatable,

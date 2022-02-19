@@ -78,6 +78,10 @@ li {
   padding: 2rem;
 }
 
+.VueSelectWidth {
+  width: 215px;
+}
+
 .position-relative{
   position: relative;
 }

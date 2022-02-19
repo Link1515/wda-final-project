@@ -76,6 +76,21 @@ const routes = [
         path: 'bugreport',
         name: 'BugReport',
         component: () => import(/* webpackChunkName: "BugReport" */ '../views/UserCenter/BugReport')
+      },
+      {
+        path: 'manageuser',
+        name: 'ManageUser',
+        component: () => import(/* webpackChunkName: "ManageUser" */ '../views/UserCenter/ManageUser')
+      },
+      {
+        path: 'managegame',
+        name: 'ManageGame',
+        component: () => import(/* webpackChunkName: "ManageGame" */ '../views/UserCenter/ManageGame')
+      },
+      {
+        path: 'reportreview',
+        name: 'ReportReview',
+        component: () => import(/* webpackChunkName: "ReportReview" */ '../views/UserCenter/ReportReview')
       }
     ]
   },

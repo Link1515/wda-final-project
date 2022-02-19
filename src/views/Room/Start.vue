@@ -62,7 +62,8 @@
       <div ref="stepShowCountDown" class="mb-5 mt-3" style="background: red; height: 5px"></div>
       <div class="row flex-wrap justify-content-center" style="text-align: center">
         <div class="col-3" v-for="player in shownPlayers" :key="player.socketId">
-          <Avatar icon="pi pi-user" class="mb-2" size="large" shape="circle"/>
+          <Avatar v-if="!player.avatar" icon="pi pi-user" class="mb-2" size="large" shape="circle"/>
+          <Avatar v-else :image="player.avatar" class="mb-2" size="large" shape="circle"/>
           <div>{{ player.name }}</div>
         </div>
       </div>
@@ -73,11 +74,8 @@
       <div class="row flex-wrap justify-content-center" style="text-align: center">
         <div class="col-3" v-for="player in shownPlayers" :key="player.socketId" @click="mark(player.socketId)" style="position: relative;">
           <div v-if="markedPlayers.includes(player.socketId)" class="mark" :class="{self: player.socketId === myMarkedPlayer}">{{ markLabel }}</div>
-          <Avatar
-            icon="pi pi-user"
-            class="mb-2" size="large" shape="circle"
-            style="cursor: pointer;"
-          />
+          <Avatar v-if="!player.avatar" icon="pi pi-user" class="mb-2" size="large" shape="circle" style="cursor: pointer;"/>
+          <Avatar v-else :image="player.avatar" class="mb-2" size="large" shape="circle" style="cursor: pointer;"/>
           <div>{{ player.name }}</div>
         </div>
       </div>
@@ -88,11 +86,8 @@
       <div class="row flex-wrap justify-content-center" style="text-align: center">
         <div class="col-3" v-for="(result,index) in markedResult" :key="index" style="position: relative;">
           <div class="mark self">{{ result.markLabel }}</div>
-          <Avatar
-            icon="pi pi-user"
-            class="mb-2" size="large" shape="circle"
-            style="cursor: pointer;"
-          />
+          <Avatar v-if="!result.player.avatar" icon="pi pi-user" class="mb-2" size="large" shape="circle"/>
+          <Avatar v-else :image="result.player.avatar" class="mb-2" size="large" shape="circle"/>
           <div>{{ result.player.name }}</div>
         </div>
       </div>
@@ -101,8 +96,6 @@
 </template>
 
 <script>
-import DataTable from 'primevue/datatable'
-import Column from 'primevue/column'
 import Avatar from 'primevue/avatar'
 import TabView from 'primevue/tabview'
 import TabPanel from 'primevue/tabpanel'
@@ -113,8 +106,6 @@ import { mapState, mapGetters } from 'vuex'
 export default {
   name: 'Start',
   components: {
-    DataTable,
-    Column,
     Avatar,
     TabView,
     TabPanel,

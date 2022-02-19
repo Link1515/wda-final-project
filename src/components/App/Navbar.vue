@@ -21,7 +21,7 @@
         <TabPanel header="登入">
           <form class="p-fluid" @submit.prevent="login">
             <span class="p-float-label mb-1">
-              <InputText id="login_username" type="text" v-model.trim="$v.loginData.account.$model" :class="{'p-invalid': $v.loginData.account.$error}"/>
+              <InputText id="login_username" type="text" v-model.trim="loginData.account" :class="{'p-invalid': $v.loginData.account.$error}"/>
               <label for="login_username">帳號</label>
             </span>
             <template v-if="$v.loginData.account.$error">
@@ -29,7 +29,7 @@
               <div class="invalidMsg" v-if="!$v.loginData.account.minLength">帳號最小長度為 {{$v.loginData.account.$params.minLength.min}}</div>
             </template>
             <span class="p-float-label mb-1">
-              <InputText id="login_password" type="password" v-model.trim="$v.loginData.password.$model" autocomplete :class="{'p-invalid': $v.loginData.password.$error}"/>
+              <InputText id="login_password" type="password" v-model.trim="loginData.password" autocomplete :class="{'p-invalid': $v.loginData.password.$error}"/>
               <label for="login_password">密碼</label>
             </span>
             <template v-if="$v.loginData.password.$error">
@@ -44,7 +44,7 @@
         <TabPanel header="註冊">
           <form class="p-fluid" @submit.prevent="register">
             <span class="p-float-label mb-1">
-              <InputText id="register_email" type="text" v-model.trim="$v.registerData.email.$model" :class="{'p-invalid': $v.registerData.email.$error }"/>
+              <InputText id="register_email" type="text" v-model.trim="registerData.email" :class="{'p-invalid': $v.registerData.email.$error }"/>
               <label for="register_email">信箱</label>
             </span>
             <template v-if="$v.registerData.email.$error">
@@ -60,7 +60,7 @@
               <div class="invalidMsg" v-if="!$v.registerData.account.minLength">帳號最小長度為 {{$v.registerData.account.$params.minLength.min}}</div>
             </template>
             <span class="p-float-label mb-1">
-              <InputText id="register_password" type="password" v-model.trim="$v.registerData.password.$model" autocomplete :class="{'p-invalid': $v.registerData.password.$error}"/>
+              <InputText id="register_password" type="password" v-model.trim="registerData.password" autocomplete :class="{'p-invalid': $v.registerData.password.$error}"/>
               <label for="register_password">密碼</label>
             </span>
             <template v-if="$v.registerData.password.$error">
@@ -198,8 +198,9 @@ export default {
       immediate: true,
       handler (newValue) {
         if (newValue.isLogin) {
+          const pageStr = this.userInfo.role === 'admin' ? '管理中心' : '會員中心'
           this.navItems = [this.navItems[0], this.navItems[1],
-            { label: '自製遊戲', to: '/makegame' }, { label: '會員中心', to: '/usercenter' }]
+            { label: '自製遊戲', to: '/makegame' }, { label: pageStr, to: '/usercenter' }]
           this.displayPanel = false
         } else {
           this.navItems = [this.navItems[0], this.navItems[1]]
@@ -281,6 +282,15 @@ export default {
 
   .p-tabview-title {
     color: #000;
+  }
+
+// ----- p-inputtext -----
+  .p-inputtext {
+    height: 2.5rem;
+
+    &+label {
+      margin-left: 0.5rem;
+    }
   }
 
 // ----- form -----
