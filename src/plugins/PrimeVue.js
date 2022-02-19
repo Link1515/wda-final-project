@@ -14,6 +14,7 @@ import Textarea from 'primevue/textarea'
 import Toast from 'primevue/toast'
 import DataTable from 'primevue/datatable'
 import Column from 'primevue/column'
+import Avatar from 'primevue/avatar'
 
 // global directive
 import Tooltip from 'primevue/tooltip'
@@ -29,6 +30,7 @@ Vue.component('Textarea', Textarea)
 Vue.component('Toast', Toast)
 Vue.component('DataTable', DataTable)
 Vue.component('Column', Column)
+Vue.component('Avatar', Avatar)
 
 Vue.directive('tooltip', Tooltip)
 

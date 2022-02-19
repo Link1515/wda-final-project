@@ -23,10 +23,16 @@ serverAPI.interceptors.response.use(res => res, error => {
           originalRequest.headers.authorization = 'Bearer ' + store.state.user.token
           return axios(originalRequest)
         }).catch(error => {
-          console.log(error)
-          store.commit('user/logout')
-          router.push('/')
-          return Promise.reject(error)
+          if (error.response.status === 401) {
+            store.commit('user/logout')
+            router.push('/')
+            return Promise.reject(error)
+          }
+          Swal.fire({
+            icon: 'error',
+            title: '錯誤',
+            text: error.response.data.message
+          })
         })
       }
     }

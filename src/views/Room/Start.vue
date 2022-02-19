@@ -96,7 +96,6 @@
 </template>
 
 <script>
-import Avatar from 'primevue/avatar'
 import TabView from 'primevue/tabview'
 import TabPanel from 'primevue/tabpanel'
 import VueModal from '@kouts/vue-modal'
@@ -106,7 +105,6 @@ import { mapState, mapGetters } from 'vuex'
 export default {
   name: 'Start',
   components: {
-    Avatar,
     TabView,
     TabPanel,
     VueModal

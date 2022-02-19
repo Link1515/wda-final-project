@@ -133,6 +133,7 @@ li {
   }
 
   .p-inputtext {
+    height: 2.5rem;
     padding-left: 1rem;
     padding-right: 1rem;
     border-radius: 9999px;

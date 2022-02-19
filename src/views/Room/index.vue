@@ -127,14 +127,12 @@
 
 <script>
 import SelectButton from 'primevue/selectbutton'
-import Avatar from 'primevue/avatar'
 import { mapState, mapGetters } from 'vuex'
 
 export default {
   name: 'Room',
   components: {
-    SelectButton,
-    Avatar
+    SelectButton
   },
   data () {
     return {

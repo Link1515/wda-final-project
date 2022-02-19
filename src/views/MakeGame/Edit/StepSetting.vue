@@ -157,7 +157,6 @@
 import Draggable from 'vuedraggable'
 import Dropdown from 'primevue/dropdown'
 import InputNumber from 'primevue/inputnumber'
-import Avatar from 'primevue/avatar'
 
 import { required } from 'vuelidate/lib/validators'
 
@@ -165,8 +164,7 @@ export default {
   components: {
     Draggable,
     Dropdown,
-    InputNumber,
-    Avatar
+    InputNumber
   },
   data () {
     return {

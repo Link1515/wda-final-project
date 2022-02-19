@@ -30,7 +30,7 @@
         </ImageUploader>
       </div>
       <div class="d-flex flex-column flex-md-row align-items-center mb-2">
-        <span class="mb-2 mb-md-0" v-tooltip.right="'遊戲中的預設名稱，沒有填寫的話會採用帳號'">暱稱</span>
+        <span class="mb-2 mb-md-0">暱稱</span>
         <InputText v-model="nickname" @keydown.enter="updateAndSave" maxlength="10" class="ms-md-3 flex-grow-1"/>
       </div>
       <div class="d-flex flex-column flex-md-row align-items-center mb-2">
@@ -48,13 +48,11 @@
 </template>
 
 <script>
-import Avatar from 'primevue/avatar'
 import ImageUploader from 'vue-image-upload-resize'
 import { required, minLength } from 'vuelidate/lib/validators'
 
 export default {
   components: {
-    Avatar,
     ImageUploader
   },
   data () {

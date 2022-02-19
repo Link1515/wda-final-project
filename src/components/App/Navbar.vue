@@ -285,9 +285,7 @@ export default {
   }
 
 // ----- p-inputtext -----
-  .p-inputtext {
-    height: 2.5rem;
-
+  .p-inputtext+label {
     &+label {
       margin-left: 0.5rem;
     }
