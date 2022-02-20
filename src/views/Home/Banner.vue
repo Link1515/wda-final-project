@@ -9,12 +9,14 @@
       </div>
       <div class="col-12 col-lg-6">
         <Card>
-          <template #title>
-            Simple Card
-          </template>
           <template #content>
-            <p>Lorem ipsum dolor sit amet, consectetur adipisicing elit. Inventore sed consequuntur error repudiandae numquam deserunt
-            quisquam repellat libero asperiores earum nam nobis, culpa ratione quam perferendis esse, cupiditate neque quas!</p>
+            <p style="line-height: 25px">易桌遊是一個專為<b>陣營類桌遊</b>設計的輔助網站，能夠代替玩家主持桌遊，推動桌遊的進行。有以下特點</p>
+            <ul>
+              <li>電腦語音</li>
+              <li>輔助顯示玩家</li>
+              <li>輔助標記玩家</li>
+              <li>結果紀錄</li>
+            </ul>
           </template>
         </Card>
       </div>
@@ -69,6 +71,23 @@ export default {
 
     .start_btn {
       font-weight: 900;
+    }
+
+    .p-card-body {
+      ul {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+      }
+
+      li{
+        margin: 6px 0;
+        padding: 6px 12px;
+        border-radius: 9999px;
+        color: #000;
+        font-weight: 500;
+        background-color: #ffc107;
+      }
     }
   }
 </style>

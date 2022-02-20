@@ -8,8 +8,6 @@
         <swiper-slide>Slide 3</swiper-slide>
         <swiper-slide>Slide 4</swiper-slide>
         <swiper-slide>Slide 5</swiper-slide>
-        <swiper-slide>Slide 6</swiper-slide>
-        <swiper-slide>Slide 7</swiper-slide>
         <div class="swiper-pagination" slot="pagination"></div>
       </swiper>
     </div>
@@ -52,6 +50,7 @@ export default {
 
 <style lang="scss">
   #popularGame{
+    border-radius: 0 0 8px 8px;
     background-color: #fff;
     padding: 1rem 3rem;
   }

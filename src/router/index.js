@@ -9,21 +9,33 @@ const routes = [
   {
     path: '/',
     name: 'Home',
+    meta: {
+      title: '易桌遊'
+    },
     component: Home
   },
   {
     path: '/play',
     name: 'Play',
+    meta: {
+      title: '易桌遊 | 立即開始'
+    },
     component: () => import(/* webpackChunkName: "Play" */ '../views/Play'),
     children: [
       {
         path: 'creategame',
         name: 'CreateGame',
+        meta: {
+          title: '易桌遊 | 創建遊戲'
+        },
         component: () => import(/* webpackChunkName: "CreateGame" */ '../views/Play/CreateGame')
       },
       {
         path: 'joingame',
         name: 'JoinGame',
+        meta: {
+          title: '易桌遊 | 加入遊戲'
+        },
         component: () => import(/* webpackChunkName: "JoinGame" */ '../views/Play/JoinGame')
       }
     ]
@@ -31,11 +43,17 @@ const routes = [
   {
     path: '/room',
     name: 'Room',
+    meta: {
+      title: '易桌遊 | 遊戲間'
+    },
     component: () => import(/* webpackChunkName: "Room" */ '../views/Room'),
     children: [
       {
         path: 'start',
         name: 'Start',
+        meta: {
+          title: '易桌遊 | 遊戲間'
+        },
         component: () => import(/* webpackChunkName: "Start" */ '../views/Room/Start')
       }
     ]
@@ -43,12 +61,16 @@ const routes = [
   {
     path: '/populargame',
     name: 'PopularGame',
+    meta: {
+      title: '易桌遊 | 熱門遊戲'
+    },
     component: () => import(/* webpackChunkName: "PopularGame" */ '../views/PopularGame')
   },
   {
     path: '/makegame',
     name: 'MakeGame',
     meta: {
+      title: '易桌遊 | 自製遊戲',
       mustLogin: true
     },
     component: () => import(/* webpackChunkName: "MakeGame" */ '../views/MakeGame'),
@@ -57,6 +79,7 @@ const routes = [
         path: 'edit',
         name: 'Edit',
         meta: {
+          title: '易桌遊 | 自製遊戲',
           mustLogin: true
         },
         component: () => import(/* webpackChunkName: "Edit" */ '../views/MakeGame/Edit')
@@ -73,6 +96,7 @@ const routes = [
         path: 'editinfo',
         name: 'EditInfo',
         meta: {
+          title: '易桌遊 | 會員資料',
           mustLogin: true
         },
         component: () => import(/* webpackChunkName: "EditInfo" */ '../views/UserCenter/EditInfo')
@@ -81,6 +105,7 @@ const routes = [
         path: 'editpassword',
         name: 'EditPassword',
         meta: {
+          title: '易桌遊 | 修改密碼',
           mustLogin: true
         },
         component: () => import(/* webpackChunkName: "EditPassword" */ '../views/UserCenter/EditPassword')
@@ -89,6 +114,7 @@ const routes = [
         path: 'bugreport',
         name: 'BugReport',
         meta: {
+          title: '易桌遊 | 錯誤回報',
           mustLogin: true
         },
         component: () => import(/* webpackChunkName: "BugReport" */ '../views/UserCenter/BugReport')
@@ -97,6 +123,7 @@ const routes = [
         path: 'manageuser',
         name: 'ManageUser',
         meta: {
+          title: '易桌遊 | 會員管理',
           mustLogin: true,
           admin: true
         },
@@ -106,6 +133,7 @@ const routes = [
         path: 'managegame',
         name: 'ManageGame',
         meta: {
+          title: '易桌遊 | 桌遊管理',
           mustLogin: true,
           admin: true
         },
@@ -115,6 +143,7 @@ const routes = [
         path: 'reportreview',
         name: 'ReportReview',
         meta: {
+          title: '易桌遊 | 會員回報',
           mustLogin: true,
           admin: true
         },
@@ -141,6 +170,10 @@ router.beforeEach((to, from, next) => {
     return
   }
   next()
+})
+
+router.afterEach((to, from) => {
+  document.title = to.meta.title
 })
 
 export default router

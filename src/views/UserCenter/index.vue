@@ -44,7 +44,7 @@ export default {
       immediate: true,
       handler (newValue) {
         if (newValue.role === 'admin') {
-          this.items = [this.items[0], this.items[1], { label: '會員管理', to: '/usercenter/manageuser' }, { label: '桌遊管理', to: '/usercenter/managegame' }, { label: '用戶回報', to: '/usercenter/reportreview' }]
+          this.items = [this.items[0], this.items[1], { label: '會員管理', to: '/usercenter/manageuser' }, { label: '桌遊管理', to: '/usercenter/managegame' }, { label: '會員回報', to: '/usercenter/reportreview' }]
         }
       }
     }

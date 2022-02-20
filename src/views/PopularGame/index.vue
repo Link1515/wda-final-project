@@ -16,7 +16,7 @@
             {{ game.name }}
           </template>
           <template #content>
-            <Rating v-model="val" :readonly="true" :cancel="false"/>
+            <Rating :value="countStar(game.likes)" :readonly="true" :cancel="false"/>
           </template>
           <template #footer>
             <ToggleButton v-model="game.likedByUser" @change="setFavGame(game.likedByUser, game._id, game.name)" onIcon="pi pi-heart-fill" offIcon="pi pi-heart"/>
@@ -76,7 +76,6 @@ export default {
   },
   data () {
     return {
-      val: 3,
       dialogDisplay: false,
       page: 1,
       gameList: []
@@ -86,6 +85,9 @@ export default {
     showDialog (gameId) {
       this.$store.dispatch('game/getOneGame', gameId)
       this.dialogDisplay = !this.dialogDisplay
+    },
+    countStar (likes) {
+      return Math.round((likes / this.mostLike) * 5)
     },
     setFavGame (isFav, gameId, gameName) {
       if (isFav) {
@@ -131,6 +133,9 @@ export default {
     }
   },
   computed: {
+    mostLike () {
+      return this.gameList[0].likes
+    },
     ...mapState('game', ['name', 'description', 'image', 'playerRange', 'goodCampRoleList', 'badCampRoleList', 'enableFunRole', 'funRoleList', 'stepList'])
   }
 }
