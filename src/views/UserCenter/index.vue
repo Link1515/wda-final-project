@@ -83,8 +83,6 @@ export default {
 
 @media (max-width: 993px) {
   #userCenter {
-    padding: 0 4rem 6rem;
-
     .p-menu {
       width: 100%;
     }

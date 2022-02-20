@@ -14,24 +14,26 @@
         <InputText v-model="searchText" @keydown.enter="searchGame" class="me-lg-2 flex-grow-1 mb-2 mb-lg-0"/>
         <Button icon="pi pi-search" @click="searchGame" class="p-button-rounded p-button-raised" />
       </div>
-      <template v-if="gotGame">
-        <div class="mx-auto mb-3" style="max-width: 600px">
-          <img v-if="gotGame.image" :src="gotGame.image">
-          <img v-else src="@/assets/images/image-placeholder.png">
-        </div>
-        <div class="d-flex flex-column flex-md-row align-items-center mb-2">
-          <span class="mb-2 mb-md-0">作者 ID</span>
-          <InputText readonly :value="gotGame.author" class="ms-md-3 flex-grow-1"/>
-        </div>
-        <div class="d-flex flex-column flex-md-row align-items-center mb-4">
-          <span class="mb-2 mb-md-0">桌遊名稱</span>
-          <InputText readonly :value="gotGame.name" class="ms-md-3 flex-grow-1"/>
-        </div>
-        <div class="d-flex flex-column flex-md-row align-items-center">
-          <Button label="移除桌遊" @click="deleteGame" class="p-button-rounded p-button-raised p-button-danger mb-2 mb-md-0 mx-md-2"/>
-        </div>
-      </template>
     </div>
+    <DataTable v-if="gotGames.length > 0" stripedRows :value="gotGames">
+      <Column field="image" header="圖片" :bodyStyle="{ textAlign: 'center' }">
+        <template #body="slotProps">
+          <img v-if="slotProps.data.image" :src="slotProps.data.image" style="width: 100px">
+          <img v-else src="@/assets/images/image-placeholder.png" style="width: 100px">
+        </template>
+      </Column>
+      <Column field="name" header="名稱" :bodyStyle="{ textAlign: 'center' }" />
+      <Column header="作者 ID" :bodyStyle="{ textAlign: 'center' }">
+        <template #body="slotProps">
+          <span class="authorId">{{ slotProps.data.author }}</span>
+        </template>
+      </Column>
+      <Column header="操作" :bodyStyle="{ textAlign: 'center' }">
+        <template #body="slotProps">
+          <Button label="移除桌遊" @click="deleteGame(slotProps.data._id)" class="p-button-rounded p-button-raised p-button-danger"/>
+        </template>
+      </Column>
+    </DataTable>
     <Toast position="top-center"/>
   </div>
 </template>
@@ -47,7 +49,7 @@ export default {
       ],
       searchType: '',
       searchText: '',
-      gotGame: null
+      gotGames: []
     }
   },
   methods: {
@@ -68,14 +70,14 @@ export default {
               authorization: 'Bearer ' + this.userInfo.token
             }
           })
-          this.gotGame = data.result
+          this.gotGames = data.result
         } else if (this.searchType === 'id') {
           const { data } = await this.serverAPI.get('games/getGameById/' + this.searchText, {
             headers: {
               authorization: 'Bearer ' + this.userInfo.token
             }
           })
-          this.gotGame = data.result
+          this.gotGames = [data.result]
         }
 
         this.searchText = ''
@@ -87,15 +89,22 @@ export default {
         })
       }
     },
-    async deleteGame () {
+    async deleteGame (gameId) {
       try {
-        this.serverAPI.delete('/games/deleteGameById/' + this.gotGame._id, {
+        const result = await this.$swal({
+          icon: 'warning',
+          title: '是否確定要移除?',
+          showCancelButton: true
+        })
+        if (result.isDismissed) return
+
+        this.serverAPI.delete('/games/deleteGameById/' + gameId, {
           headers: {
             authorization: 'Bearer ' + this.userInfo.token
           }
         })
 
-        this.gotGame = null
+        this.gotGames = []
 
         this.$swal({
           icon: 'success',
@@ -114,6 +123,22 @@ export default {
 }
 </script>
 
-<style>
+<style lang="scss">
+#ManageGame {
+  .p-column-header-content {
+    justify-content: center;
+  }
 
+  .authorId {
+    font-size: 10px;
+  }
+}
+
+@media (min-width: 768px) {
+  #ManageGame {
+    .authorId {
+      font-size: 1rem;
+    }
+  }
+}
 </style>

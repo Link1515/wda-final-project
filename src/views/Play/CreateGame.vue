@@ -91,16 +91,22 @@ export default {
     }
   },
   created () {
-    this.$store.commit('game/reset')
-    this.$store.dispatch('user/refreshFavGame')
-    this.userInfo.nickname ? this.playerName = this.userInfo.nickname : this.playerName = this.userInfo.account
+    if (this.$store.getters['user/userInfo'].isLogin) {
+      this.$store.commit('game/reset')
+      this.$store.dispatch('user/refreshFavGame')
+      this.userInfo.nickname ? this.playerName = this.userInfo.nickname : this.playerName = this.userInfo.account
+    } else {
+      this.$router.push('/play?login=0')
+    }
   },
   beforeRouteEnter (to, from, next) {
     next(vm => {
       if (vm.$socket.connected) {
         next('/room')
       } else {
-        vm.$socket.connect()
+        if (vm.$store.getters['user/userInfo'].isLogin) {
+          vm.$socket.connect()
+        }
       }
     })
   },

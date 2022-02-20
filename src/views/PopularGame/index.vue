@@ -37,8 +37,8 @@
       </template>
     </InfiniteLoading>
 
-    <Dialog :visible.sync="dialogDisplay" position="center" :showHeader="false" modal dismissableMask >
-      <div style="width: 600px">
+    <Dialog :visible.sync="dialogDisplay" position="center" :showHeader="false" modal dismissableMask>
+      <div style="max-height: 70vh">
         <img v-if="image" :src="image">
         <img v-else src="@/assets/images/image-placeholder.png"/>
         <div class="dialogText">
@@ -138,7 +138,7 @@ export default {
 
 <style lang="scss">
 #populargame {
-  padding: 0 4rem 6rem;
+  padding: 0 2rem 6rem;
 
   .p-card-content {
     padding: 0;
@@ -180,6 +180,12 @@ export default {
       padding-right: 0;
       text-align: center;
     }
+  }
+}
+
+@media (min-width: 992px) {
+  #populargame {
+    padding: 0 4rem 6rem;
   }
 }
 </style>

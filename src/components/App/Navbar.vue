@@ -191,6 +191,9 @@ export default {
   computed: {
     gaming () {
       return this.$store.state.room.roomId.length > 0
+    },
+    currentRoute () {
+      return this.$route
     }
   },
   watch: {
@@ -214,6 +217,14 @@ export default {
       } else {
         this.navItems.shift()
         this.navItems.unshift({ label: '立即開始', to: '/play' })
+      }
+    },
+    currentRoute: {
+      deep: true,
+      handler (route) {
+        if (route.query?.login === '0') {
+          this.displayPanel = true
+        }
       }
     }
   }

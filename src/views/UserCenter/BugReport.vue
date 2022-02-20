@@ -62,6 +62,9 @@ export default {
           })
         this.sending = false
 
+        this.title = ''
+        this.text = ''
+
         this.$swal({
           icon: 'success',
           title: '成功',
