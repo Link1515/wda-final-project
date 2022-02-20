@@ -11,7 +11,7 @@
           placeholder="選擇搜尋類型"
           style="background: #fff"
         />
-        <InputText v-model="searchStr" @keydown.enter="searchGame" class="me-lg-2 flex-grow-1 mb-2 mb-lg-0"/>
+        <InputText v-model="searchText" @keydown.enter="searchGame" class="me-lg-2 flex-grow-1 mb-2 mb-lg-0"/>
         <Button icon="pi pi-search" @click="searchGame" class="p-button-rounded p-button-raised" />
       </div>
       <template v-if="gotGame">
@@ -46,7 +46,7 @@ export default {
         { name: '桌遊 ID', type: 'id' }
       ],
       searchType: '',
-      searchStr: '',
+      searchText: '',
       gotGame: null
     }
   },
@@ -57,20 +57,20 @@ export default {
           this.$toast.add({ severity: 'error', summary: '錯誤', detail: '未選擇搜尋種類', life: 3000 })
           return
         }
-        if (!this.searchStr) {
+        if (!this.searchText) {
           this.$toast.add({ severity: 'error', summary: '錯誤', detail: '未填寫搜尋', life: 3000 })
           return
         }
 
         if (this.searchType === 'name') {
-          const { data } = await this.serverAPI.get('games/getGameByName/' + this.searchStr, {
+          const { data } = await this.serverAPI.get('games/getGameByName/' + this.searchText, {
             headers: {
               authorization: 'Bearer ' + this.userInfo.token
             }
           })
           this.gotGame = data.result
         } else if (this.searchType === 'id') {
-          const { data } = await this.serverAPI.get('games/getGameById/' + this.searchStr, {
+          const { data } = await this.serverAPI.get('games/getGameById/' + this.searchText, {
             headers: {
               authorization: 'Bearer ' + this.userInfo.token
             }
@@ -78,7 +78,7 @@ export default {
           this.gotGame = data.result
         }
 
-        this.searchStr = ''
+        this.searchText = ''
       } catch (error) {
         this.$swal({
           icon: 'error',

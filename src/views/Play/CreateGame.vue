@@ -92,6 +92,7 @@ export default {
   },
   created () {
     this.$store.commit('game/reset')
+    this.$store.dispatch('user/refreshFavGame')
     this.userInfo.nickname ? this.playerName = this.userInfo.nickname : this.playerName = this.userInfo.account
   },
   beforeRouteEnter (to, from, next) {

@@ -169,6 +169,22 @@ export default {
           title: '失敗'
         })
       }
+    },
+    async refreshFavGame ({ commit, state }) {
+      try {
+        const { data } = await serverAPI.get('/users/refreshFavGame', {
+          headers: {
+            authorization: 'Bearer ' + state.token
+          }
+        })
+        commit('updateFavGame', data.result)
+      } catch (error) {
+        swal.fire({
+          icon: 'error',
+          title: '錯誤',
+          text: '更新失敗'
+        })
+      }
     }
   },
   getters: {

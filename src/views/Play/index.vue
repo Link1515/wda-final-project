@@ -89,18 +89,12 @@ export default {
   .joinGame {
     cursor: pointer;
 
-    .p-card {
-      margin: auto;
-      text-align: center;
-      overflow: hidden;
+    svg {
+      transition: .5s;
+    }
 
-      svg {
-        transition: .5s;
-      }
-
-      &:hover svg {
-        transform: scale(1.2);
-      }
+    &:hover svg {
+      transform: scale(1.1);
     }
 
     .p-card-header {
