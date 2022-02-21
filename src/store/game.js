@@ -16,7 +16,7 @@ export default {
     badCampRoleList: [],
     enableFunRole: false,
     funRoleList: [],
-    stepList: [],
+    stepList: [{ id: nanoid(), name: '第一夜', rules: [] }],
     voiceType: 'Google 國語'
   },
   mutations: {
@@ -31,7 +31,7 @@ export default {
       state.badCampRoleList = []
       state.enableFunRole = false
       state.funRoleList = []
-      state.stepList = []
+      state.stepList = [{ id: nanoid(), name: '第一夜', rules: [] }]
       state.voiceType = 'Google 國語'
     },
     update (state, newData) {
@@ -105,8 +105,11 @@ export default {
       state.enableFunRole = enableFunRole
     },
 
-    addStepList (state, { mode, data }) {
-      state.stepList.push({
+    createStepList (state) {
+      state.stepList.push({ id: nanoid(), name: '新增流程', rules: [] })
+    },
+    addStepList (state, { stepListIndex, mode, data }) {
+      state.stepList[stepListIndex].rules.push({
         id: nanoid(),
         mode,
         data
@@ -114,6 +117,9 @@ export default {
     },
     updateStepList (state, newOrderSetp) {
       state.stepList = newOrderSetp
+    },
+    deleteStepList (state, index) {
+      state.stepList.splice(index, 1)
     },
 
     updateVoiceType (state, newVoiceType) {
@@ -186,26 +192,28 @@ export default {
       const newStepList = JSON.parse(JSON.stringify(state.stepList))
 
       newStepList.forEach(step => {
-        switch (step.mode) {
-          case '語音':
-            step.iconType = 'pi pi-volume-up'
-            step.iconColor = '#EED19C'
-            break
-          case '顯示':
-            step.iconType = 'pi pi-eye'
-            step.iconColor = '#ACBA9D'
-            step.conductingRoleListName = roleListNameTranslator(step.data.conductingRoleListType)
-            step.conductingRoleName = roleNameTranslator(state, step.data.conductingRoleListType, step.data.conductingRoleId)
-            step.roleListName = roleListNameTranslator(step.data.roleListType)
-            step.roleName = roleNameTranslator(state, step.data.roleListType, step.data.roleId)
-            break
-          case '標記':
-            step.iconType = 'pi pi-user-edit'
-            step.iconColor = '#E8837E'
-            step.conductingRoleListName = roleListNameTranslator(step.data.conductingRoleListType)
-            step.conductingRoleName = roleNameTranslator(state, step.data.conductingRoleListType, step.data.conductingRoleId)
-            break
-        }
+        step.rules.forEach(rule => {
+          switch (rule.mode) {
+            case '語音':
+              rule.iconType = 'pi pi-volume-up'
+              rule.iconColor = '#EED19C'
+              break
+            case '顯示':
+              rule.iconType = 'pi pi-eye'
+              rule.iconColor = '#ACBA9D'
+              rule.conductingRoleListName = roleListNameTranslator(rule.data.conductingRoleListType)
+              rule.conductingRoleName = roleNameTranslator(state, rule.data.conductingRoleListType, rule.data.conductingRoleId)
+              rule.roleListName = roleListNameTranslator(rule.data.roleListType)
+              rule.roleName = roleNameTranslator(state, rule.data.roleListType, rule.data.roleId)
+              break
+            case '標記':
+              rule.iconType = 'pi pi-user-edit'
+              rule.iconColor = '#E8837E'
+              rule.conductingRoleListName = roleListNameTranslator(rule.data.conductingRoleListType)
+              rule.conductingRoleName = roleNameTranslator(state, rule.data.conductingRoleListType, rule.data.conductingRoleId)
+              break
+          }
+        })
       })
       return newStepList
     },

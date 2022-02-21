@@ -2,12 +2,38 @@
   <div id="voicesetting">
     <div class="row" style="padding-bottom: 8rem">
       <div class="col-12 col-lg-6">
-        <StepList :list="$store.getters['game/stepListDisplayHelper']"/>
+        <ul id="steplist" v-for="step in $store.getters['game/stepListDisplayHelper']" :key="step.id">
+          <li><h2>{{step.name}}</h2></li>
+          <li v-for="rule in step.rules" :key="rule.id">
+            <template v-if="rule.mode === '語音'">
+              {{ rule.data }}
+            </template>
+            <template v-if="rule.mode === '顯示'">
+              顯示角色: {{ rule.roleListName }} {{ rule.roleName }}
+              <br>
+              時間: {{ rule.data.timer }} 秒
+            </template>
+            <template v-if="rule.mode === '標記'">
+              執行角色: {{ rule.conductingRoleListName }} {{ rule.conductingRoleName }}
+              <br>
+              標記: {{ rule.data.label }}
+              <br>
+              時間: {{ rule.data.timer }} 秒
+            </template>
+          </li>
+        </ul>
       </div>
       <div class="col-12 col-lg-6 controlPanel">
         <VueSelect v-model="voiceType" :options="voiceOptions" :reduce="v => v.value"/>
-        <div class="mt-4" style="text-align:center">
-          <Button @click="playStep" icon="pi pi-play" class="p-button-rounded p-button-raised p-button-lg" />
+        <div class="mt-4 d-flex flex-column align-items-center">
+          <Button
+            @click="playStep(index)"
+            v-for="(step, index) in $store.state.game.stepList"
+            :key="step.id" icon="pi pi-play"
+            :label="'播放' + step.name"
+            class="p-button-rounded p-button-raised p-button-lg mb-2"
+          />
+          <Button label="停止" @click="playCancel" class="p-button-rounded p-button-raised p-button-secondary p-button-lg mt-4"/>
         </div>
       </div>
     </div>
@@ -15,15 +41,11 @@
 </template>
 
 <script>
-import StepList from '@/components/StepList'
 
 export default {
-  components: {
-    StepList
-  },
+  name: 'VoiceSetting',
   data () {
     return {
-      // voiceOptions: ['Google 國語', 'Microsoft Hanhan', 'Microsoft Yating', 'Microsoft Zhiwei']
       voiceOptions: [
         { label: 'Google 小姐', value: 'Google 國語' },
         { label: 'Microsoft 小姐1', value: 'Microsoft Yating' },
@@ -33,8 +55,8 @@ export default {
     }
   },
   methods: {
-    playStep () {
-      start(this.$store.state.game.stepList, this.voiceType)
+    playStep (index) {
+      start(this.$store.state.game.stepList[index].rules, this.voiceType)
     }
   },
   computed: {
@@ -112,10 +134,23 @@ function timer (msg, time) {
 </script>
 
 <style lang="scss">
-#finalcheck {
+#voicesetting {
   .controlPanel {
     text-align: center;
     padding-top: 1rem;
   }
+
+  #steplist {
+  text-align: center;
+  border-radius: 10px;
+  padding: 1rem 5rem;
+  background-color: #fff;
+
+  li + li {
+    margin-top: 1rem;
+    padding-top: 1rem;
+    border-top: 3px dotted #666;
+  }
+}
 }
 </style>

@@ -1,51 +1,63 @@
 <template>
   <div id="stepSetting">
     <div class="stepSetting_header">
-      <Button @click="showConfigPanel" label="新增流程" icon="pi pi-plus-circle" class="p-button-lg p-button-rounded p-button-raised"/>
+      <Button @click="createStepList" label="新增流程" icon="pi pi-plus-circle" class="p-button-lg p-button-rounded p-button-raised mx-2 mb-2"/>
+      <Button @click="showConfigPanel" label="新增步驟" icon="pi pi-plus-circle" class="p-button-lg p-button-rounded p-button-raised mx-2 mb-2"/>
     </div>
-    <div class="invalidMsg" v-if="!$v.stepList.required && $v.stepList.$error" style="text-align: center">至少需要一個步驟</div>
-    <Draggable
-      tag="ul"
-      v-model="stepList"
-      group="stepList"
-      handle=".handle"
-      :animation="300"
-    >
-      <transition-group>
-        <li
-          class="stepList"
-          v-for="step in $store.getters['game/stepListDisplayHelper']"
-          :key="step.id"
+    <div class="invalidMsg" v-if="!$v.stepList.$each[0].rules.required && $v.stepList.$each[0].rules.$error" style="text-align: center">第一個流程至少需要一個步驟</div>
+    <TabView @tab-change="changeStepListIndex" :activeIndex="stepListIndex">
+      <TabPanel v-for="(step, index) in stepList" :header="step.name" :key="step.id">
+        <div style="text-align: center">
+          <span class="me-3">流程名稱</span>
+          <InputText v-model.lazy="step.name" class="mb-3"/>
+        </div>
+        <Draggable
+          tag="ul"
+          v-model="step.rules"
+          group="stepList"
+          handle=".handle"
+          :animation="300"
         >
-          <Avatar :icon="step.iconType" shape="circle" class="me-2" :style="{ background: step.iconColor }"/>
-          <span class="me-auto">{{ step.mode }}</span>
-          <p>
-            <span v-if="step.mode === '語音'">{{ step.data }}</span>
-            <span v-if="step.mode === '顯示'">
-              執行角色: {{ step.conductingRoleListName }} {{ step.conductingRoleName }}
-              <br>
-              顯示角色: {{ step.roleListName }} {{ step.roleName }}
-              <br>
-              時間: {{ step.data.timer }} 秒
-            </span>
-            <span v-if="step.mode === '標記'">
-              執行角色: {{ step.conductingRoleListName }} {{ step.conductingRoleName }}
-              <br>
-              標記: {{ step.data.label }}
-              <br>
-              時間: {{ step.data.timer }} 秒
-            </span>
-            <i class="pi pi-bars handle"></i>
-          </p>
-        </li>
-      </transition-group>
-    </Draggable>
-    <Draggable
-      tag="ul"
-      v-model="deleteStep"
-      group="stepList"
-      class="trashCan ms-auto mt-5"
-    />
+          <transition-group>
+            <li
+              class="stepList"
+              v-for="rule in $store.getters['game/stepListDisplayHelper'][stepListIndex].rules"
+              :key="rule.id"
+            >
+              <Avatar :icon="rule.iconType" shape="circle" class="me-2" :style="{ background: rule.iconColor }"/>
+              <span class="me-auto">{{ rule.mode }}</span>
+              <p>
+                <span v-if="rule.mode === '語音'">{{ rule.data }}</span>
+                <span v-if="rule.mode === '顯示'">
+                  執行角色: {{ rule.conductingRoleListName }} {{ rule.conductingRoleName }}
+                  <br>
+                  顯示角色: {{ rule.roleListName }} {{ rule.roleName }}
+                  <br>
+                  時間: {{ rule.data.timer }} 秒
+                </span>
+                <span v-if="rule.mode === '標記'">
+                  執行角色: {{ rule.conductingRoleListName }} {{ rule.conductingRoleName }}
+                  <br>
+                  標記: {{ rule.data.label }}
+                  <br>
+                  時間: {{ rule.data.timer }} 秒
+                </span>
+                <i class="pi pi-bars handle"></i>
+              </p>
+            </li>
+          </transition-group>
+        </Draggable>
+        <Draggable
+          tag="ul"
+          v-model="deleteStep"
+          group="stepList"
+          class="trashCan ms-auto mt-5 mb-5"
+        />
+        <div style="text-align: center" v-if="index !== 0">
+          <Button label="刪除流程" @click="deleteStepList(stepListIndex)" class="p-button-lg p-button-rounded p-button-raised p-button-danger"/>
+        </div>
+      </TabPanel>
+    </TabView>
 
     <!-- add step panel -->
     <Dialog :visible.sync="displayConfig" :showHeader="false" modal dismissableMask>
@@ -157,6 +169,8 @@
 import Draggable from 'vuedraggable'
 import Dropdown from 'primevue/dropdown'
 import InputNumber from 'primevue/inputnumber'
+import TabView from 'primevue/tabview'
+import TabPanel from 'primevue/tabpanel'
 
 import { required } from 'vuelidate/lib/validators'
 
@@ -164,11 +178,14 @@ export default {
   components: {
     Draggable,
     Dropdown,
-    InputNumber
+    InputNumber,
+    TabView,
+    TabPanel
   },
   data () {
     return {
       displayConfig: false,
+      stepListIndex: 0,
       deleteStep: [],
       configs: [
         { mode: '語音', intro: '透過語音撥放以下輸入的文字' },
@@ -210,15 +227,21 @@ export default {
       }
     },
     stepList: {
-      required
+      $each: {
+        rules: { required }
+      }
     }
   },
   methods: {
     showConfigPanel () {
       this.displayConfig = true
     },
+    createStepList () {
+      this.$store.commit('game/createStepList')
+      this.stepListIndex = this.stepList.length - 1
+    },
     addStepList () {
-      let data = ''
+      let data = null
       switch (this.configModel.mode) {
         case '語音':
           if (this.$v.configModel.audioText.$invalid) {
@@ -254,7 +277,7 @@ export default {
       }
       this.displayConfig = false
 
-      this.$store.commit('game/addStepList', { mode: this.configModel.mode, data })
+      this.$store.commit('game/addStepList', { stepListIndex: this.stepListIndex, mode: this.configModel.mode, data })
 
       this.configModel = {
         mode: '',
@@ -274,12 +297,38 @@ export default {
         }
       }
     },
-    validate () {
+    async deleteStepList (index) {
+      const result = await this.$swal({
+        icon: 'warning',
+        title: '是否確定刪除?',
+        showCancelButton: true
+      })
+      if (result.isDismissed) return
+
+      this.$store.commit('game/deleteStepList', index)
+      this.stepListIndex = this.stepList.length - 1
+    },
+    changeStepListIndex (e) {
+      this.stepListIndex = e.index
+    },
+    async validate () {
       this.$v.stepList.$touch()
-      if (this.$v.stepList.$error) {
+      if (this.$v.stepList.$each[0].rules.$error) {
         this.$toast.add({ severity: 'error', summary: '錯誤', detail: '缺少必要項目', life: 3000 })
       }
-      return !this.$v.stepList.$error
+      if (this.$v.stepList.$error) {
+        const result = await this.$swal({
+          icon: 'warning',
+          title: '是否要刪除沒有步驟的流程?',
+          showCancelButton: true
+        })
+        if (result.isConfirmed) {
+          this.stepList = this.stepList.filter(step => step.rules.length !== 0)
+        }
+      }
+      this.stepListIndex = 0
+
+      return !this.$v.stepList.$each[0].rules.$error
     }
   },
   computed: {
