@@ -1,6 +1,6 @@
 <template>
   <ul id="steplist">
-    <li v-for="step in List" :key="step.id">
+    <li v-for="step in List.rules" :key="step.id">
       <template v-if="step.mode === '語音'">
         {{ step.data }}
       </template>

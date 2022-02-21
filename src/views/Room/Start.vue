@@ -2,6 +2,26 @@
   <div id="start" class="viewBox routerviewHeight">
     <div class="subViewBox">
       <TabView>
+        <TabPanel header="流程控制" v-if="playerData && playerData.role === 1">
+          <div class="row g-3" style="text-align: center">
+            <div class="col-12">
+              <VueSelect
+                v-model="stepIndex"
+                :options="gameInfo.stepList"
+                :reduce="s => gameInfo.stepList.findIndex(step => step.id === s.id)"
+                label="name" placeholder="選擇流程" class="VueSelectWidth mx-auto mb-4"/>
+            </div>
+            <div class="col-12">
+              <Button :label="stepRunning ? '播放中' : '播放'" @click="startStep" :disabled="stepRunning" icon="pi pi-caret-right" class="p-button-rounded p-button-raised p-button-lg"/>
+            </div>
+            <div class="col-12">
+              <Button label="重置" @click="resetStep" icon="pi pi-replay" class="p-button-rounded p-button-raised p-button-lg p-button-secondary"/>
+            </div>
+            <div class="col-12">
+              <Button label="返回設定" @click="backToSetting" icon="pi pi-arrow-left" class="p-button-rounded p-button-raised p-button-lg p-button-secondary"/>
+            </div>
+          </div>
+        </TabPanel>
         <TabPanel header="在線玩家">
           <DataTable stripedRows :value="playerList" class="mb-3">
             <Column field="role" :bodyStyle="{ textAlign: 'center' }">
@@ -25,8 +45,9 @@
             <Button label="離開房間" @click="leaveRoom" class="p-button-rounded p-button-raised p-button-danger"/>
           </div>
         </TabPanel>
-        <TabPanel header="遊戲流程">
-          <DataTable stripedRows :value="gameInfo.stepList">
+        <TabPanel header="遊戲流程" v-if="stepIndex">
+          <h2 style="text-align: center">{{ gameInfo.stepList[stepIndex].name }}</h2>
+          <DataTable stripedRows :value="gameInfo.stepList[stepIndex].rules">
             <Column :bodyStyle="{ textAlign: 'center', justifyContent: 'center' }">
               <template #body="slotProps">
                 <span v-if="slotProps.data.mode === '語音'">
@@ -41,19 +62,6 @@
               </template>
             </Column>
           </DataTable>
-        </TabPanel>
-        <TabPanel header="流程控制" v-if="playerData.role === 1">
-          <div class="row g-3" style="text-align: center">
-            <div class="col-12">
-              <Button :label="stepRunning ? '播放中' : '播放'" @click="startStep" :disabled="stepRunning" icon="pi pi-caret-right" class="p-button-rounded p-button-raised p-button-lg"/>
-            </div>
-            <div class="col-12">
-              <Button label="重置" @click="resetStep" icon="pi pi-replay" class="p-button-rounded p-button-raised p-button-lg p-button-secondary"/>
-            </div>
-            <div class="col-12">
-              <Button label="返回設定" @click="backToSetting" icon="pi pi-arrow-left" class="p-button-rounded p-button-raised p-button-lg p-button-secondary"/>
-            </div>
-          </div>
         </TabPanel>
       </TabView>
     </div>
@@ -92,6 +100,8 @@
         </div>
       </div>
     </VueModal>
+
+    <Toast position="top-center"/>
   </div>
 </template>
 
@@ -101,6 +111,7 @@ import TabPanel from 'primevue/tabpanel'
 import VueModal from '@kouts/vue-modal'
 import '@kouts/vue-modal/dist/vue-modal.css'
 import { mapState, mapGetters } from 'vuex'
+import { required } from 'vuelidate/lib/validators'
 
 export default {
   name: 'Start',
@@ -113,6 +124,7 @@ export default {
     return {
       stepRunning: false,
       currentStepTitle: '',
+      stepIndex: '',
       stepShowModal: false,
       stepMarkModal: false,
       markedResultModal: false,
@@ -124,6 +136,11 @@ export default {
       markedResult: [],
 
       intervalTimer: null
+    }
+  },
+  validations: {
+    stepIndex: {
+      required
     }
   },
   computed: {
@@ -141,7 +158,12 @@ export default {
       this.$destroy()
     },
     startStep () {
-      this.$socket.emit('startStep')
+      this.$v.$touch()
+      if (!this.$v.stepIndex.required) {
+        this.$toast.add({ severity: 'error', summary: '錯誤', detail: '未選擇流程', life: 3000 })
+        return
+      }
+      this.$socket.emit('startStep', this.stepIndex)
     },
     resetStep () {
       speechSynthesis.cancel()
@@ -247,10 +269,11 @@ export default {
     backToSetting () {
       this.$router.push('/room')
     },
-    async runStep (gameStep) {
+    async runStep ({ stepIndex, gameStep }) {
       this.markedResultModal = false
       if (!this.stepRunning) this.stepRunning = true
-      const stepList = this.gameInfo.stepList
+      if (!isNaN(stepIndex) && stepIndex >= 0) this.stepIndex = stepIndex
+      const stepList = this.gameInfo.stepList[this.stepIndex].rules
       const msg = this.msg
       const playerList = this.playerList
 

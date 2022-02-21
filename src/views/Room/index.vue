@@ -15,7 +15,9 @@
         <DataTable stripedRows :value="playerList" class="mb-5">
           <Column field="role" :bodyStyle="{ textAlign: 'center' }">
             <template #body="slotProps">
-              <FontAwesomeIcon v-if="slotProps.data.role === 1" :icon="['fas','crown']" style="color: #fa0"></FontAwesomeIcon>
+              <template v-if="slotProps">
+                <FontAwesomeIcon v-if="slotProps.data.role === 1" :icon="['fas','crown']" style="color: #fa0" />
+              </template>
             </template>
           </Column>
           <Column field="name" header="玩家頭像" :bodyStyle="{ textAlign: 'center' }">
@@ -57,7 +59,7 @@
             <img v-if="gameInfo.image" :src="gameInfo.image">
             <img v-else src="@/assets/images/image-placeholder.png">
           </div>
-          <div class="col-12 mb-3" style="text-align: center;">
+          <div v-if="playerData" class="col-12 mb-3" style="text-align: center;">
             <SelectButton v-model="camp" :options="campOptions" :disabled="playerData.ready" optionLabel="name"/>
           </div>
           <!-- 陣營身分 -->
@@ -65,6 +67,7 @@
             <div class="d-flex flex-column flex-md-row align-items-center mb-3">
               <div class="flex-shrink-0 mb-2 mb-md-0">陣營身分</div>
               <VueSelect
+                v-if="playerData"
                 v-model="campRole"
                 :options="camp.value === 'goodCampRoleList' ? gameInfo.goodCampRoleList : gameInfo.badCampRoleList"
                 label="name" class="VueSelectWidth ms-md-3"

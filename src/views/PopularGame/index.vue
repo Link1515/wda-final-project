@@ -33,7 +33,7 @@
         <div class="mt-4">資料已全部載入</div>
       </template>
       <template #no-results>
-        <div class="mt-4">載入失敗</div>
+        <div class="mt-4">無資料</div>
       </template>
     </InfiniteLoading>
 
@@ -41,7 +41,7 @@
       <div style="max-height: 70vh">
         <img v-if="image" :src="image">
         <img v-else src="@/assets/images/image-placeholder.png"/>
-        <div class="dialogText">
+        <div class="dialogText mb-5">
           <h1>{{ name }}</h1>
           <h4>遊玩人數: {{ playerRange[0] }} ~ {{ playerRange[1] }}</h4>
           <p>{{ description }}</p>
@@ -50,8 +50,27 @@
           <p v-if="enableFunRole">功能身分: <span v-for="role in funRoleList" :key="role.id">{{ role.name }} / </span></p>
         </div>
         <div class="dialogStep">
-          <h2>遊戲步驟</h2>
-          <StepList :list="stepList"/>
+          <h1 class="mb-0">遊戲流程</h1>
+          <ul id="steplist" v-for="step in stepList" :key="step.id">
+            <li><h2>{{step.name}}</h2></li>
+            <li v-for="rule in step.rules" :key="rule.id">
+              <template v-if="rule.mode === '語音'">
+                {{ rule.data }}
+              </template>
+              <template v-if="rule.mode === '顯示'">
+                顯示角色: {{ rule.roleListName }} {{ rule.roleName }}
+                <br>
+                時間: {{ rule.data.timer }} 秒
+              </template>
+              <template v-if="rule.mode === '標記'">
+                執行角色: {{ rule.conductingRoleListName }} {{ rule.conductingRoleName }}
+                <br>
+                標記: {{ rule.data.label }}
+                <br>
+                時間: {{ rule.data.timer }} 秒
+              </template>
+            </li>
+          </ul>
         </div>
       </div>
     </Dialog>
@@ -64,15 +83,13 @@ import ToggleButton from 'primevue/togglebutton'
 import InfiniteLoading from 'vue-infinite-loading'
 
 import { mapState } from 'vuex'
-import StepList from '@/components/StepList'
 
 export default {
   name: 'PopularGame',
   components: {
     Rating,
     ToggleButton,
-    InfiniteLoading,
-    StepList
+    InfiniteLoading
   },
   data () {
     return {
@@ -144,6 +161,19 @@ export default {
 <style lang="scss">
 #populargame {
   padding: 0 2rem 6rem;
+
+  #steplist {
+    text-align: center;
+    border-radius: 10px;
+    padding: 0 5rem 1rem;
+    background-color: #fff;
+
+    li + li {
+      margin-top: 1rem;
+      padding-top: 1rem;
+      border-top: 3px dotted #666;
+    }
+  }
 
   .p-card-content {
     padding: 0;

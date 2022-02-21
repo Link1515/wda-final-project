@@ -29,7 +29,7 @@
             <div class="mt-4">資料已全部載入</div>
           </template>
           <template #no-results>
-            <div class="mt-4">載入失敗</div>
+            <div class="mt-4">無資料</div>
           </template>
         </InfiniteLoading>
       </div>

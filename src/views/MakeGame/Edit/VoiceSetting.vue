@@ -33,7 +33,7 @@
             :label="'播放' + step.name"
             class="p-button-rounded p-button-raised p-button-lg mb-2"
           />
-          <Button label="停止" @click="playCancel" class="p-button-rounded p-button-raised p-button-secondary p-button-lg mt-4"/>
+          <Button label="停止" class="p-button-rounded p-button-raised p-button-secondary p-button-lg mt-4"/>
         </div>
       </div>
     </div>
@@ -141,16 +141,16 @@ function timer (msg, time) {
   }
 
   #steplist {
-  text-align: center;
-  border-radius: 10px;
-  padding: 1rem 5rem;
-  background-color: #fff;
+    text-align: center;
+    border-radius: 10px;
+    padding: 1rem 5rem;
+    background-color: #fff;
 
-  li + li {
-    margin-top: 1rem;
-    padding-top: 1rem;
-    border-top: 3px dotted #666;
+    li + li {
+      margin-top: 1rem;
+      padding-top: 1rem;
+      border-top: 3px dotted #666;
+    }
   }
-}
 }
 </style>

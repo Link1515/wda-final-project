@@ -6,7 +6,7 @@
     </div>
     <div class="invalidMsg" v-if="!$v.stepList.$each[0].rules.required && $v.stepList.$each[0].rules.$error" style="text-align: center">第一個流程至少需要一個步驟</div>
     <TabView @tab-change="changeStepListIndex" :activeIndex="stepListIndex">
-      <TabPanel v-for="(step, index) in stepList" :header="step.name" :key="step.id">
+      <TabPanel v-for="(step, index) in stepList" :header="step.name" :key="index">
         <div style="text-align: center">
           <span class="me-3">流程名稱</span>
           <InputText v-model.lazy="step.name" class="mb-3"/>
