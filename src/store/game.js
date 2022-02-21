@@ -206,6 +206,12 @@ export default {
               rule.roleListName = roleListNameTranslator(rule.data.roleListType)
               rule.roleName = roleNameTranslator(state, rule.data.roleListType, rule.data.roleId)
               break
+            case '查驗':
+              rule.iconType = 'pi pi-search'
+              rule.iconColor = '#749D9B'
+              rule.conductingRoleListName = roleListNameTranslator(rule.data.conductingRoleListType)
+              rule.conductingRoleName = roleNameTranslator(state, rule.data.conductingRoleListType, rule.data.conductingRoleId)
+              break
             case '標記':
               rule.iconType = 'pi pi-user-edit'
               rule.iconColor = '#E8837E'

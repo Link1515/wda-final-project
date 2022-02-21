@@ -56,6 +56,9 @@
                 <span v-else-if="slotProps.data.mode === '顯示'">
                   {{ translateRoleType(slotProps.data.data.conductingRoleListType) }} {{translateRoleName(slotProps.data.data.conductingRoleListType, slotProps.data.data.conductingRoleId)}} 執行顯示 {{ translateRoleType(slotProps.data.data.roleListType) }} {{translateRoleName(slotProps.data.data.roleListType, slotProps.data.data.roleId)}}，時間 {{slotProps.data.data.timer}} 秒
                 </span>
+                <span v-else-if="slotProps.data.mode === '查驗'">
+                  {{ translateRoleType(slotProps.data.data.conductingRoleListType) }} {{translateRoleName(slotProps.data.data.conductingRoleListType, slotProps.data.data.conductingRoleId)}} 執行查驗，時間 {{slotProps.data.data.timer}} 秒
+                </span>
                 <span v-else-if="slotProps.data.mode === '標記'">
                   {{ translateRoleType(slotProps.data.data.conductingRoleListType) }} {{translateRoleName(slotProps.data.data.conductingRoleListType, slotProps.data.data.conductingRoleId)}} 執行標記，時間 {{slotProps.data.data.timer}} 秒
                 </span>
@@ -66,6 +69,7 @@
       </TabView>
     </div>
 
+    <!-- ****** 顯示 modal ****** -->
     <VueModal v-model="stepShowModal" :enableClose="false" :title="currentStepTitle">
       <div ref="stepShowCountDown" class="mb-5 mt-3" style="background: red; height: 5px"></div>
       <div class="row flex-wrap justify-content-center" style="text-align: center">
@@ -77,6 +81,32 @@
       </div>
     </VueModal>
 
+    <!-- ****** 查驗 modal ****** -->
+    <VueModal v-model="stepCheckModal" :enableClose="false" :title="currentStepTitle">
+      <div ref="stepShowCountDown" class="mb-5 mt-3" style="background: red; height: 5px"></div>
+      <div class="row flex-wrap justify-content-center" style="text-align: center">
+        <div class="col-3" v-for="player in shownPlayers" :key="player.socketId" @click="checkedPlayer = player" style="position: relative;">
+          <div v-if="checkedPlayer && checkedPlayer.socketId === player.socketId" class="mark self">查驗</div>
+          <Avatar v-if="!player.avatar" icon="pi pi-user" class="mb-2" size="large" shape="circle" style="cursor: pointer;"/>
+          <Avatar v-else :image="player.avatar" class="mb-2" size="large" shape="circle" style="cursor: pointer;"/>
+          <div>{{ player.name }}</div>
+        </div>
+      </div>
+    </VueModal>
+
+    <VueModal v-model="playerInfoModal" :enableClose="false" :title="currentStepTitle">
+      <div ref="stepShowCountDown" class="mb-5 mt-3" style="background: red; height: 5px"></div>
+      <div class="row flex-wrap justify-content-center" style="text-align: center">
+        <div class="col-3" v-if="checkedPlayer">
+          <Avatar v-if="!checkedPlayer.avatar" icon="pi pi-user" class="mb-2" size="large" shape="circle"/>
+          <Avatar v-else :image="checkedPlayer.avatar" class="mb-2" size="large" shape="circle"/>
+          <div class="mb-3">{{ checkedPlayer.name }}</div>
+          <div>{{ translateRoleType(checkedPlayer.camp) }}</div>
+        </div>
+      </div>
+    </VueModal>
+
+    <!-- ****** 標記 modal ****** -->
     <VueModal v-model="stepMarkModal" :enableClose="false" :title="currentStepTitle">
       <div ref="stepShowCountDown" class="mb-5 mt-3" style="background: red; height: 5px"></div>
       <div class="row flex-wrap justify-content-center" style="text-align: center">
@@ -126,10 +156,13 @@ export default {
       currentStepTitle: '',
       stepIndex: '',
       stepShowModal: false,
+      stepCheckModal: false,
+      playerInfoModal: false,
       stepMarkModal: false,
       markedResultModal: false,
 
       shownPlayers: [],
+      checkedPlayer: null,
       myMarkedPlayer: null,
       markedPlayers: [],
       markLabel: null,
@@ -208,6 +241,56 @@ export default {
               clearInterval(this.intervalTimer)
               this.stepShowModal = false
               resolve()
+            }
+          }, 10)
+        })
+      }
+    },
+    stepCheck (step, timer) {
+      if (step.data.conductingRoleListType === 'all' ||
+        (step.data.conductingRoleListType === this.playerData.camp && step.data.conductingRoleId === 'all') ||
+        step.data.conductingRoleId === this.playerData.campRoleId ||
+        step.data.conductingRoleId === this.playerData.funRoleId) {
+        this.currentStepTitle = `${this.translateRoleType(step.data.conductingRoleListType)} ${this.translateRoleName(step.data.conductingRoleListType, step.data.conductingRoleId)} 執行查驗，時間 ${step.data.timer} 秒`
+        const totalTime = timer
+        let showInfoTimer = 5000
+        const showInfoTotalTime = showInfoTimer
+
+        return new Promise((resolve, reject) => {
+          this.stepCheckModal = true
+
+          this.intervalTimer = setInterval(() => {
+            timer -= 10
+            if (this.$refs.stepShowCountDown) {
+              this.$refs.stepShowCountDown.style.width = parseInt((timer / totalTime) * 100) + '%'
+            }
+
+            if (timer < 0) {
+              clearInterval(this.intervalTimer)
+              this.stepCheckModal = false
+
+              if (!this.checkedPlayer) {
+                const randomNum = Math.round(Math.random() * (this.shownPlayers.length - 1))
+                this.checkedPlayer = this.shownPlayers[randomNum]
+              }
+
+              this.currentStepTitle = '查驗結果'
+              this.playerInfoModal = true
+
+              this.intervalTimer = setInterval(() => {
+                showInfoTimer -= 10
+                if (this.$refs.stepShowCountDown) {
+                  this.$refs.stepShowCountDown.style.width = parseInt((showInfoTimer / showInfoTotalTime) * 100) + '%'
+                }
+
+                if (showInfoTimer < 0) {
+                  clearInterval(this.intervalTimer)
+                  this.playerInfoModal = false
+                  this.checkedPlayer = null
+
+                  resolve()
+                }
+              }, 10)
             }
           }, 10)
         })
@@ -301,6 +384,10 @@ export default {
               }
             }
             await this.stepShow(stepList[gameStep], stepList[gameStep].data.timer * 1000)
+            break
+          case '查驗':
+            this.shownPlayers = playerList
+            await this.stepCheck(stepList[gameStep], stepList[gameStep].data.timer * 1000)
             break
           case '標記':
             this.shownPlayers = playerList

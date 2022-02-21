@@ -35,6 +35,11 @@
                   <br>
                   時間: {{ rule.data.timer }} 秒
                 </span>
+                <span v-if="rule.mode === '查驗'">
+                  執行角色: {{ rule.conductingRoleListName }} {{ rule.conductingRoleName }}
+                  <br>
+                  時間: {{ rule.data.timer }} 秒
+                </span>
                 <span v-if="rule.mode === '標記'">
                   執行角色: {{ rule.conductingRoleListName }} {{ rule.conductingRoleName }}
                   <br>
@@ -121,6 +126,34 @@
             suffix=" 秒"
           />
         </template>
+        <!-- ************** 查驗 ************** -->
+        <template v-if="configModel.mode === '查驗'">
+          <p>執行角色</p>
+          <Dropdown
+            v-model="$v.configModel.checkPlayer.conductingRoleListType.$model"
+            :options="roleListType"
+            optionLabel="name"
+            optionValue="type"
+            placeholder="選擇陣營"
+          />
+          <Dropdown
+            v-if="configModel.checkPlayer.conductingRoleListType && configModel.checkPlayer.conductingRoleListType !== 'all'"
+            v-model="$v.configModel.checkPlayer.conductingRoleId.$model"
+            :options="[{name: '全部', id: 'all'}, ...$store.state.game[configModel.checkPlayer.conductingRoleListType]]"
+            optionLabel="name"
+            optionValue="id"
+            placeholder="選擇執行角色"
+          />
+          <p>時間</p>
+          <InputNumber
+            v-model="configModel.checkPlayer.timer"
+            showButtons buttonLayout="horizontal"
+            :step="1"
+            :min="1"
+            :max="999"
+            suffix=" 秒"
+          />
+        </template>
         <!-- ************** 標記 ************** -->
         <template v-if="configModel.mode === '標記'">
           <p>執行角色</p>
@@ -190,6 +223,7 @@ export default {
       configs: [
         { mode: '語音', intro: '透過語音撥放以下輸入的文字' },
         { mode: '顯示', intro: '顯示指定身分，只有執行角色能看到顯示的玩家' },
+        { mode: '查驗', intro: '查驗指定玩家的身分' },
         { mode: '標記', intro: '執行時可以標記指定的玩家，需要自訂標籤，如: 死亡、警長保護...等' }
       ],
       configModel: {
@@ -200,6 +234,11 @@ export default {
           conductingRoleId: '',
           roleListType: '',
           roleId: '',
+          timer: 5
+        },
+        checkPlayer: {
+          conductingRoleListType: '',
+          conductingRoleId: '',
           timer: 5
         },
         markPlayer: {
@@ -219,6 +258,10 @@ export default {
         conductingRoleId: { required },
         roleListType: { required },
         roleId: { required }
+      },
+      checkPlayer: {
+        conductingRoleListType: { required },
+        conductingRoleId: { required }
       },
       markPlayer: {
         conductingRoleListType: { required },
@@ -262,6 +305,18 @@ export default {
           }
           data = this.configModel.showPlayer
           break
+        case '查驗':
+          if (this.$v.configModel.checkPlayer.$invalid) {
+            if (this.$v.configModel.checkPlayer.conductingRoleListType.$invalid || this.$v.configModel.checkPlayer.conductingRoleId.$invalid) {
+              this.$toast.add({ severity: 'error', summary: '錯誤', detail: '未選擇執行角色', life: 3000 })
+            }
+            if (this.$v.configModel.markPlayer.label.$invalid) {
+              this.$toast.add({ severity: 'error', summary: '錯誤', detail: '未填寫標籤', life: 3000 })
+            }
+            return
+          }
+          data = this.configModel.checkPlayer
+          break
         case '標記':
           if (this.$v.configModel.markPlayer.$invalid) {
             if (this.$v.configModel.markPlayer.conductingRoleListType.$invalid || this.$v.configModel.markPlayer.conductingRoleId.$invalid) {
@@ -287,6 +342,11 @@ export default {
           conductingRoleId: '',
           roleListType: '',
           roleId: '',
+          timer: 5
+        },
+        checkPlayer: {
+          conductingRoleListType: '',
+          conductingRoleId: '',
           timer: 5
         },
         markPlayer: {
@@ -364,11 +424,14 @@ export default {
     configModel: {
       deep: true,
       handler (config) {
+        if (config.showPlayer.conductingRoleListType === 'all') {
+          config.showPlayer.conductingRoleId = 'all'
+        }
         if (config.showPlayer.roleListType === 'all') {
           config.showPlayer.roleId = 'all'
         }
-        if (config.showPlayer.conductingRoleListType === 'all') {
-          config.showPlayer.conductingRoleId = 'all'
+        if (config.checkPlayer.conductingRoleListType === 'all') {
+          config.checkPlayer.conductingRoleId = 'all'
         }
         if (config.markPlayer.conductingRoleListType === 'all') {
           config.markPlayer.conductingRoleId = 'all'
