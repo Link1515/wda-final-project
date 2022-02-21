@@ -196,6 +196,10 @@ export default {
       this.$toast.add({ severity: 'info', detail: msg, life: 3000 })
     },
     start () {
+      this.$v.$reset()
+      this.camp = { name: '🙂 好人陣營', value: 'goodCampRoleList' }
+      this.campRole = ''
+      this.funRole = ''
       this.$router.push('/room/start')
     }
   },

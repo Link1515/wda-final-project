@@ -45,7 +45,7 @@
             <Button label="離開房間" @click="leaveRoom" class="p-button-rounded p-button-raised p-button-danger"/>
           </div>
         </TabPanel>
-        <TabPanel header="遊戲流程" v-if="stepIndex">
+        <TabPanel header="遊戲流程" v-if="stepIndex !== '' && gameInfo.stepList[stepIndex]">
           <h2 style="text-align: center">{{ gameInfo.stepList[stepIndex].name }}</h2>
           <DataTable stripedRows :value="gameInfo.stepList[stepIndex].rules">
             <Column :bodyStyle="{ textAlign: 'center', justifyContent: 'center' }">
