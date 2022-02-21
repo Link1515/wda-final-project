@@ -3,7 +3,10 @@
     <h1>熱門遊戲</h1>
     <div class="example-3d">
       <swiper class="swiper" :options="swiperOption">
-        <swiper-slide>Slide 1</swiper-slide>
+        <swiper-slide v-for="game in popGames" :key="game._id">
+          <img v-if="game.image" :src="game.image" @click="showDialog(game._id)">
+          <img v-else src="@/assets/images/image-placeholder.png" @click="showDialog(game._id)"/>
+        </swiper-slide>
         <swiper-slide>Slide 2</swiper-slide>
         <swiper-slide>Slide 3</swiper-slide>
         <swiper-slide>Slide 4</swiper-slide>
@@ -42,7 +45,24 @@ export default {
         pagination: {
           // el: '.swiper-pagination'
         }
-      }
+      },
+      popGames: []
+    }
+  },
+  async created () {
+    try {
+      const { data } = await this.serverAPI.get('/games', {
+        params: {
+          page: this.page
+        }
+      })
+      this.popGames = data.result
+    } catch (error) {
+      this.$swal({
+        icon: 'success',
+        title: '錯誤',
+        text: '取得失敗'
+      })
     }
   }
 }
