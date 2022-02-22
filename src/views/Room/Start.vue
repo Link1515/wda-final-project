@@ -24,20 +24,36 @@
         </TabPanel>
         <TabPanel header="在線玩家">
           <DataTable stripedRows :value="playerList" class="mb-3">
-            <Column field="role" :bodyStyle="{ textAlign: 'center' }">
+            <Column :bodyStyle="{ textAlign: 'center' }">
               <template #body="slotProps">
                 <FontAwesomeIcon v-if="slotProps.data.role === 1" :icon="['fas','crown']" style="color: #fa0"></FontAwesomeIcon>
               </template>
             </Column>
-            <Column field="name" header="玩家頭像" :bodyStyle="{ textAlign: 'center' }">
+            <Column header="玩家頭像" :bodyStyle="{ textAlign: 'center' }">
               <template #body="slotProps">
                 <Avatar v-if="slotProps.data.avatar" :image="slotProps.data.avatar" size="large" shape="circle"/>
                 <Avatar v-else icon="pi pi-user" size="large" shape="circle"/>
               </template>
             </Column>
-            <Column field="name" header="玩家暱稱" :bodyStyle="{ textAlign: 'center' }">
+            <Column header="玩家暱稱" :bodyStyle="{ textAlign: 'center' }">
               <template #body="slotProps">
                 <span :class="{ self: $socket.id === slotProps.data.socketId }">{{ slotProps.data.name }}</span>
+              </template>
+            </Column>
+            <Column header="淘汰設定" v-if="playerData && playerData.role === 1" :bodyStyle="{ textAlign: 'center' }">
+              <template #body="slotProps">
+                <ToggleButton
+                  v-model="slotProps.data.alive"
+                  @change="eliminatePlayer"
+                  onLabel="存活" offLabel="淘汰"
+                  class="p-button-rounded p-button-raised"
+                />
+              </template>
+            </Column>
+            <Column header="淘汰狀況" v-else :bodyStyle="{ textAlign: 'center' }">
+              <template #body="slotProps">
+                <span v-if="slotProps.data.alive" class="aliveLabel">存活</span>
+                <span v-else class="aliveLabel eliminate">淘汰</span>
               </template>
             </Column>
           </DataTable>
@@ -138,6 +154,7 @@
 <script>
 import TabView from 'primevue/tabview'
 import TabPanel from 'primevue/tabpanel'
+import ToggleButton from 'primevue/togglebutton'
 import VueModal from '@kouts/vue-modal'
 import '@kouts/vue-modal/dist/vue-modal.css'
 import { mapState, mapGetters } from 'vuex'
@@ -148,6 +165,7 @@ export default {
   components: {
     TabView,
     TabPanel,
+    ToggleButton,
     VueModal
   },
   data () {
@@ -202,6 +220,9 @@ export default {
       speechSynthesis.cancel()
       this.$socket.emit('resetStep')
     },
+    eliminatePlayer () {
+      this.$socket.emit('eliminatePlayer', this.playerList)
+    },
     mark (socketId) {
       this.markedPlayers.push(socketId)
 
@@ -225,25 +246,27 @@ export default {
         (step.data.conductingRoleListType === this.playerData.camp && step.data.conductingRoleId === 'all') ||
         step.data.conductingRoleId === this.playerData.campRoleId ||
         step.data.conductingRoleId === this.playerData.funRoleId) {
-        this.currentStepTitle = `${this.translateRoleType(step.data.conductingRoleListType)} ${this.translateRoleName(step.data.conductingRoleListType, step.data.conductingRoleId)} 執行顯示 ${this.translateRoleType(step.data.roleListType)} ${this.translateRoleName(step.data.roleListType, step.data.roleId)}，時間 ${step.data.timer} 秒`
-        const totalTime = timer
+        if (this.playerData.alive) {
+          this.currentStepTitle = `${this.translateRoleType(step.data.conductingRoleListType)} ${this.translateRoleName(step.data.conductingRoleListType, step.data.conductingRoleId)} 執行顯示 ${this.translateRoleType(step.data.roleListType)} ${this.translateRoleName(step.data.roleListType, step.data.roleId)}，時間 ${step.data.timer} 秒`
+          const totalTime = timer
 
-        return new Promise((resolve, reject) => {
-          this.stepShowModal = true
+          return new Promise((resolve, reject) => {
+            this.stepShowModal = true
 
-          this.intervalTimer = setInterval(() => {
-            timer -= 10
-            if (this.$refs.stepShowCountDown) {
-              this.$refs.stepShowCountDown.style.width = parseInt((timer / totalTime) * 100) + '%'
-            }
+            this.intervalTimer = setInterval(() => {
+              timer -= 10
+              if (this.$refs.stepShowCountDown) {
+                this.$refs.stepShowCountDown.style.width = parseInt((timer / totalTime) * 100) + '%'
+              }
 
-            if (timer < 0) {
-              clearInterval(this.intervalTimer)
-              this.stepShowModal = false
-              resolve()
-            }
-          }, 10)
-        })
+              if (timer < 0) {
+                clearInterval(this.intervalTimer)
+                this.stepShowModal = false
+                resolve()
+              }
+            }, 10)
+          })
+        }
       }
     },
     stepCheck (step, timer) {
@@ -251,49 +274,51 @@ export default {
         (step.data.conductingRoleListType === this.playerData.camp && step.data.conductingRoleId === 'all') ||
         step.data.conductingRoleId === this.playerData.campRoleId ||
         step.data.conductingRoleId === this.playerData.funRoleId) {
-        this.currentStepTitle = `${this.translateRoleType(step.data.conductingRoleListType)} ${this.translateRoleName(step.data.conductingRoleListType, step.data.conductingRoleId)} 執行查驗，時間 ${step.data.timer} 秒`
-        const totalTime = timer
-        let showInfoTimer = 5000
-        const showInfoTotalTime = showInfoTimer
+        if (this.playerData.alive) {
+          this.currentStepTitle = `${this.translateRoleType(step.data.conductingRoleListType)} ${this.translateRoleName(step.data.conductingRoleListType, step.data.conductingRoleId)} 執行查驗，時間 ${step.data.timer} 秒`
+          const totalTime = timer
+          let showInfoTimer = 5000
+          const showInfoTotalTime = showInfoTimer
 
-        return new Promise((resolve, reject) => {
-          this.stepCheckModal = true
+          return new Promise((resolve, reject) => {
+            this.stepCheckModal = true
 
-          this.intervalTimer = setInterval(() => {
-            timer -= 10
-            if (this.$refs.stepShowCountDown) {
-              this.$refs.stepShowCountDown.style.width = parseInt((timer / totalTime) * 100) + '%'
-            }
-
-            if (timer < 0) {
-              clearInterval(this.intervalTimer)
-              this.stepCheckModal = false
-
-              if (!this.checkedPlayer) {
-                const randomNum = Math.round(Math.random() * (this.shownPlayers.length - 1))
-                this.checkedPlayer = this.shownPlayers[randomNum]
+            this.intervalTimer = setInterval(() => {
+              timer -= 10
+              if (this.$refs.stepShowCountDown) {
+                this.$refs.stepShowCountDown.style.width = parseInt((timer / totalTime) * 100) + '%'
               }
 
-              this.currentStepTitle = '查驗結果'
-              this.playerInfoModal = true
+              if (timer < 0) {
+                clearInterval(this.intervalTimer)
+                this.stepCheckModal = false
 
-              this.intervalTimer = setInterval(() => {
-                showInfoTimer -= 10
-                if (this.$refs.stepShowCountDown) {
-                  this.$refs.stepShowCountDown.style.width = parseInt((showInfoTimer / showInfoTotalTime) * 100) + '%'
+                if (!this.checkedPlayer) {
+                  const randomNum = Math.round(Math.random() * (this.shownPlayers.length - 1))
+                  this.checkedPlayer = this.shownPlayers[randomNum]
                 }
 
-                if (showInfoTimer < 0) {
-                  clearInterval(this.intervalTimer)
-                  this.playerInfoModal = false
-                  this.checkedPlayer = null
+                this.currentStepTitle = '查驗結果'
+                this.playerInfoModal = true
 
-                  resolve()
-                }
-              }, 10)
-            }
-          }, 10)
-        })
+                this.intervalTimer = setInterval(() => {
+                  showInfoTimer -= 10
+                  if (this.$refs.stepShowCountDown) {
+                    this.$refs.stepShowCountDown.style.width = parseInt((showInfoTimer / showInfoTotalTime) * 100) + '%'
+                  }
+
+                  if (showInfoTimer < 0) {
+                    clearInterval(this.intervalTimer)
+                    this.playerInfoModal = false
+                    this.checkedPlayer = null
+
+                    resolve()
+                  }
+                }, 10)
+              }
+            }, 10)
+          })
+        }
       }
     },
     stepMark (step, timer) {
@@ -301,27 +326,29 @@ export default {
         (step.data.conductingRoleListType === this.playerData.camp && step.data.conductingRoleId === 'all') ||
         step.data.conductingRoleId === this.playerData.campRoleId ||
         step.data.conductingRoleId === this.playerData.funRoleId) {
-        this.currentStepTitle = `${this.translateRoleType(step.data.conductingRoleListType)} ${this.translateRoleName(step.data.conductingRoleListType, step.data.conductingRoleId)} 執行標記，時間 ${step.data.timer} 秒`
-        this.markLabel = step.data.label
-        const totalTime = timer
+        if (this.playerData.alive) {
+          this.currentStepTitle = `${this.translateRoleType(step.data.conductingRoleListType)} ${this.translateRoleName(step.data.conductingRoleListType, step.data.conductingRoleId)} 執行標記，時間 ${step.data.timer} 秒`
+          this.markLabel = step.data.label
+          const totalTime = timer
 
-        return new Promise((resolve, reject) => {
-          this.stepMarkModal = true
+          return new Promise((resolve, reject) => {
+            this.stepMarkModal = true
 
-          this.intervalTimer = setInterval(() => {
-            timer -= 10
-            if (this.$refs.stepShowCountDown) {
-              this.$refs.stepShowCountDown.style.width = parseInt((timer / totalTime) * 100) + '%'
-            }
+            this.intervalTimer = setInterval(() => {
+              timer -= 10
+              if (this.$refs.stepShowCountDown) {
+                this.$refs.stepShowCountDown.style.width = parseInt((timer / totalTime) * 100) + '%'
+              }
 
-            if (timer < 0) {
-              clearInterval(this.intervalTimer)
-              this.stepMarkModal = false
-              this.myMarkedPlayer = null
-              resolve()
-            }
-          }, 10)
-        })
+              if (timer < 0) {
+                clearInterval(this.intervalTimer)
+                this.stepMarkModal = false
+                this.myMarkedPlayer = null
+                resolve()
+              }
+            }, 10)
+          })
+        }
       }
     },
     translateRoleType (roleType) {
@@ -358,7 +385,7 @@ export default {
       if (!isNaN(stepIndex) && stepIndex >= 0) this.stepIndex = stepIndex
       const stepList = this.gameInfo.stepList[this.stepIndex].rules
       const msg = this.msg
-      const playerList = this.playerList
+      const playerList = this.playerList.filter(player => player.alive)
 
       if (stepList[gameStep]) {
         switch (stepList[gameStep].mode) {
@@ -422,6 +449,20 @@ export default {
 <style lang="scss">
 #start {
   padding: 4rem 0rem;
+
+  .aliveLabel {
+    padding: 0.5rem 1rem;
+    border-radius: 9999px;
+    box-shadow: 0 3px 1px -2px rgba(0, 0, 0, 0.2), 0 2px 2px 0 rgba(0, 0, 0, 0.14), 0 1px 5px 0 rgba(0, 0, 0, 0.12);
+    border: 1px solid transparent;
+    background-color: #ffc107;
+
+    &.eliminate {
+      background-color: #fff;
+      box-shadow: none;
+      border: 1px solid #ccc;
+    }
+  }
 
   .p-tabview-nav {
     justify-content: center;
