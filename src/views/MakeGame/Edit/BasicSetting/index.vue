@@ -35,8 +35,6 @@
         <div class="d-flex justify-content-center flex-wrap mb-4">
           <label for="campRole" class="me-3 my-2">陣營身分</label>
           <InputText
-            @keydown.enter="addRoleList('goodCampRoleList', campRole)"
-            @keydown.ctrl="addRoleList('badCampRoleList', campRole)"
             id="campRole"
             v-model="campRole.name"
             class="mb-2"
@@ -45,13 +43,11 @@
             <Button
               @click="addRoleList('goodCampRoleList', campRole)"
               class="p-button-rounded mb-2 ms-2 setBtn goodColor"
-              v-tooltip.top="'Enter 鍵快速加入'"
               tabindex="-1"
             >設為好人</Button>
             <Button
               @click="addRoleList('badCampRoleList', campRole)"
               class="p-button-rounded mb-2 ms-2 setBtn badColor"
-              v-tooltip.top="'Ctrl 鍵快速加入'"
               tabindex="-1"
             >設為壞人</Button>
           </div>
@@ -222,7 +218,7 @@ export default {
     border: none;
   }
 
-  .goodColor,.goodCamp .p-accordion-header-link{
+  .goodColor, .goodCamp .p-accordion-header-link{
     background-color: #a1dcff;
   }
 

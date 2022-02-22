@@ -39,6 +39,11 @@ export default {
     StepSetting,
     VoiceSetting
   },
+  data () {
+    return {
+      sending: false
+    }
+  },
   methods: {
     backHome () {
       this.$router.push('/makegame')
@@ -48,6 +53,8 @@ export default {
       return refToValidate.validate()
     },
     editGameFinish () {
+      if (this.sending) return
+
       this.$emit('updateList')
       this.$store.dispatch('game/editGameFinish')
     }

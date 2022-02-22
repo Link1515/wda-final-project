@@ -3,7 +3,7 @@
     <template v-if="showPlayHome">
       <Title>
         <template #text>
-          立即開始！
+          立即開始
         </template>
       </Title>
       <div class="row g-5 justify-content-evenly">
