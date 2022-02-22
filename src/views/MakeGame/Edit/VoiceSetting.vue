@@ -2,46 +2,55 @@
   <div id="voicesetting">
     <div class="row" style="padding-bottom: 8rem">
       <div class="col-12 col-lg-6">
-        <ul id="steplist" v-for="step in stepListDisplayHelper" :key="step.id">
-          <li><h2>{{step.name}}</h2></li>
-          <li v-for="rule in step.rules" :key="rule.id">
+        <ul v-if="stepIndex !== ''" id="steplist">
+          <li><h2 class="stepHeader">{{ stepListDisplayHelper[stepIndex].name }}</h2></li>
+          <li v-for="rule in stepListDisplayHelper[stepIndex].rules" :key="rule.id">
+            <div class="mb-3">
+              <Avatar :icon="rule.iconType" shape="circle" class="me-2" :style="{ background: rule.iconColor }"/>
+              {{rule.mode}}
+            </div>
             <template v-if="rule.mode === '語音'">
               {{ rule.data }}
             </template>
             <template v-if="rule.mode === '顯示'">
-              執行角色: {{ rule.conductingRoleListName }} {{ rule.conductingRoleName }}
+              <span class="d-inline-block mb-1">執行角色: {{ rule.conductingRoleListName }} {{ rule.conductingRoleName }}</span>
               <br>
-              顯示角色: {{ rule.roleListName }} {{ rule.roleName }}
+              <span class="d-inline-block mb-1">顯示角色: {{ rule.roleListName }} {{ rule.roleName }}</span>
               <br>
-              時間: {{ rule.data.timer }} 秒
+              <span class="d-inline-block mb-1">時間: {{ rule.data.timer }} 秒</span>
             </template>
             <template v-if="rule.mode === '查驗'">
-              執行角色: {{ rule.conductingRoleListName }} {{ rule.conductingRoleName }}
+              <span class="d-inline-block mb-1">執行角色: {{ rule.conductingRoleListName }} {{ rule.conductingRoleName }}</span>
               <br>
-              時間: {{ rule.data.timer }} 秒
+              <span class="d-inline-block mb-1">時間: {{ rule.data.timer }} 秒</span>
             </template>
             <template v-if="rule.mode === '標記'">
-              執行角色: {{ rule.conductingRoleListName }} {{ rule.conductingRoleName }}
+              <span class="d-inline-block mb-1">執行角色: {{ rule.conductingRoleListName }} {{ rule.conductingRoleName }}</span>
               <br>
-              標記: {{ rule.data.label }}
+              <span class="d-inline-block mb-1">標記: {{ rule.data.label }}</span>
               <br>
-              時間: {{ rule.data.timer }} 秒
+              <span class="d-inline-block mb-1">時間: {{ rule.data.timer }} 秒</span>
             </template>
           </li>
         </ul>
       </div>
       <div class="col-12 col-lg-6 controlPanel">
-        <VueSelect v-model="voiceType" :options="voiceOptions" :reduce="v => v.value"/>
-        <!-- <VueSelect> -->
+        <VueSelect v-model="voiceType" :options="voiceOptions" :reduce="v => v.value" class="mb-5"/>
+        <div class="mb-3">播放流程</div>
+        <VueSelect
+          v-model="stepIndex"
+          :options="$store.state.game.stepList"
+          label="name" placeholder="請選擇流程"
+          :reduce="v => $store.state.game.stepList.indexOf(v)"
+        />
         <div class="mt-4 d-flex flex-column align-items-center">
           <Button
-            @click="playStep(index)"
-            v-for="(step, index) in $store.state.game.stepList"
-            :key="step.id" icon="pi pi-play"
-            :label="'播放' + step.name"
+            @click="playStep"
+            :disabled="stepRunning"
+            :label="stepRunning ? '播放中' : '播放'" icon="pi pi-caret-right"
             class="p-button-rounded p-button-raised p-button-lg mb-2"
           />
-          <Button label="停止" @click="stopStep" class="p-button-rounded p-button-raised p-button-secondary p-button-lg mt-4"/>
+          <Button label="停止" @click="stopStep" icon="pi pi-stop" class="p-button-rounded p-button-raised p-button-secondary p-button-lg mt-4"/>
         </div>
       </div>
     </div>
@@ -80,6 +89,8 @@
         </div>
       </div>
     </VueModal>
+
+    <Toast position="top-center"/>
   </div>
 </template>
 
@@ -87,6 +98,7 @@
 import VueModal from '@kouts/vue-modal'
 import '@kouts/vue-modal/dist/vue-modal.css'
 import { mapGetters, mapState } from 'vuex'
+import { required } from 'vuelidate/lib/validators'
 
 export default {
   name: 'VoiceSetting',
@@ -102,8 +114,9 @@ export default {
         { label: 'Microsoft 先生', value: 'Microsoft Zhiwei' }
       ],
       msg: null,
+      stepIndex: '',
       currentStepTitle: '',
-      currentStep: 0,
+      currentStep: -99,
 
       stepShowModal: false,
       stepCheckModal: false,
@@ -112,14 +125,25 @@ export default {
       markLabel: ''
     }
   },
+  validations: {
+    stepIndex: {
+      required
+    }
+  },
   methods: {
-    async playStep (index) {
+    async playStep () {
+      this.$v.$touch()
+      if (!this.$v.stepIndex.required) {
+        this.$toast.add({ severity: 'error', summary: '錯誤', detail: '未選擇流程', life: 3000 })
+        return
+      }
+
       if (this.currentStep < 0) {
         this.currentStep = 0
       }
 
-      while (this.currentStep < this.stepList[index].rules.length) {
-        const rule = this.stepList[index].rules[this.currentStep]
+      while (this.currentStep < this.stepList[this.stepIndex].rules.length) {
+        const rule = this.stepList[this.stepIndex].rules[this.currentStep]
 
         switch (rule.mode) {
           case '語音':
@@ -142,9 +166,10 @@ export default {
         this.currentStep++
       }
 
-      this.currentStep = 0
+      this.currentStep = -99
     },
     stopStep () {
+      speechSynthesis.cancel()
       this.currentStep = -99
     },
 
@@ -231,6 +256,9 @@ export default {
         this.msg = new SpeechSynthesisUtterance()
         this.msg.voice = VT
       }
+    },
+    stepRunning () {
+      return this.currentStep >= 0
     }
   },
   async created () {
@@ -276,6 +304,17 @@ function getVoices () {
       border-top: 3px dotted #666;
     }
   }
+
+  .stepHeader {
+    display: inline-block;
+    padding: 5px 10px;
+    border-radius: 9999px;
+    background-color: #ffc107;
+  }
+}
+
+.v-select {
+  background-color: #fff;
 }
 
 .vm {

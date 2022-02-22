@@ -45,29 +45,46 @@
           <h1>{{ name }}</h1>
           <h4>遊玩人數: {{ playerRange[0] }} ~ {{ playerRange[1] }}</h4>
           <p>{{ description }}</p>
-          <p>好人陣營: <span v-for="role in goodCampRoleList" :key="role.id">{{ role.name }} / </span></p>
-          <p>壞人陣營: <span v-for="role in badCampRoleList" :key="role.id">{{ role.name }} / </span></p>
+          <div class="goodCamp" style="display: inline-block">好人陣營</div>
+          <p>
+            <span v-for="(role, index) in goodCampRoleList" :key="role.id">{{ role.name }} <span v-if="index !== goodCampRoleList.length - 1">/</span></span>
+          </p>
+          <div class="badCamp" style="display: inline-block">壞人陣營</div>
+          <p>
+            <span v-for="(role, index) in badCampRoleList" :key="role.id">{{ role.name }} <span v-if="index !== goodCampRoleList.length - 1">/</span></span>
+          </p>
           <p v-if="enableFunRole">功能身分: <span v-for="role in funRoleList" :key="role.id">{{ role.name }} / </span></p>
         </div>
         <div class="dialogStep">
           <h1 class="mb-0">遊戲流程</h1>
-          <ul id="steplist" v-for="step in stepList" :key="step.id">
-            <li><h2>{{step.name}}</h2></li>
+          <ul id="steplist" v-for="step in stepListDisplayHelper" :key="step.id">
+            <li><h2 class="stepHeader">{{step.name}}</h2></li>
             <li v-for="rule in step.rules" :key="rule.id">
+              <div class="mb-3">
+                <Avatar :icon="rule.iconType" shape="circle" class="me-2" :style="{ background: rule.iconColor, color: '#000' }"/>
+                {{rule.mode}}
+              </div>
               <template v-if="rule.mode === '語音'">
                 {{ rule.data }}
               </template>
               <template v-if="rule.mode === '顯示'">
-                顯示角色: {{ rule.roleListName }} {{ rule.roleName }}
+                <span class="d-inline-block mb-1">執行角色: {{ rule.conductingRoleListName }} {{ rule.conductingRoleName }}</span>
                 <br>
-                時間: {{ rule.data.timer }} 秒
+                <span class="d-inline-block mb-1">顯示角色: {{ rule.roleListName }} {{ rule.roleName }}</span>
+                <br>
+                <span class="d-inline-block mb-1">時間: {{ rule.data.timer }} 秒</span>
+              </template>
+              <template v-if="rule.mode === '查驗'">
+                <span class="d-inline-block mb-1">執行角色: {{ rule.conductingRoleListName }} {{ rule.conductingRoleName }}</span>
+                <br>
+                <span class="d-inline-block mb-1">時間: {{ rule.data.timer }} 秒</span>
               </template>
               <template v-if="rule.mode === '標記'">
-                執行角色: {{ rule.conductingRoleListName }} {{ rule.conductingRoleName }}
+                <span class="d-inline-block mb-1">執行角色: {{ rule.conductingRoleListName }} {{ rule.conductingRoleName }}</span>
                 <br>
-                標記: {{ rule.data.label }}
+                <span class="d-inline-block mb-1">標記: {{ rule.data.label }}</span>
                 <br>
-                時間: {{ rule.data.timer }} 秒
+                <span class="d-inline-block mb-1">時間: {{ rule.data.timer }} 秒</span>
               </template>
             </li>
           </ul>
@@ -82,7 +99,7 @@ import Rating from 'primevue/rating'
 import ToggleButton from 'primevue/togglebutton'
 import InfiniteLoading from 'vue-infinite-loading'
 
-import { mapState } from 'vuex'
+import { mapState, mapGetters } from 'vuex'
 
 export default {
   name: 'PopularGame',
@@ -153,7 +170,8 @@ export default {
     mostLike () {
       return this.gameList[0].likes
     },
-    ...mapState('game', ['name', 'description', 'image', 'playerRange', 'goodCampRoleList', 'badCampRoleList', 'enableFunRole', 'funRoleList', 'stepList'])
+    ...mapState('game', ['name', 'description', 'image', 'playerRange', 'goodCampRoleList', 'badCampRoleList', 'enableFunRole', 'funRoleList', 'stepList']),
+    ...mapGetters('game', ['stepListDisplayHelper'])
   }
 }
 </script>
@@ -173,6 +191,28 @@ export default {
       padding-top: 1rem;
       border-top: 3px dotted #666;
     }
+  }
+
+  .stepHeader {
+    display: inline-block;
+    padding: 5px 10px;
+    border-radius: 9999px;
+    background-color: #ffc107;
+    color: #000;
+  }
+
+  .goodCamp,
+  .badCamp {
+    border-radius: 9999px;
+    padding: 5px 10px;
+  }
+
+  .goodCamp {
+    background-color: #a1dcff;
+  }
+
+  .badCamp {
+    background-color: #ffc4c8;
   }
 
   .p-card-content {
