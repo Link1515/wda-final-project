@@ -72,7 +72,7 @@
     <!-- ****** 顯示 modal ****** -->
     <VueModal v-model="stepShowModal" :enableClose="false" :title="currentStepTitle">
       <div ref="stepShowCountDown" class="mb-5 mt-3" style="background: red; height: 5px"></div>
-      <div class="row flex-wrap justify-content-center" style="text-align: center">
+      <div class="row flex-wrap justify-content-center g-5" style="text-align: center">
         <div class="col-3" v-for="player in shownPlayers" :key="player.socketId">
           <Avatar v-if="!player.avatar" icon="pi pi-user" class="mb-2" size="large" shape="circle"/>
           <Avatar v-else :image="player.avatar" class="mb-2" size="large" shape="circle"/>
@@ -84,7 +84,7 @@
     <!-- ****** 查驗 modal ****** -->
     <VueModal v-model="stepCheckModal" :enableClose="false" :title="currentStepTitle">
       <div ref="stepShowCountDown" class="mb-5 mt-3" style="background: red; height: 5px"></div>
-      <div class="row flex-wrap justify-content-center" style="text-align: center">
+      <div class="row flex-wrap justify-content-center g-5" style="text-align: center">
         <div class="col-3" v-for="player in shownPlayers" :key="player.socketId" @click="checkedPlayer = player" style="position: relative;">
           <div v-if="checkedPlayer && checkedPlayer.socketId === player.socketId" class="mark self">查驗</div>
           <Avatar v-if="!player.avatar" icon="pi pi-user" class="mb-2" size="large" shape="circle" style="cursor: pointer;"/>
@@ -96,7 +96,7 @@
 
     <VueModal v-model="playerInfoModal" :enableClose="false" :title="currentStepTitle">
       <div ref="stepShowCountDown" class="mb-5 mt-3" style="background: red; height: 5px"></div>
-      <div class="row flex-wrap justify-content-center" style="text-align: center">
+      <div class="row flex-wrap justify-content-center g-5" style="text-align: center">
         <div class="col-3" v-if="checkedPlayer">
           <Avatar v-if="!checkedPlayer.avatar" icon="pi pi-user" class="mb-2" size="large" shape="circle"/>
           <Avatar v-else :image="checkedPlayer.avatar" class="mb-2" size="large" shape="circle"/>
@@ -109,7 +109,7 @@
     <!-- ****** 標記 modal ****** -->
     <VueModal v-model="stepMarkModal" :enableClose="false" :title="currentStepTitle">
       <div ref="stepShowCountDown" class="mb-5 mt-3" style="background: red; height: 5px"></div>
-      <div class="row flex-wrap justify-content-center" style="text-align: center">
+      <div class="row flex-wrap justify-content-center g-5" style="text-align: center">
         <div class="col-3" v-for="player in shownPlayers" :key="player.socketId" @click="mark(player.socketId)" style="position: relative;">
           <div v-if="markedPlayers.includes(player.socketId)" class="mark" :class="{self: player.socketId === myMarkedPlayer}">{{ markLabel }}</div>
           <Avatar v-if="!player.avatar" icon="pi pi-user" class="mb-2" size="large" shape="circle" style="cursor: pointer;"/>
@@ -121,7 +121,7 @@
 
     <VueModal v-model="markedResultModal" :enableClose="true" :title="currentStepTitle">
       <div class="mb-5 mt-3"></div>
-      <div class="row flex-wrap justify-content-center" style="text-align: center">
+      <div class="row flex-wrap justify-content-center g-5" style="text-align: center">
         <div class="col-3" v-for="(result,index) in markedResult" :key="index" style="position: relative;">
           <div class="mark self">{{ result.markLabel }}</div>
           <Avatar v-if="!result.player.avatar" icon="pi pi-user" class="mb-2" size="large" shape="circle"/>
