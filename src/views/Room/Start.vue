@@ -218,7 +218,7 @@ export default {
     }
   },
   computed: {
-    ...mapState('room', ['gameInfo', 'playerList', 'msg']),
+    ...mapState('room', ['gameInfo', 'playerList', 'msg', 'startState']),
     ...mapGetters('room', ['playerData', 'stepListDisplayHelper'])
   },
   methods: {
@@ -400,7 +400,7 @@ export default {
   },
   sockets: {
     backToSetting () {
-      this.$router.push('/room')
+      this.$router.push('/room').catch(() => {})
     },
     async runStep ({ stepIndex, gameStep }) {
       this.markedResultModal = false
@@ -465,6 +465,21 @@ export default {
         this.markedResultModal = true
       }
     }
+  },
+  beforeRouteEnter (to, from, next) {
+    next(vm => {
+      if (!vm.$socket.connected) {
+        next('/play')
+        return
+      }
+      if (!vm.startState) {
+        next('/room')
+      }
+    })
+  },
+  beforeRouteLeave (to, from, next) {
+    if (this.startState) return false
+    next()
   }
 }
 </script>

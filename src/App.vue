@@ -2,7 +2,7 @@
   <div id="app">
     <ScrollPanel style="height: 100vh">
       <div class="container">
-        <Navbar />
+        <Navbar v-if="$route.path !== '/room/start'"/>
         <keep-alive include="Room">
           <router-view />
         </keep-alive>

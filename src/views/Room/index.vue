@@ -1,5 +1,5 @@
 <template>
-  <div id="room" class="viewBox routerviewHeight">
+  <div id="room" class="viewBox routerviewHeight" :class="{ BRtop: $route.path === '/room/start'}">
     <div v-if="$route.path === '/room'">
       <Title>
         <template #text>
@@ -195,12 +195,13 @@ export default {
     roomAnnouncement (msg) {
       this.$toast.add({ severity: 'info', detail: msg, life: 3000 })
     },
-    start () {
+    start (startState) {
+      this.$store.commit('room/start', startState)
       this.$v.$reset()
       this.camp = { name: '🙂 好人陣營', value: 'goodCampRoleList' }
       this.campRole = ''
       this.funRole = ''
-      this.$router.push('/room/start')
+      this.$router.push('/room/start').catch(() => {})
     }
   },
   computed: {
@@ -268,6 +269,10 @@ function picked (val) {
   .p-progress-spinner {
     height: 1rem;
   }
+}
+
+.BRtop {
+  border-radius: 8px !important;
 }
 
 @media (min-width: 768px) {

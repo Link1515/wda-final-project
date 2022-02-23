@@ -3,6 +3,7 @@ import swal from 'sweetalert2'
 export default {
   namespaced: true,
   state: {
+    startState: false,
     roomId: '',
     gameInfo: {},
     playerAmount: 0,
@@ -12,12 +13,16 @@ export default {
   },
   mutations: {
     reset (state) {
+      state.startState = false
       state.roomId = ''
       state.gameInfo = {}
       state.playerAmount = 0
       state.joinedPlayerAmount = 1
       state.playerList = []
       state.msg = null
+    },
+    start (state, startState) {
+      state.startState = startState
     },
     async SOCKET_joinRoomSuccess (state, { roomId, gameInfo, playerAmount }) {
       state.roomId = roomId
