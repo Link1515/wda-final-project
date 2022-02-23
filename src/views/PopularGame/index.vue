@@ -38,13 +38,13 @@
     </InfiniteLoading>
 
     <Dialog :visible.sync="dialogDisplay" @hide="stepIndex = ''" position="center" :showHeader="false" modal dismissableMask>
-      <div style="max-height: 70vh">
+      <div style="max-height: 70vh; max-width: 800px">
         <img v-if="image" :src="image">
         <img v-else src="@/assets/images/image-placeholder.png"/>
         <div class="dialogText mb-5">
           <h1>{{ name }}</h1>
           <h4>遊玩人數: {{ playerRange[0] }} ~ {{ playerRange[1] }}</h4>
-          <p>{{ description }}</p>
+          <p style="max-width: 800px; padding: 0 2rem">{{ description }}</p>
           <div class="goodCamp" style="display: inline-block">好人陣營</div>
           <p>
             <span v-for="(role, index) in goodCampRoleList" :key="role.id">{{ role.name }}<span v-if="index !== goodCampRoleList.length - 1"> / </span></span>
