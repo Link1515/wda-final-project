@@ -138,5 +138,9 @@ li {
     padding-right: 1rem;
     border-radius: 9999px;
   }
+
+  .p-dropdown-label {
+    height: auto;
+  }
 }
 </style>

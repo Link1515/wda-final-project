@@ -8,6 +8,12 @@
         <br>
         {{ slotProps.data.data }}
       </span>
+      <span v-if="slotProps.data.mode === '計時'">
+        <Avatar :icon="slotProps.data.iconType" shape="circle" class="me-2 mb-3" :style="{ background: slotProps.data.iconColor, color: '#000' }"/>
+        {{ slotProps.data.mode }}
+        <br>
+        {{ slotProps.data.data }} 秒
+      </span>
       <span v-else-if="slotProps.data.mode === '顯示'">
         <Avatar :icon="slotProps.data.iconType" shape="circle" class="me-2 mb-3" :style="{ background: slotProps.data.iconColor, color: '#000' }"/>
         {{ slotProps.data.mode }}

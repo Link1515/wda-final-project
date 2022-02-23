@@ -26,6 +26,11 @@
       </div>
     </div>
 
+    <!-- ****** 計時 modal ****** -->
+    <VueModal v-model="stepCountDownModal" :enableClose="false" :title="currentStepTitle">
+      <div ref="stepShowCountDown" class="mb-5 mt-3" style="background: red; height: 5px"></div>
+    </VueModal>
+
     <!-- ****** 顯示 modal ****** -->
     <VueModal v-model="stepShowModal" :enableClose="false" :title="currentStepTitle">
       <div ref="stepShowCountDown" class="mb-5 mt-3" style="background: red; height: 5px"></div>
@@ -91,6 +96,7 @@ export default {
       currentStepTitle: '',
       currentStep: -99,
 
+      stepCountDownModal: false,
       stepShowModal: false,
       stepCheckModal: false,
       checkedPlayer: null,
@@ -121,6 +127,9 @@ export default {
         switch (rule.mode) {
           case '語音':
             await this.stepVoice(rule.data)
+            break
+          case '計時':
+            await this.stepCountDown(rule.data * 1000)
             break
           case '顯示':
             await this.stepShow(rule.data.timer * 1000)
@@ -153,7 +162,29 @@ export default {
         speechSynthesis.speak(this.msg)
       })
     },
+    stepCountDown (timer) {
+      const totalTime = timer
+      this.currentStepTitle = `倒數 ${totalTime / 1000} 秒`
+
+      return new Promise((resolve, reject) => {
+        this.stepCountDownModal = true
+
+        this.intervalTimer = setInterval(() => {
+          timer -= 10
+          if (this.$refs.stepShowCountDown) {
+            this.$refs.stepShowCountDown.style.width = parseInt((timer / totalTime) * 100) + '%'
+          }
+
+          if (timer < 0) {
+            clearInterval(this.intervalTimer)
+            this.stepCountDownModal = false
+            resolve()
+          }
+        }, 10)
+      })
+    },
     stepShow (timer) {
+      this.currentStepTitle = '顯示範例'
       const totalTime = timer
 
       return new Promise((resolve, reject) => {
@@ -174,6 +205,7 @@ export default {
       })
     },
     stepCheck (timer) {
+      this.currentStepTitle = '查驗範例'
       const totalTime = timer
 
       return new Promise((resolve, reject) => {
@@ -194,6 +226,7 @@ export default {
       })
     },
     stepMark (timer) {
+      this.currentStepTitle = '標記範例'
       const totalTime = timer
 
       return new Promise((resolve, reject) => {

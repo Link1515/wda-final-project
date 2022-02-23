@@ -28,6 +28,7 @@
               <span class="me-auto">{{ rule.mode }}</span>
               <p>
                 <span v-if="rule.mode === '語音'">{{ rule.data }}</span>
+                <span v-if="rule.mode === '計時'">{{ rule.data }} 秒</span>
                 <span v-if="rule.mode === '顯示'">
                   執行角色: {{ rule.conductingRoleListName }} {{ rule.conductingRoleName }}
                   <br>
@@ -77,10 +78,20 @@
         <p v-show="configModel.mode">{{ configIntro }}</p>
         <!-- ************** 語音 ************** -->
         <Textarea
+          v-if="configModel.mode === '語音'"
           v-model.trim="$v.configModel.audioText.$model"
-          v-show="configModel.mode === '語音'"
           :autoResize="true"
           rows="5" cols="30"
+        />
+        <!-- ************** 計時 ************** -->
+        <InputNumber
+          v-if="configModel.mode === '計時'"
+          v-model="configModel.countDown"
+          showButtons buttonLayout="horizontal"
+          :step="1"
+          :min="1"
+          :max="999"
+          suffix=" 秒"
         />
         <!-- ************** 顯示 ************** -->
         <template v-if="configModel.mode === '顯示'">
@@ -222,6 +233,7 @@ export default {
       deleteStep: [],
       configs: [
         { mode: '語音', intro: '透過語音撥放以下輸入的文字' },
+        { mode: '計時', intro: '經過指定時間後，執行下一個步驟' },
         { mode: '顯示', intro: '顯示指定身分，只有執行角色能看到顯示的玩家' },
         { mode: '查驗', intro: '查驗指定玩家的身分' },
         { mode: '標記', intro: '執行時可以標記指定的玩家，需要自訂標籤，如: 死亡、警長保護...等' }
@@ -229,6 +241,7 @@ export default {
       configModel: {
         mode: '',
         audioText: '',
+        countDown: 5,
         showPlayer: {
           conductingRoleListType: '',
           conductingRoleId: '',
@@ -253,6 +266,7 @@ export default {
   validations: {
     configModel: {
       audioText: { required },
+      countDown: { required },
       showPlayer: {
         conductingRoleListType: { required },
         conductingRoleId: { required },
@@ -292,6 +306,13 @@ export default {
             return
           }
           data = this.configModel.audioText
+          break
+        case '計時':
+          if (this.$v.configModel.countDown.$invalid) {
+            this.$toast.add({ severity: 'error', summary: '錯誤', detail: '未填寫計時時間', life: 3000 })
+            return
+          }
+          data = this.configModel.countDown
           break
         case '顯示':
           if (this.$v.configModel.showPlayer.$invalid) {
@@ -337,6 +358,7 @@ export default {
       this.configModel = {
         mode: '',
         audioText: '',
+        countDown: 5,
         showPlayer: {
           conductingRoleListType: '',
           conductingRoleId: '',
@@ -535,5 +557,9 @@ export default {
   button {
     font-weight: bold;
   }
+}
+
+.p-dialog-content {
+  min-height: 250px;
 }
 </style>
