@@ -63,9 +63,47 @@ export default {
       }
 
       return everyoneReady
+    },
+    stepListDisplayHelper (state) {
+      if (!state.gameInfo.stepList) return
+
+      const newStepList = JSON.parse(JSON.stringify(state.gameInfo.stepList))
+
+      newStepList.forEach(step => {
+        step.rules.forEach(rule => {
+          switch (rule.mode) {
+            case '語音':
+              rule.iconType = 'pi pi-volume-up'
+              rule.iconColor = '#EED19C'
+              break
+            case '顯示':
+              rule.iconType = 'pi pi-eye'
+              rule.iconColor = '#ACBA9D'
+              rule.conductingRoleListName = roleListNameTranslator(rule.data.conductingRoleListType)
+              rule.conductingRoleName = roleNameTranslator(state, rule.data.conductingRoleListType, rule.data.conductingRoleId)
+              rule.roleListName = roleListNameTranslator(rule.data.roleListType)
+              rule.roleName = roleNameTranslator(state, rule.data.roleListType, rule.data.roleId)
+              break
+            case '查驗':
+              rule.iconType = 'pi pi-search'
+              rule.iconColor = '#749D9B'
+              rule.conductingRoleListName = roleListNameTranslator(rule.data.conductingRoleListType)
+              rule.conductingRoleName = roleNameTranslator(state, rule.data.conductingRoleListType, rule.data.conductingRoleId)
+              break
+            case '標記':
+              rule.iconType = 'pi pi-user-edit'
+              rule.iconColor = '#E8837E'
+              rule.conductingRoleListName = roleListNameTranslator(rule.data.conductingRoleListType)
+              rule.conductingRoleName = roleNameTranslator(state, rule.data.conductingRoleListType, rule.data.conductingRoleId)
+              break
+          }
+        })
+      })
+      return newStepList
     }
   }
 }
+
 function getVoices () {
   return new Promise(
     function (resolve, reject) {
@@ -79,4 +117,22 @@ function getVoices () {
       }, 10)
     }
   )
+}
+
+function roleListNameTranslator (roleListType) {
+  switch (roleListType) {
+    case 'goodCampRoleList':
+      return '好人陣營'
+    case 'badCampRoleList':
+      return '壞人陣營'
+    case 'funRoleList':
+      return '功能身分'
+  }
+}
+
+function roleNameTranslator (state, roleListType, roleId) {
+  if (roleId === 'all') return '全部'
+  const result = state.gameInfo[roleListType].filter(role => role.id === roleId)[0]
+  if (!result) return 'error: 角色不存在'
+  return result.name
 }

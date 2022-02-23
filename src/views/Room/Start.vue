@@ -9,7 +9,8 @@
                 v-model="stepIndex"
                 :options="gameInfo.stepList"
                 :reduce="s => gameInfo.stepList.findIndex(step => step.id === s.id)"
-                label="name" placeholder="選擇流程" class="VueSelectWidth mx-auto mb-4"/>
+                label="name" placeholder="選擇流程" class="VueSelectWidth mx-auto mb-4"
+              />
             </div>
             <div class="col-12">
               <Button :label="stepRunning ? '播放中' : '播放'" @click="startStep" :disabled="stepRunning" icon="pi pi-caret-right" class="p-button-rounded p-button-raised p-button-lg"/>
@@ -61,22 +62,44 @@
             <Button label="離開房間" @click="leaveRoom" class="p-button-rounded p-button-raised p-button-danger"/>
           </div>
         </TabPanel>
-        <TabPanel header="遊戲流程" v-if="stepIndex !== '' && gameInfo.stepList[stepIndex]">
-          <h2 style="text-align: center">{{ gameInfo.stepList[stepIndex].name }}</h2>
-          <DataTable stripedRows :value="gameInfo.stepList[stepIndex].rules">
+        <TabPanel header="遊戲流程" v-if="stepIndex !== '' && stepListDisplayHelper[stepIndex]">
+          <h2 style="text-align: center">{{ stepListDisplayHelper[stepIndex].name }}</h2>
+          <DataTable stripedRows :value="stepListDisplayHelper[stepIndex].rules">
             <Column :bodyStyle="{ textAlign: 'center', justifyContent: 'center' }">
               <template #body="slotProps">
                 <span v-if="slotProps.data.mode === '語音'">
+                  <Avatar :icon="slotProps.data.iconType" shape="circle" class="me-2 mb-3" :style="{ background: slotProps.data.iconColor, color: '#000' }"/>
+                  {{ slotProps.data.mode }}
+                  <br>
                   {{ slotProps.data.data }}
                 </span>
                 <span v-else-if="slotProps.data.mode === '顯示'">
-                  {{ translateRoleType(slotProps.data.data.conductingRoleListType) }} {{translateRoleName(slotProps.data.data.conductingRoleListType, slotProps.data.data.conductingRoleId)}} 執行顯示 {{ translateRoleType(slotProps.data.data.roleListType) }} {{translateRoleName(slotProps.data.data.roleListType, slotProps.data.data.roleId)}}，時間 {{slotProps.data.data.timer}} 秒
+                  <Avatar :icon="slotProps.data.iconType" shape="circle" class="me-2 mb-3" :style="{ background: slotProps.data.iconColor, color: '#000' }"/>
+                  {{ slotProps.data.mode }}
+                  <br>
+                  <span class="d-inline-block mb-1">執行角色: {{ slotProps.data.conductingRoleListName }} {{ slotProps.data.conductingRoleName }}</span>
+                  <br>
+                  <span class="d-inline-block mb-1">顯示角色: {{ slotProps.data.roleListName }} {{ slotProps.data.roleName }}</span>
+                  <br>
+                  <span class="d-inline-block mb-1">時間: {{ slotProps.data.data.timer }} 秒</span>
                 </span>
                 <span v-else-if="slotProps.data.mode === '查驗'">
-                  {{ translateRoleType(slotProps.data.data.conductingRoleListType) }} {{translateRoleName(slotProps.data.data.conductingRoleListType, slotProps.data.data.conductingRoleId)}} 執行查驗，時間 {{slotProps.data.data.timer}} 秒
+                  <Avatar :icon="slotProps.data.iconType" shape="circle" class="me-2 mb-3" :style="{ background: slotProps.data.iconColor, color: '#000' }"/>
+                  {{ slotProps.data.mode }}
+                  <br>
+                  <span class="d-inline-block mb-1">執行角色: {{ slotProps.data.conductingRoleListName }} {{ slotProps.data.conductingRoleName }}</span>
+                  <br>
+                  <span class="d-inline-block mb-1">時間: {{ slotProps.data.data.timer }} 秒</span>
                 </span>
                 <span v-else-if="slotProps.data.mode === '標記'">
-                  {{ translateRoleType(slotProps.data.data.conductingRoleListType) }} {{translateRoleName(slotProps.data.data.conductingRoleListType, slotProps.data.data.conductingRoleId)}} 執行標記，時間 {{slotProps.data.data.timer}} 秒
+                  <Avatar :icon="slotProps.data.iconType" shape="circle" class="me-2 mb-3" :style="{ background: slotProps.data.iconColor, color: '#000' }"/>
+                  {{ slotProps.data.mode }}
+                  <br>
+                  <span class="d-inline-block mb-1">執行角色: {{ slotProps.data.conductingRoleListName }} {{ slotProps.data.conductingRoleName }}</span>
+                  <br>
+                  <span class="d-inline-block mb-1">標記標籤: {{ slotProps.data.data.label }}</span>
+                  <br>
+                  <span class="d-inline-block mb-1">時間: {{ slotProps.data.data.timer }} 秒</span>
                 </span>
               </template>
             </Column>
@@ -196,7 +219,7 @@ export default {
   },
   computed: {
     ...mapState('room', ['gameInfo', 'playerList', 'msg']),
-    ...mapGetters('room', ['playerData'])
+    ...mapGetters('room', ['playerData', 'stepListDisplayHelper'])
   },
   methods: {
     backToSetting () {

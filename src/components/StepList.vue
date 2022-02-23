@@ -1,43 +1,49 @@
 <template>
-  <ul id="steplist">
-    <li v-for="step in List.rules" :key="step.id">
-      <template v-if="step.mode === '語音'">
-        {{ step.data }}
-      </template>
-      <template v-if="step.mode === '顯示'">
-        顯示角色: {{ step.roleListName }} {{ step.roleName }}
+<DataTable stripedRows :value="data">
+  <Column :bodyStyle="{ textAlign: 'center', justifyContent: 'center' }">
+    <template #body="slotProps">
+      <span v-if="slotProps.data.mode === '語音'">
+        <Avatar :icon="slotProps.data.iconType" shape="circle" class="me-2 mb-3" :style="{ background: slotProps.data.iconColor, color: '#000' }"/>
+        {{ slotProps.data.mode }}
         <br>
-        時間: {{ step.data.timer }} 秒
-      </template>
-      <template v-if="step.mode === '標記'">
-        執行角色: {{ step.conductingRoleListName }} {{ step.conductingRoleName }}
+        {{ slotProps.data.data }}
+      </span>
+      <span v-else-if="slotProps.data.mode === '顯示'">
+        <Avatar :icon="slotProps.data.iconType" shape="circle" class="me-2 mb-3" :style="{ background: slotProps.data.iconColor, color: '#000' }"/>
+        {{ slotProps.data.mode }}
         <br>
-        標記: {{ step.data.label }}
+        <span class="d-inline-block mb-1">執行角色: {{ slotProps.data.conductingRoleListName }} {{ slotProps.data.conductingRoleName }}</span>
         <br>
-        時間: {{ step.data.timer }} 秒
-      </template>
-    </li>
-  </ul>
+        <span class="d-inline-block mb-1">顯示角色: {{ slotProps.data.roleListName }} {{ slotProps.data.roleName }}</span>
+        <br>
+        <span class="d-inline-block mb-1">時間: {{ slotProps.data.data.timer }} 秒</span>
+      </span>
+      <span v-else-if="slotProps.data.mode === '查驗'">
+        <Avatar :icon="slotProps.data.iconType" shape="circle" class="me-2 mb-3" :style="{ background: slotProps.data.iconColor, color: '#000' }"/>
+        {{ slotProps.data.mode }}
+        <br>
+        <span class="d-inline-block mb-1">執行角色: {{ slotProps.data.conductingRoleListName }} {{ slotProps.data.conductingRoleName }}</span>
+        <br>
+        <span class="d-inline-block mb-1">時間: {{ slotProps.data.data.timer }} 秒</span>
+      </span>
+      <span v-else-if="slotProps.data.mode === '標記'">
+        <Avatar :icon="slotProps.data.iconType" shape="circle" class="me-2 mb-3" :style="{ background: slotProps.data.iconColor, color: '#000' }"/>
+        {{ slotProps.data.mode }}
+        <br>
+        <span class="d-inline-block mb-1">執行角色: {{ slotProps.data.conductingRoleListName }} {{ slotProps.data.conductingRoleName }}</span>
+        <br>
+        <span class="d-inline-block mb-1">標記標籤: {{ slotProps.data.data.label }}</span>
+        <br>
+        <span class="d-inline-block mb-1">時間: {{ slotProps.data.data.timer }} 秒</span>
+      </span>
+    </template>
+  </Column>
+</DataTable>
 </template>
 
 <script>
 export default {
   name: 'StepList',
-  props: ['List']
+  props: ['data']
 }
 </script>
-
-<style lang="scss">
-#steplist {
-  text-align: center;
-  border-radius: 10px;
-  padding: 1rem 5rem;
-  background-color: #fff;
-
-  li + li {
-    margin-top: 1rem;
-    padding-top: 1rem;
-    border-top: 3px dotted #666;
-  }
-}
-</style>

@@ -2,37 +2,8 @@
   <div id="voicesetting">
     <div class="row" style="padding-bottom: 8rem">
       <div class="col-12 col-lg-6">
-        <ul v-if="stepIndex !== ''" id="steplist">
-          <li><h2 class="stepHeader">{{ stepListDisplayHelper[stepIndex].name }}</h2></li>
-          <li v-for="rule in stepListDisplayHelper[stepIndex].rules" :key="rule.id">
-            <div class="mb-3">
-              <Avatar :icon="rule.iconType" shape="circle" class="me-2" :style="{ background: rule.iconColor }"/>
-              {{rule.mode}}
-            </div>
-            <template v-if="rule.mode === '語音'">
-              {{ rule.data }}
-            </template>
-            <template v-if="rule.mode === '顯示'">
-              <span class="d-inline-block mb-1">執行角色: {{ rule.conductingRoleListName }} {{ rule.conductingRoleName }}</span>
-              <br>
-              <span class="d-inline-block mb-1">顯示角色: {{ rule.roleListName }} {{ rule.roleName }}</span>
-              <br>
-              <span class="d-inline-block mb-1">時間: {{ rule.data.timer }} 秒</span>
-            </template>
-            <template v-if="rule.mode === '查驗'">
-              <span class="d-inline-block mb-1">執行角色: {{ rule.conductingRoleListName }} {{ rule.conductingRoleName }}</span>
-              <br>
-              <span class="d-inline-block mb-1">時間: {{ rule.data.timer }} 秒</span>
-            </template>
-            <template v-if="rule.mode === '標記'">
-              <span class="d-inline-block mb-1">執行角色: {{ rule.conductingRoleListName }} {{ rule.conductingRoleName }}</span>
-              <br>
-              <span class="d-inline-block mb-1">標記: {{ rule.data.label }}</span>
-              <br>
-              <span class="d-inline-block mb-1">時間: {{ rule.data.timer }} 秒</span>
-            </template>
-          </li>
-        </ul>
+        <h2 v-if="stepListDisplayHelper[stepIndex]" class="stepHeader">{{ stepListDisplayHelper[stepIndex].name }}</h2>
+        <StepList v-if="stepListDisplayHelper[stepIndex]" :data="stepListDisplayHelper[stepIndex].rules"/>
       </div>
       <div class="col-12 col-lg-6 controlPanel">
         <VueSelect v-model="voiceType" :options="voiceOptions" :reduce="v => v.value" class="mb-5"/>
@@ -96,6 +67,7 @@
 
 <script>
 import VueModal from '@kouts/vue-modal'
+import StepList from '@/components/StepList.vue'
 import '@kouts/vue-modal/dist/vue-modal.css'
 import { mapGetters, mapState } from 'vuex'
 import { required } from 'vuelidate/lib/validators'
@@ -103,7 +75,8 @@ import { required } from 'vuelidate/lib/validators'
 export default {
   name: 'VoiceSetting',
   components: {
-    VueModal
+    VueModal,
+    StepList
   },
   data () {
     return {
@@ -292,21 +265,9 @@ function getVoices () {
     padding-top: 1rem;
   }
 
-  #steplist {
-    text-align: center;
-    border-radius: 10px;
-    padding: 1rem 5rem;
-    background-color: #fff;
-
-    li + li {
-      margin-top: 1rem;
-      padding-top: 1rem;
-      border-top: 3px dotted #666;
-    }
-  }
-
   .stepHeader {
-    display: inline-block;
+    width: max-content;
+    margin: 1rem auto;
     padding: 5px 10px;
     border-radius: 9999px;
     background-color: #ffc107;

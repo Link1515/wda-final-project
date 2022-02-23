@@ -37,7 +37,7 @@
       </template>
     </InfiniteLoading>
 
-    <Dialog :visible.sync="dialogDisplay" position="center" :showHeader="false" modal dismissableMask>
+    <Dialog :visible.sync="dialogDisplay" @hide="stepIndex = ''" position="center" :showHeader="false" modal dismissableMask>
       <div style="max-height: 70vh">
         <img v-if="image" :src="image">
         <img v-else src="@/assets/images/image-placeholder.png"/>
@@ -47,47 +47,27 @@
           <p>{{ description }}</p>
           <div class="goodCamp" style="display: inline-block">好人陣營</div>
           <p>
-            <span v-for="(role, index) in goodCampRoleList" :key="role.id">{{ role.name }} <span v-if="index !== goodCampRoleList.length - 1">/</span></span>
+            <span v-for="(role, index) in goodCampRoleList" :key="role.id">{{ role.name }}<span v-if="index !== goodCampRoleList.length - 1"> / </span></span>
           </p>
           <div class="badCamp" style="display: inline-block">壞人陣營</div>
           <p>
-            <span v-for="(role, index) in badCampRoleList" :key="role.id">{{ role.name }} <span v-if="index !== goodCampRoleList.length - 1">/</span></span>
+            <span v-for="(role, index) in badCampRoleList" :key="role.id">{{ role.name }}<span v-if="index !== badCampRoleList.length - 1"> / </span></span>
           </p>
-          <p v-if="enableFunRole">功能身分: <span v-for="role in funRoleList" :key="role.id">{{ role.name }} / </span></p>
+          <div v-if="enableFunRole" class="funRole" style="display: inline-block">功能身分</div>
+          <p v-if="enableFunRole">
+            <span v-for="(role, index) in funRoleList" :key="role.id">{{ role.name }}<span v-if="index !== funRoleList.length - 1"> / </span></span>
+          </p>
         </div>
-        <div class="dialogStep">
-          <h1 class="mb-0">遊戲流程</h1>
-          <ul id="steplist" v-for="step in stepListDisplayHelper" :key="step.id">
-            <li><h2 class="stepHeader">{{step.name}}</h2></li>
-            <li v-for="rule in step.rules" :key="rule.id">
-              <div class="mb-3">
-                <Avatar :icon="rule.iconType" shape="circle" class="me-2" :style="{ background: rule.iconColor, color: '#000' }"/>
-                {{rule.mode}}
-              </div>
-              <template v-if="rule.mode === '語音'">
-                {{ rule.data }}
-              </template>
-              <template v-if="rule.mode === '顯示'">
-                <span class="d-inline-block mb-1">執行角色: {{ rule.conductingRoleListName }} {{ rule.conductingRoleName }}</span>
-                <br>
-                <span class="d-inline-block mb-1">顯示角色: {{ rule.roleListName }} {{ rule.roleName }}</span>
-                <br>
-                <span class="d-inline-block mb-1">時間: {{ rule.data.timer }} 秒</span>
-              </template>
-              <template v-if="rule.mode === '查驗'">
-                <span class="d-inline-block mb-1">執行角色: {{ rule.conductingRoleListName }} {{ rule.conductingRoleName }}</span>
-                <br>
-                <span class="d-inline-block mb-1">時間: {{ rule.data.timer }} 秒</span>
-              </template>
-              <template v-if="rule.mode === '標記'">
-                <span class="d-inline-block mb-1">執行角色: {{ rule.conductingRoleListName }} {{ rule.conductingRoleName }}</span>
-                <br>
-                <span class="d-inline-block mb-1">標記: {{ rule.data.label }}</span>
-                <br>
-                <span class="d-inline-block mb-1">時間: {{ rule.data.timer }} 秒</span>
-              </template>
-            </li>
-          </ul>
+        <div class="dialogStep pb-5">
+          <h1 class="mb-3">遊戲流程</h1>
+          <VueSelect
+            v-model="stepIndex"
+            :options="stepListDisplayHelper"
+            :reduce="s => stepListDisplayHelper.findIndex(step => step.id === s.id)"
+            label="name" placeholder="選擇流程" class="VueSelectWidth mx-auto mb-4"
+          />
+          <h2 v-if="stepListDisplayHelper[stepIndex]" class="stepHeader">{{ stepListDisplayHelper[stepIndex].name }}</h2>
+          <StepList v-if="stepListDisplayHelper[stepIndex]" :data="stepListDisplayHelper[stepIndex].rules"/>
         </div>
       </div>
     </Dialog>
@@ -98,6 +78,7 @@
 import Rating from 'primevue/rating'
 import ToggleButton from 'primevue/togglebutton'
 import InfiniteLoading from 'vue-infinite-loading'
+import StepList from '@/components/StepList.vue'
 
 import { mapState, mapGetters } from 'vuex'
 
@@ -106,11 +87,13 @@ export default {
   components: {
     Rating,
     ToggleButton,
-    InfiniteLoading
+    InfiniteLoading,
+    StepList
   },
   data () {
     return {
       dialogDisplay: false,
+      stepIndex: '',
       page: 1,
       gameList: []
     }
@@ -180,29 +163,17 @@ export default {
 #populargame {
   padding: 0 2rem 6rem;
 
-  #steplist {
-    text-align: center;
-    border-radius: 10px;
-    padding: 0 5rem 1rem;
-    background-color: #fff;
-
-    li + li {
-      margin-top: 1rem;
-      padding-top: 1rem;
-      border-top: 3px dotted #666;
-    }
-  }
-
   .stepHeader {
-    display: inline-block;
+    width: max-content;
+    margin: 1rem auto;
     padding: 5px 10px;
     border-radius: 9999px;
     background-color: #ffc107;
-    color: #000;
   }
 
   .goodCamp,
-  .badCamp {
+  .badCamp,
+  .funRole {
     border-radius: 9999px;
     padding: 5px 10px;
   }
@@ -213,6 +184,10 @@ export default {
 
   .badCamp {
     background-color: #ffc4c8;
+  }
+
+  .funRole {
+    background-color: #FDD31C;
   }
 
   .p-card-content {
