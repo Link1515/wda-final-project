@@ -521,6 +521,11 @@ export default {
   .p-inputnumber-input {
     border-radius: 0;
   }
+
+  .p-tabview {
+    border-radius: 8px;
+    overflow: hidden;
+  }
 }
 
 .stepSetting_header {

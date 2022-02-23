@@ -367,7 +367,7 @@ export default {
                 clearInterval(this.intervalTimer)
                 this.stepMarkModal = false
                 this.myMarkedPlayer = null
-                resolve()
+                resolve(true)
               }
             }, 10)
           })
@@ -410,6 +410,7 @@ export default {
       const msg = this.msg
       const playerList = this.playerList.filter(player => player.alive)
 
+      let markState = false
       if (stepList[gameStep]) {
         switch (stepList[gameStep].mode) {
           case '語音':
@@ -442,12 +443,12 @@ export default {
           case '標記':
             this.shownPlayers = playerList
             this.$socket.emit('updateShownPlayers', this.shownPlayers)
-            await this.stepMark(stepList[gameStep], stepList[gameStep].data.timer * 1000)
+            markState = await this.stepMark(stepList[gameStep], stepList[gameStep].data.timer * 1000)
             break
         }
       }
 
-      this.$socket.emit('stepDone')
+      this.$socket.emit('stepDone', markState)
     },
     resetStep () {
       clearInterval(this.intervalTimer)

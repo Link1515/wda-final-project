@@ -128,6 +128,19 @@ export default {
       transform: scale(1.2);
     }
   }
+
+  .wizard-card-footer {
+    justify-content: center;
+    display: flex;
+  }
+}
+
+@media (min-width: 768px) {
+  #makegame {
+    .wizard-card-footer {
+      display: block;
+    }
+  }
 }
 
 @media (min-width: 992px) {
