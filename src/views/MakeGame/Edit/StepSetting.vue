@@ -48,6 +48,17 @@
                   <br>
                   時間: {{ rule.data.timer }} 秒
                 </span>
+                <span v-if="rule.mode === '多選一'">
+                  執行角色: {{ rule.conductingRoleListName }} {{ rule.conductingRoleName }}
+                  <br>
+                  <br>
+                  此步驟後
+                  <div v-for="(option, index) in rule.data.optionsData" :key="index" class="mb-1">
+                    <span>第{{ option.inc }}步: {{ option.name }}</span>
+                  </div>
+                  <br>
+                  時間: {{ rule.data.timer }} 秒
+                </span>
                 <i class="pi pi-bars handle"></i>
               </p>
             </li>
@@ -198,6 +209,50 @@
             suffix=" 秒"
           />
         </template>
+        <!-- ************** 多選一 ************** -->
+        <template v-if="configModel.mode === '多選一'">
+          <p>執行角色</p>
+          <Dropdown
+            v-model="$v.configModel.pickOne.conductingRoleListType.$model"
+            :options="roleListType"
+            optionLabel="name"
+            optionValue="type"
+            placeholder="選擇陣營"
+          />
+          <Dropdown
+            v-if="configModel.pickOne.conductingRoleListType && configModel.pickOne.conductingRoleListType !== 'all'"
+            v-model="$v.configModel.pickOne.conductingRoleId.$model"
+            :options="[{name: '全部', id: 'all'}, ...$store.state.game[configModel.pickOne.conductingRoleListType]]"
+            optionLabel="name"
+            optionValue="id"
+            placeholder="選擇執行角色"
+          />
+          <p>N</p>
+          <Dropdown
+            v-model="$v.configModel.pickOne.spanStep.$model"
+            :options="[2 ,3 ,4]"
+            @change="buildPickOneOptName"
+            placeholder="橫跨步驟數"
+            class="mb-4"
+          />
+          <div v-for="(opt, index) in configModel.pickOne.optionsData" :key="index" style="text-align: center">
+            <p>此步驟後的第{{ index + 1}}個步驟</p>
+            <InputText
+              v-model.trim="$v.configModel.pickOne.optionsData.$each[index].name.$model"
+              placeholder="選項名稱"
+              class="mb-2"
+            />
+          </div>
+          <p>時間</p>
+          <InputNumber
+            v-model="configModel.pickOne.timer"
+            showButtons buttonLayout="horizontal"
+            :step="1"
+            :min="1"
+            :max="999"
+            suffix=" 秒"
+          />
+        </template>
       </form>
       <template #footer>
         <Button @click="addStepList" v-show="configModel.mode" label="添加" class="p-button-rounded p-button-raised"/>
@@ -236,7 +291,8 @@ export default {
         { mode: '計時', intro: '經過指定時間後，執行下一個步驟' },
         { mode: '顯示', intro: '顯示指定身分，只有執行角色能看到顯示的玩家' },
         { mode: '查驗', intro: '查驗指定玩家的身分' },
-        { mode: '標記', intro: '執行時可以標記指定的玩家，需要自訂標籤，如: 死亡、警長保護...等' }
+        { mode: '標記', intro: '執行時可以標記指定的玩家，需要自訂標籤，如: 死亡、警長保護...等' },
+        { mode: '多選一', intro: '此步驟以後的 N 個步驟中，選一項執行' }
       ],
       configModel: {
         mode: '',
@@ -258,6 +314,13 @@ export default {
           conductingRoleListType: '',
           conductingRoleId: '',
           label: '',
+          timer: 5
+        },
+        pickOne: {
+          conductingRoleListType: '',
+          conductingRoleId: '',
+          spanStep: 2,
+          optionsData: [{ inc: 1, name: '' }, { inc: 2, name: '' }],
           timer: 5
         }
       }
@@ -281,6 +344,12 @@ export default {
         conductingRoleListType: { required },
         conductingRoleId: { required },
         label: { required }
+      },
+      pickOne: {
+        conductingRoleListType: { required },
+        conductingRoleId: { required },
+        spanStep: { required },
+        optionsData: { $each: { name: { required } } }
       }
     },
     stepList: {
@@ -350,6 +419,18 @@ export default {
           }
           data = this.configModel.markPlayer
           break
+        case '多選一':
+          if (this.$v.configModel.pickOne.$invalid) {
+            if (this.$v.configModel.pickOne.conductingRoleListType.$invalid || this.$v.configModel.pickOne.conductingRoleId.$invalid) {
+              this.$toast.add({ severity: 'error', summary: '錯誤', detail: '未選擇執行角色', life: 3000 })
+            }
+            if (this.$v.configModel.pickOne.optionsData.$invalid) {
+              this.$toast.add({ severity: 'error', summary: '錯誤', detail: '未填寫選項名稱', life: 3000 })
+            }
+            return
+          }
+          data = this.configModel.pickOne
+          break
       }
       this.displayConfig = false
 
@@ -376,6 +457,13 @@ export default {
           conductingRoleId: '',
           label: '',
           timer: 5
+        },
+        pickOne: {
+          conductingRoleListType: '',
+          conductingRoleId: '',
+          spanStep: 2,
+          optionsData: [{ inc: 1, name: '' }, { inc: 2, name: '' }],
+          timer: 5
         }
       }
     },
@@ -392,6 +480,12 @@ export default {
     },
     changeStepListIndex (e) {
       this.stepListIndex = e.index
+    },
+    buildPickOneOptName () {
+      this.configModel.pickOne.optionsData = []
+      for (let i = 0; i < this.configModel.pickOne.spanStep; i++) {
+        this.configModel.pickOne.optionsData.push({ inc: i + 1, name: '' })
+      }
     },
     async validate () {
       this.$v.stepList.$touch()
@@ -458,6 +552,9 @@ export default {
         if (config.markPlayer.conductingRoleListType === 'all') {
           config.markPlayer.conductingRoleId = 'all'
         }
+        if (config.pickOne.conductingRoleListType === 'all') {
+          config.pickOne.conductingRoleId = 'all'
+        }
       }
     }
   }
@@ -523,7 +620,7 @@ export default {
 
   .configForm {
     width: 350px;
-    min-height: 200px;
+    min-height: 250px;
   }
 
   .p-dropdown,

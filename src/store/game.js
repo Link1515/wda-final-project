@@ -222,6 +222,12 @@ export default {
               rule.conductingRoleListName = roleListNameTranslator(rule.data.conductingRoleListType)
               rule.conductingRoleName = roleNameTranslator(state, rule.data.conductingRoleListType, rule.data.conductingRoleId)
               break
+            case '多選一':
+              rule.iconType = 'pi pi-sitemap'
+              rule.iconColor = '#E2BFE7'
+              rule.conductingRoleListName = roleListNameTranslator(rule.data.conductingRoleListType)
+              rule.conductingRoleName = roleNameTranslator(state, rule.data.conductingRoleListType, rule.data.conductingRoleId)
+              break
           }
         })
       })

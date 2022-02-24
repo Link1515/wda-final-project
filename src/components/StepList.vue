@@ -42,6 +42,20 @@
         <br>
         <span class="d-inline-block mb-1">時間: {{ slotProps.data.data.timer }} 秒</span>
       </span>
+      <span v-if="slotProps.data.mode === '多選一'">
+        <Avatar :icon="slotProps.data.iconType" shape="circle" class="me-2 mb-3" :style="{ background: slotProps.data.iconColor, color: '#000' }"/>
+        {{ slotProps.data.mode }}
+        <br>
+        執行角色: {{ slotProps.data.conductingRoleListName }} {{ slotProps.data.conductingRoleName }}
+        <br>
+        <br>
+        此步驟後
+        <div v-for="(option, index) in slotProps.data.data.optionsData" :key="index" class="mt-1">
+          <span>第{{ option.inc }}步: {{ option.name }}</span>
+        </div>
+        <br>
+        時間: {{ slotProps.data.data.timer }} 秒
+      </span>
     </template>
   </Column>
 </DataTable>
