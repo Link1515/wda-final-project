@@ -81,6 +81,10 @@ export default {
               rule.iconType = 'pi pi-volume-up'
               rule.iconColor = '#EED19C'
               break
+            case '計時':
+              rule.iconType = 'pi pi-clock'
+              rule.iconColor = '#7AD4CB'
+              break
             case '顯示':
               rule.iconType = 'pi pi-eye'
               rule.iconColor = '#ACBA9D'
@@ -98,6 +102,12 @@ export default {
             case '標記':
               rule.iconType = 'pi pi-user-edit'
               rule.iconColor = '#E8837E'
+              rule.conductingRoleListName = roleListNameTranslator(rule.data.conductingRoleListType)
+              rule.conductingRoleName = roleNameTranslator(state, rule.data.conductingRoleListType, rule.data.conductingRoleId)
+              break
+            case '多選一':
+              rule.iconType = 'pi pi-sitemap'
+              rule.iconColor = '#E2BFE7'
               rule.conductingRoleListName = roleListNameTranslator(rule.data.conductingRoleListType)
               rule.conductingRoleName = roleNameTranslator(state, rule.data.conductingRoleListType, rule.data.conductingRoleId)
               break

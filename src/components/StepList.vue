@@ -51,7 +51,7 @@
         <br>
         此步驟後
         <div v-for="(option, index) in slotProps.data.data.optionsData" :key="index" class="mt-1">
-          <span>第{{ option.inc }}步: {{ option.name }}</span>
+          <span>選項{{ option.inc }}: {{ option.name }}</span>
         </div>
         <br>
         時間: {{ slotProps.data.data.timer }} 秒

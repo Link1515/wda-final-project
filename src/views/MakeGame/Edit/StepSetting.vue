@@ -52,9 +52,9 @@
                   執行角色: {{ rule.conductingRoleListName }} {{ rule.conductingRoleName }}
                   <br>
                   <br>
-                  此步驟後
+                  此步驟後 {{ rule.data.spanStep }} 步為選項
                   <div v-for="(option, index) in rule.data.optionsData" :key="index" class="mb-1">
-                    <span>第{{ option.inc }}步: {{ option.name }}</span>
+                    <span>選項{{ option.inc }}: {{ option.name }}</span>
                   </div>
                   <br>
                   時間: {{ rule.data.timer }} 秒
@@ -236,7 +236,7 @@
             class="mb-4"
           />
           <div v-for="(opt, index) in configModel.pickOne.optionsData" :key="index" style="text-align: center">
-            <p>此步驟後的第{{ index + 1}}個步驟</p>
+            <p>此步驟後的第{{ index + 1 }}個步驟</p>
             <InputText
               v-model.trim="$v.configModel.pickOne.optionsData.$each[index].name.$model"
               placeholder="選項名稱"

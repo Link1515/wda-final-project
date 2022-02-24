@@ -63,53 +63,14 @@
           </div>
         </TabPanel>
         <TabPanel header="遊戲流程" v-if="stepIndex !== '' && stepListDisplayHelper[stepIndex]">
-          <h2 style="text-align: center">{{ stepListDisplayHelper[stepIndex].name }}</h2>
-          <DataTable stripedRows :value="stepListDisplayHelper[stepIndex].rules">
-            <Column :bodyStyle="{ textAlign: 'center', justifyContent: 'center' }">
-              <template #body="slotProps">
-                <span v-if="slotProps.data.mode === '語音'">
-                  <Avatar :icon="slotProps.data.iconType" shape="circle" class="me-2 mb-3" :style="{ background: slotProps.data.iconColor, color: '#000' }"/>
-                  {{ slotProps.data.mode }}
-                  <br>
-                  {{ slotProps.data.data }}
-                </span>
-                <span v-else-if="slotProps.data.mode === '顯示'">
-                  <Avatar :icon="slotProps.data.iconType" shape="circle" class="me-2 mb-3" :style="{ background: slotProps.data.iconColor, color: '#000' }"/>
-                  {{ slotProps.data.mode }}
-                  <br>
-                  <span class="d-inline-block mb-1">執行角色: {{ slotProps.data.conductingRoleListName }} {{ slotProps.data.conductingRoleName }}</span>
-                  <br>
-                  <span class="d-inline-block mb-1">顯示角色: {{ slotProps.data.roleListName }} {{ slotProps.data.roleName }}</span>
-                  <br>
-                  <span class="d-inline-block mb-1">時間: {{ slotProps.data.data.timer }} 秒</span>
-                </span>
-                <span v-else-if="slotProps.data.mode === '查驗'">
-                  <Avatar :icon="slotProps.data.iconType" shape="circle" class="me-2 mb-3" :style="{ background: slotProps.data.iconColor, color: '#000' }"/>
-                  {{ slotProps.data.mode }}
-                  <br>
-                  <span class="d-inline-block mb-1">執行角色: {{ slotProps.data.conductingRoleListName }} {{ slotProps.data.conductingRoleName }}</span>
-                  <br>
-                  <span class="d-inline-block mb-1">時間: {{ slotProps.data.data.timer }} 秒</span>
-                </span>
-                <span v-else-if="slotProps.data.mode === '標記'">
-                  <Avatar :icon="slotProps.data.iconType" shape="circle" class="me-2 mb-3" :style="{ background: slotProps.data.iconColor, color: '#000' }"/>
-                  {{ slotProps.data.mode }}
-                  <br>
-                  <span class="d-inline-block mb-1">執行角色: {{ slotProps.data.conductingRoleListName }} {{ slotProps.data.conductingRoleName }}</span>
-                  <br>
-                  <span class="d-inline-block mb-1">標記標籤: {{ slotProps.data.data.label }}</span>
-                  <br>
-                  <span class="d-inline-block mb-1">時間: {{ slotProps.data.data.timer }} 秒</span>
-                </span>
-              </template>
-            </Column>
-          </DataTable>
+          <h2 style="text-align: center" class="stepHeader">{{ stepListDisplayHelper[stepIndex].name }}</h2>
+          <StepList :data="stepListDisplayHelper[stepIndex].rules"/>
         </TabPanel>
       </TabView>
     </div>
 
     <!-- ****** 計時 modal ****** -->
-    <VueModal v-model="stepCountDownModal" :enableClose="false" :title="currentStepTitle">
+    <VueModal v-model="stepCountDownModal" :enableClose="false" :title="currentStepTitle" outClass="cancelTransistion">
       <div ref="stepShowCountDown" class="mb-5 mt-3" style="background: red; height: 5px"></div>
     </VueModal>
 
@@ -126,7 +87,7 @@
     </VueModal>
 
     <!-- ****** 查驗 modal ****** -->
-    <VueModal v-model="stepCheckModal" :enableClose="false" :title="currentStepTitle">
+    <VueModal v-model="stepCheckModal" :enableClose="false" :title="currentStepTitle" outClass="cancelTransistion">
       <div ref="stepShowCountDown" class="mb-5 mt-3" style="background: red; height: 5px"></div>
       <div class="row flex-wrap justify-content-center g-5" style="text-align: center">
         <div class="col-3" v-for="player in shownPlayers" :key="player.socketId" @click="checkedPlayer = player" style="position: relative;">
@@ -138,7 +99,7 @@
       </div>
     </VueModal>
 
-    <VueModal v-model="playerInfoModal" :enableClose="false" :title="currentStepTitle">
+    <VueModal v-model="playerInfoModal" :enableClose="false" :title="currentStepTitle" outClass="cancelTransistion">
       <div ref="stepShowCountDown" class="mb-5 mt-3" style="background: red; height: 5px"></div>
       <div class="row flex-wrap justify-content-center g-5" style="text-align: center">
         <div class="col-3" v-if="checkedPlayer">
@@ -175,6 +136,16 @@
       </div>
     </VueModal>
 
+    <!-- ****** 多選一 modal ****** -->
+    <VueModal v-model="stepPickOneModal" :enableClose="false" :title="currentStepTitle" outClass="cancelTransistion">
+      <div ref="stepShowCountDown" class="mb-5 mt-3" style="background: red; height: 5px"></div>
+      <div class="d-flex flex-column g-3">
+        <div v-for="opt in stepPickOneOptData" :key="opt.inc" style="text-align: center; margin-bottom: 0.5rem">
+          <RadioButton @change="pick(opt.inc, stepPickOneOptData.length)" :id="opt.name" v-model="pickOneInc" :value="opt.inc" class="me-3"/><label :for="opt.name" style="cursor: pointer">{{ opt.name }}</label>
+        </div>
+      </div>
+    </VueModal>
+
     <Toast position="top-center"/>
   </div>
 </template>
@@ -183,10 +154,12 @@
 import TabView from 'primevue/tabview'
 import TabPanel from 'primevue/tabpanel'
 import ToggleButton from 'primevue/togglebutton'
+import RadioButton from 'primevue/radiobutton'
 import VueModal from '@kouts/vue-modal'
 import '@kouts/vue-modal/dist/vue-modal.css'
 import { mapState, mapGetters } from 'vuex'
 import { required } from 'vuelidate/lib/validators'
+import StepList from '@/components/StepList.vue'
 
 export default {
   name: 'Start',
@@ -194,7 +167,9 @@ export default {
     TabView,
     TabPanel,
     ToggleButton,
-    VueModal
+    RadioButton,
+    VueModal,
+    StepList
   },
   data () {
     return {
@@ -207,6 +182,7 @@ export default {
       playerInfoModal: false,
       stepMarkModal: false,
       markedResultModal: false,
+      stepPickOneModal: false,
 
       shownPlayers: [],
       checkedPlayer: null,
@@ -214,6 +190,8 @@ export default {
       markedPlayers: [],
       markLabel: null,
       markedResult: [],
+      pickOneInc: -1,
+      stepPickOneOptData: [],
 
       intervalTimer: null
     }
@@ -262,6 +240,9 @@ export default {
 
       this.$socket.emit('updateMarkedPlayers', this.markedPlayers)
       this.myMarkedPlayer = socketId
+    },
+    pick (skipInc, skipLength) {
+      this.$socket.emit('updateSkipInc', { skipInc, skipLength })
     },
     stepVoice (msg, step) {
       return new Promise((resolve, reject) => {
@@ -401,6 +382,33 @@ export default {
         }
       }
     },
+    stepPickOne (step, timer) {
+      if (step.data.conductingRoleListType === 'all' ||
+        (step.data.conductingRoleListType === this.playerData.camp && step.data.conductingRoleId === 'all') ||
+        step.data.conductingRoleId === this.playerData.campRoleId ||
+        step.data.conductingRoleId === this.playerData.funRoleId) {
+        this.currentStepTitle = '選擇要執行的項目'
+        this.stepPickOneOptData = step.data.optionsData
+        const totalTime = timer
+
+        return new Promise((resolve, reject) => {
+          this.stepPickOneModal = true
+
+          this.intervalTimer = setInterval(() => {
+            timer -= 10
+            if (this.$refs.stepShowCountDown) {
+              this.$refs.stepShowCountDown.style.width = parseInt((timer / totalTime) * 100) + '%'
+            }
+
+            if (timer < 0) {
+              clearInterval(this.intervalTimer)
+              this.stepPickOneModal = false
+              resolve()
+            }
+          }, 10)
+        })
+      }
+    },
     translateRoleType (roleType) {
       switch (roleType) {
         case 'goodCampRoleList':
@@ -475,6 +483,9 @@ export default {
             this.$socket.emit('updateShownPlayers', this.shownPlayers)
             markState = await this.stepMark(stepList[gameStep], stepList[gameStep].data.timer * 1000)
             break
+          case '多選一':
+            await this.stepPickOne(stepList[gameStep], stepList[gameStep].data.timer * 1000)
+            break
         }
       }
 
@@ -533,6 +544,14 @@ export default {
     }
   }
 
+  .stepHeader {
+    width: max-content;
+    margin: 1rem auto;
+    padding: 5px 10px;
+    border-radius: 9999px;
+    background-color: #ffc107;
+  }
+
   .p-tabview-nav {
     justify-content: center;
   }
@@ -546,8 +565,12 @@ export default {
 .vm {
   top: 50%;
   transform: translateY(-50%);
+  padding-bottom: 2rem;
   .vm-titlebar {
     text-align: center;
+  }
+  .cancelTransistion {
+    transition: 0;
   }
 }
 

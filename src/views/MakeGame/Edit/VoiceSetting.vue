@@ -1,11 +1,7 @@
 <template>
   <div id="voicesetting">
     <div class="row" style="padding-bottom: 8rem">
-      <div class="col-12 col-lg-6">
-        <h2 v-if="stepListDisplayHelper[stepIndex]" class="stepHeader">{{ stepListDisplayHelper[stepIndex].name }}</h2>
-        <StepList v-if="stepListDisplayHelper[stepIndex]" :data="stepListDisplayHelper[stepIndex].rules"/>
-      </div>
-      <div class="col-12 col-lg-6 controlPanel">
+      <div class="col-12 col-lg-6 mb-5 controlPanel">
         <VueSelect v-model="voiceType" :options="voiceOptions" :reduce="v => v.value" class="mb-5"/>
         <div class="mb-3">播放流程</div>
         <VueSelect
@@ -23,6 +19,10 @@
           />
           <Button label="停止" @click="stopStep" icon="pi pi-stop" class="p-button-rounded p-button-raised p-button-secondary p-button-lg mt-4"/>
         </div>
+      </div>
+      <div class="col-12 col-lg-6">
+        <h2 v-if="stepListDisplayHelper[stepIndex]" class="stepHeader">{{ stepListDisplayHelper[stepIndex].name }}</h2>
+        <StepList v-if="stepListDisplayHelper[stepIndex]" :data="stepListDisplayHelper[stepIndex].rules"/>
       </div>
     </div>
 
@@ -314,6 +314,7 @@ function getVoices () {
 .vm {
   top: 50%;
   transform: translateY(-50%);
+  padding-bottom: 2rem;
   .vm-titlebar {
     text-align: center;
   }
