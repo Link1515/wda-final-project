@@ -78,7 +78,8 @@
     <VueModal v-model="stepShowModal" :enableClose="false" :title="currentStepTitle">
       <div ref="stepShowCountDown" class="mb-5 mt-3" style="background: red; height: 5px"></div>
       <div class="row flex-wrap justify-content-center g-5" style="text-align: center">
-        <div class="col-3" v-for="player in shownPlayers" :key="player.socketId">
+        <div class="col-3" v-for="(player, index) in shownPlayers" :key="index" style="position: relative;">
+          <div v-if="player.markLabel" class="mark self">{{ player.markLabel }}</div>
           <Avatar v-if="!player.avatar" icon="pi pi-user" class="mb-2" size="large" shape="circle"/>
           <Avatar v-else :image="player.avatar" class="mb-2" size="large" shape="circle"/>
           <div>{{ player.name }}</div>
@@ -129,9 +130,9 @@
       <div class="row flex-wrap justify-content-center g-5" style="text-align: center">
         <div class="col-3" v-for="(result,index) in markedResult" :key="index" style="position: relative;">
           <div class="mark self">{{ result.markLabel }}</div>
-          <Avatar v-if="!result.player.avatar" icon="pi pi-user" class="mb-2" size="large" shape="circle"/>
-          <Avatar v-else :image="result.player.avatar" class="mb-2" size="large" shape="circle"/>
-          <div>{{ result.player.name }}</div>
+          <Avatar v-if="!result.avatar" icon="pi pi-user" class="mb-2" size="large" shape="circle"/>
+          <Avatar v-else :image="result.avatar" class="mb-2" size="large" shape="circle"/>
+          <div>{{ result.name }}</div>
         </div>
       </div>
     </VueModal>
@@ -417,6 +418,8 @@ export default {
           return '壞人陣營'
         case 'funRoleList':
           return '功能角色'
+        case 'labelResult':
+          return '標記結果'
         case 'all':
           return '所有人'
       }
@@ -471,6 +474,8 @@ export default {
               } else {
                 this.shownPlayers = playerList.filter(player => player.campRoleId === stepList[gameStep].data.roleId)
               }
+            } else if (stepList[gameStep].data.roleListType === 'labelResult') {
+              this.shownPlayers = this.markedResult
             }
             await this.stepShow(stepList[gameStep], stepList[gameStep].data.timer * 1000)
             break
@@ -499,6 +504,9 @@ export default {
     },
     updateMarkedPlayers (markedPlayers) {
       this.markedPlayers = markedPlayers
+    },
+    updateMarkedResult (markedResult) {
+      this.markedResult = markedResult
     },
     showMarkedResult (markedResult) {
       if (markedResult.length) {

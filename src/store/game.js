@@ -251,6 +251,7 @@ function roleListNameTranslator (roleListType) {
 }
 
 function roleNameTranslator (state, roleListType, roleId) {
+  if (roleListType === 'labelResult') return '標記結果'
   if (roleId === 'all') return '全部'
   const result = state[roleListType].filter(role => role.id === roleId)[0]
   if (!result) return 'error: 角色不存在'

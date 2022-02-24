@@ -125,13 +125,13 @@
           <p>顯示角色</p>
           <Dropdown
             v-model="$v.configModel.showPlayer.roleListType.$model"
-            :options="roleListType"
+            :options="[...roleListType, { name: '標記結果', type: 'labelResult'}]"
             optionLabel="name"
             optionValue="type"
             placeholder="選擇陣營"
           />
           <Dropdown
-            v-if="configModel.showPlayer.roleListType && configModel.showPlayer.roleListType !== 'all'"
+            v-if="configModel.showPlayer.roleListType && configModel.showPlayer.roleListType !== 'all' && configModel.showPlayer.roleListType !== 'labelResult'"
             v-model="$v.configModel.showPlayer.roleId.$model"
             :options="[{name: '全部', id: 'all'}, ...$store.state.game[configModel.showPlayer.roleListType]]"
             optionLabel="name"
@@ -543,7 +543,7 @@ export default {
         if (config.showPlayer.conductingRoleListType === 'all') {
           config.showPlayer.conductingRoleId = 'all'
         }
-        if (config.showPlayer.roleListType === 'all') {
+        if (config.showPlayer.roleListType === 'all' || config.showPlayer.roleListType === 'labelResult') {
           config.showPlayer.roleId = 'all'
         }
         if (config.checkPlayer.conductingRoleListType === 'all') {
