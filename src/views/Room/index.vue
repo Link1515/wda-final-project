@@ -34,7 +34,7 @@
           <Column field="ready" header="準備狀態" :bodyStyle="{ textAlign: 'center' }">
             <template #body="slotProps">
               <i v-if="slotProps.data.ready" class="pi pi-check" style="font-size: 24px; display: inline-block; height: 32px"></i>
-              <img v-else src="@/assets/images/loading.svg" style="width: 32px; height: 32px">
+              <img v-else src="@/assets/images/preparing.svg" style="width: 32px; height: 32px">
             </template>
           </Column>
         </DataTable>

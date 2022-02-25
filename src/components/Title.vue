@@ -21,7 +21,6 @@ h1 {
 
   span {
     position: relative;
-    z-index: 2;
     &::after {
       content: '';
       width: 120px;

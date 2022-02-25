@@ -4,4 +4,7 @@
   --color-primary: #FDD31C;
   --color-info: #C6EBFE; 
   --color-card: #FFE2B6;
+
+  /* vue page transition */
+  --overlay-bg: #5A7AB5 !important;
 }

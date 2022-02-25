@@ -6,7 +6,9 @@
     <div class="subViewBox px-3 px-md-5">
       <div class="d-flex flex-column flex-lg-row align-items-start">
         <Menu :model="items" exact class="mb-5 mb-lg-0"/>
-        <router-view class="routerView py-3"/>
+        <vue-page-transition name="fade" class="routerView py-3">
+          <router-view />
+        </vue-page-transition>
       </div>
     </div>
   </div>

@@ -1,11 +1,18 @@
 <template>
   <div id="app">
+    <transition name="loading">
+      <div v-if="!serverOn" class="d-flex justify-content-center align-items-center" style="height: 100vh; background: rgba(0,0,0,0.2`)">
+        <img src="@/assets/images/loading.svg" style="width: 150px; height: 150px">
+      </div>
+    </transition>
     <ScrollPanel style="height: 100vh">
       <div class="container">
         <Navbar v-if="$route.path !== '/room/start'"/>
-        <keep-alive include="Room">
-          <router-view />
-        </keep-alive>
+        <vue-page-transition name="overlay-left-right">
+          <keep-alive include="Room">
+            <router-view />
+          </keep-alive>
+        </vue-page-transition>
       </div>
       <Footer/>
     </ScrollPanel>
@@ -18,12 +25,20 @@ import Footer from './components/App/Footer.vue'
 import ScrollPanel from 'primevue/scrollpanel'
 
 export default {
+  name: 'App',
   components: {
     Footer,
     Navbar,
     ScrollPanel
   },
-  created () {
+  data () {
+    return {
+      serverOn: false
+    }
+  },
+  async created () {
+    const { data } = await this.serverAPI.get('/checkServer')
+    this.serverOn = data.result.serverOn
     this.$store.dispatch('user/getInfo')
   }
 }
@@ -35,6 +50,7 @@ export default {
 body {
   background-color: var(--color-bg);
   font-family: 'Open Sans', sans-serif;
+  overflow: hidden;
 }
 
 body::-webkit-scrollbar {
@@ -54,6 +70,13 @@ ul {
 
 li {
   list-style: none;
+}
+
+.loading-enter-active, .loading-leave-active {
+  transition: opacity .5s;
+}
+.loading-enter, .loading-leave-to {
+  opacity: 0;
 }
 
 .routerviewHeight {
