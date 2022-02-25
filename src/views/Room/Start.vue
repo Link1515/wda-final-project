@@ -393,11 +393,11 @@ export default {
       }
     },
     async stepPickOne (step, timer) {
+      this.stepPickOneOptData = step.data.optionsData
       if (step.data.conductingRoleListType === 'all' ||
         (step.data.conductingRoleListType === this.playerData.camp && step.data.conductingRoleId === 'all') ||
         step.data.conductingRoleId === this.playerData.campRoleId ||
         step.data.conductingRoleId === this.playerData.funRoleId) {
-        this.stepPickOneOptData = step.data.optionsData
         if (this.playerData.alive) {
           this.currentStepTitle = '選擇要執行的項目'
           const totalTime = timer
@@ -427,6 +427,8 @@ export default {
           this.pick(randomNum + 1, this.stepPickOneOptData.length)
           await this.stepCountDown(timer)
         }
+      } else {
+        this.pick(this.stepPickOneOptData.length + 1, this.stepPickOneOptData.length + 1)
       }
     },
     translateRoleType (roleType) {
