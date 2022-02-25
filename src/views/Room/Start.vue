@@ -246,6 +246,7 @@ export default {
     pick (skipInc, skipLength) {
       this.serverSkipInc = [skipInc, skipLength + 1 - skipInc]
       this.$socket.emit('updateSkipInc', this.serverSkipInc)
+      this.serverSkipInc = [-1, -1]
     },
     stepVoice (msg, step) {
       return new Promise((resolve, reject) => {
@@ -275,7 +276,7 @@ export default {
         }, 10)
       })
     },
-    stepShow (step, timer) {
+    async stepShow (step, timer) {
       if (step.data.conductingRoleListType === 'all' ||
         (step.data.conductingRoleListType === this.playerData.camp && step.data.conductingRoleId === 'all') ||
         step.data.conductingRoleId === this.playerData.campRoleId ||
@@ -300,18 +301,20 @@ export default {
               }
             }, 10)
           })
+        } else {
+          await this.stepCountDown(timer)
         }
       }
     },
-    stepCheck (step, timer) {
+    async stepCheck (step, timer) {
       if (step.data.conductingRoleListType === 'all' ||
         (step.data.conductingRoleListType === this.playerData.camp && step.data.conductingRoleId === 'all') ||
         step.data.conductingRoleId === this.playerData.campRoleId ||
         step.data.conductingRoleId === this.playerData.funRoleId) {
+        let showInfoTimer = 5000
         if (this.playerData.alive) {
           this.currentStepTitle = `${this.translateRoleType(step.data.conductingRoleListType)} ${this.translateRoleName(step.data.conductingRoleListType, step.data.conductingRoleId)} 執行查驗，時間 ${step.data.timer} 秒`
           const totalTime = timer
-          let showInfoTimer = 5000
           const showInfoTotalTime = showInfoTimer
 
           return new Promise((resolve, reject) => {
@@ -352,10 +355,12 @@ export default {
               }
             }, 10)
           })
+        } else {
+          await this.stepCountDown(timer + showInfoTimer)
         }
       }
     },
-    stepMark (step, timer) {
+    async stepMark (step, timer) {
       if (step.data.conductingRoleListType === 'all' ||
         (step.data.conductingRoleListType === this.playerData.camp && step.data.conductingRoleId === 'all') ||
         step.data.conductingRoleId === this.playerData.campRoleId ||
@@ -382,38 +387,46 @@ export default {
               }
             }, 10)
           })
+        } else {
+          await this.stepCountDown(timer)
         }
       }
     },
-    stepPickOne (step, timer) {
+    async stepPickOne (step, timer) {
       if (step.data.conductingRoleListType === 'all' ||
         (step.data.conductingRoleListType === this.playerData.camp && step.data.conductingRoleId === 'all') ||
         step.data.conductingRoleId === this.playerData.campRoleId ||
         step.data.conductingRoleId === this.playerData.funRoleId) {
-        this.currentStepTitle = '選擇要執行的項目'
         this.stepPickOneOptData = step.data.optionsData
-        const totalTime = timer
+        if (this.playerData.alive) {
+          this.currentStepTitle = '選擇要執行的項目'
+          const totalTime = timer
 
-        return new Promise((resolve, reject) => {
-          this.stepPickOneModal = true
+          return new Promise((resolve, reject) => {
+            this.stepPickOneModal = true
 
-          this.intervalTimer = setInterval(() => {
-            timer -= 10
-            if (this.$refs.stepShowCountDown) {
-              this.$refs.stepShowCountDown.style.width = parseInt((timer / totalTime) * 100) + '%'
-            }
-
-            if (timer < 0) {
-              clearInterval(this.intervalTimer)
-              this.stepPickOneModal = false
-              if (this.serverSkipInc[0] < 0) {
-                const randomNum = Math.round(Math.random() * (this.stepPickOneOptData.length - 1))
-                this.pick(randomNum + 1, this.stepPickOneOptData.length)
+            this.intervalTimer = setInterval(() => {
+              timer -= 10
+              if (this.$refs.stepShowCountDown) {
+                this.$refs.stepShowCountDown.style.width = parseInt((timer / totalTime) * 100) + '%'
               }
-              resolve()
-            }
-          }, 10)
-        })
+
+              if (timer < 0) {
+                clearInterval(this.intervalTimer)
+                this.stepPickOneModal = false
+                if (this.serverSkipInc[0] < 0) {
+                  const randomNum = Math.round(Math.random() * (this.stepPickOneOptData.length - 1))
+                  this.pick(randomNum + 1, this.stepPickOneOptData.length)
+                }
+                resolve()
+              }
+            }, 10)
+          })
+        } else {
+          const randomNum = Math.round(Math.random() * (this.stepPickOneOptData.length - 1))
+          this.pick(randomNum + 1, this.stepPickOneOptData.length)
+          await this.stepCountDown(timer)
+        }
       }
     },
     translateRoleType (roleType) {

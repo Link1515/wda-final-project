@@ -7,6 +7,7 @@ export default {
   state: {
     startState: false,
     roomId: '',
+    socketId: '',
     gameInfo: {},
     playerAmount: 0,
     joinedPlayerAmount: 1,
@@ -17,6 +18,7 @@ export default {
     reset (state) {
       state.startState = false
       state.roomId = ''
+      state.socketId = ''
       state.gameInfo = {}
       state.playerAmount = 0
       state.joinedPlayerAmount = 1
@@ -26,8 +28,9 @@ export default {
     start (state, startState) {
       state.startState = startState
     },
-    async SOCKET_joinRoomSuccess (state, { roomId, gameInfo, playerAmount }) {
+    async SOCKET_joinRoomSuccess (state, { roomId, gameInfo, playerAmount, socketId }) {
       state.roomId = roomId
+      state.socketId = socketId
       state.gameInfo = gameInfo
       state.playerAmount = playerAmount
 
@@ -51,8 +54,8 @@ export default {
     }
   },
   getters: {
-    playerData (state, _, rootState) {
-      return state.playerList.filter(player => player.playerId === rootState.user._id)[0]
+    playerData (state) {
+      return state.playerList.filter(player => player.socketId === state.socketId)[0]
     },
     everyoneReady (state) {
       let everyoneReady = true
