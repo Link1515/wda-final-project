@@ -1,3 +1,5 @@
+import router from '../router'
+import vm from '@/main.js'
 import swal from 'sweetalert2'
 import { roleListNameTranslator, roleNameTranslator } from '@/functions/idTranslator.js'
 import { getVoices } from '@/functions/getVoices.js'
@@ -45,6 +47,15 @@ export default {
     SOCKET_updateRoomData (state, { joinedPlayerAmount, playerList }) {
       state.joinedPlayerAmount = joinedPlayerAmount
       state.playerList = playerList
+    },
+    SOCKET_refresh () {
+      vm.$socket.disconnect()
+      router.push('/play')
+      swal.fire({
+        icon: 'error',
+        title: '錯誤',
+        text: '連線中斷'
+      })
     }
   },
   actions: {
