@@ -28,6 +28,9 @@ export default {
     start (state, startState) {
       state.startState = startState
     },
+    back (state) {
+      state.startState = false
+    },
     async SOCKET_joinRoomSuccess (state, { roomId, gameInfo, playerAmount, socketId }) {
       state.roomId = roomId
       state.socketId = socketId

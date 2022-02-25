@@ -457,6 +457,7 @@ export default {
   },
   sockets: {
     backToSetting () {
+      this.$store.commit('room/back')
       this.$router.push('/room').catch(() => {})
     },
     async runStep ({ stepIndex, gameStep }) {
