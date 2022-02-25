@@ -193,6 +193,7 @@ export default {
       markedResult: [],
       pickOneInc: -1,
       stepPickOneOptData: [],
+      serverSkipInc: [-1, -1],
 
       intervalTimer: null
     }
@@ -243,7 +244,8 @@ export default {
       this.myMarkedPlayer = socketId
     },
     pick (skipInc, skipLength) {
-      this.$socket.emit('updateSkipInc', { skipInc, skipLength })
+      this.serverSkipInc = [skipInc, skipLength + 1 - skipInc]
+      this.$socket.emit('updateSkipInc', this.serverSkipInc)
     },
     stepVoice (msg, step) {
       return new Promise((resolve, reject) => {
@@ -404,6 +406,10 @@ export default {
             if (timer < 0) {
               clearInterval(this.intervalTimer)
               this.stepPickOneModal = false
+              if (this.serverSkipInc[0] < 0) {
+                const randomNum = Math.round(Math.random() * (this.stepPickOneOptData.length - 1))
+                this.pick(randomNum + 1, this.stepPickOneOptData.length)
+              }
               resolve()
             }
           }, 10)

@@ -44,7 +44,8 @@
 
     <!-- ****** 查驗 modal ****** -->
     <VueModal v-model="stepCheckModal" :enableClose="false" :title="currentStepTitle">
-      <div ref="stepShowCountDown" class="mb-5 mt-3" style="background: red; height: 5px"></div>
+      <div ref="stepShowCountDown" class="mt-3" style="background: red; height: 5px"></div>
+      <p class="mb-5" style="text-align: center">正式遊戲中，會顯示查驗玩家的陣營</p>
       <div class="row flex-wrap justify-content-center g-5" style="text-align: center">
         <div class="col-3" v-for="n in 4" :key="n" @click="checkedPlayer = n" style="position: relative;">
           <div v-if="n === checkedPlayer" class="mark self">查驗</div>
@@ -56,12 +57,23 @@
 
     <!-- ****** 標記 modal ****** -->
     <VueModal v-model="stepMarkModal" :enableClose="false" :title="currentStepTitle">
-      <div ref="stepShowCountDown" class="mb-5 mt-3" style="background: red; height: 5px"></div>
+      <div ref="stepShowCountDown" class="mt-3" style="background: red; height: 5px"></div>
+      <p class="mb-5" style="text-align: center">正式遊戲中，會在流程最後，顯示所有標記的結果</p>
       <div class="row flex-wrap justify-content-center g-5" style="text-align: center">
         <div class="col-3" v-for="n in 4" :key="n" @click="checkedPlayer = n" style="position: relative;">
           <div v-if="n === checkedPlayer" class="mark self">{{ markLabel }}</div>
           <Avatar icon="pi pi-user" class="mb-2" size="large" shape="circle" style="cursor: pointer;"/>
           <div>範例玩家 {{ n }}</div>
+        </div>
+      </div>
+    </VueModal>
+
+    <!-- ****** 多選一 modal ****** -->
+    <VueModal v-model="stepPickOneModal" :enableClose="false" :title="currentStepTitle" outClass="cancelTransistion">
+      <div ref="stepShowCountDown" class="mb-5 mt-3" style="background: red; height: 5px"></div>
+      <div v-if="currentStep >= 0" class="d-flex flex-column g-3">
+        <div v-for="opt in stepList[stepIndex].rules[currentStep].data.optionsData" :key="opt.inc" style="text-align: center; margin-bottom: 0.5rem">
+          <RadioButton @change="pick(opt.inc, stepPickOneOptData.length)" :id="opt.name" v-model="pickOneInc" :value="opt.inc" class="me-3"/><label :for="opt.name" style="cursor: pointer">{{ opt.name }}</label>
         </div>
       </div>
     </VueModal>
@@ -73,15 +85,18 @@
 <script>
 import VueModal from '@kouts/vue-modal'
 import StepList from '@/components/StepList.vue'
+import RadioButton from 'primevue/radiobutton'
 import '@kouts/vue-modal/dist/vue-modal.css'
 import { mapGetters, mapState } from 'vuex'
 import { required } from 'vuelidate/lib/validators'
+import { getVoices } from '@/functions/getVoices.js'
 
 export default {
   name: 'VoiceSetting',
   components: {
     VueModal,
-    StepList
+    StepList,
+    RadioButton
   },
   data () {
     return {
@@ -101,7 +116,13 @@ export default {
       stepCheckModal: false,
       checkedPlayer: null,
       stepMarkModal: false,
-      markLabel: ''
+      stepPickOneModal: false,
+      markLabel: '',
+      pickOneInc: -1,
+      stepPickOneOptData: null,
+      serverSkipInc: [-1, -1],
+
+      intervalTimer: 0
     }
   },
   validations: {
@@ -142,16 +163,34 @@ export default {
             await this.stepMark(rule.data.timer * 1000)
             this.markLabel = ''
             break
+          case '多選一':
+            await this.stepPickOne(rule, rule.data.timer * 1000)
+            break
         }
 
         this.checkedPlayer = null
-        this.currentStep++
+
+        if (this.serverSkipInc[0] >= 0) {
+          this.currentStep += this.serverSkipInc[0]
+          this.serverSkipInc[0] = -1
+        } else if (this.serverSkipInc[1] >= 0) {
+          this.currentStep += this.serverSkipInc[1]
+          this.serverSkipInc[1] = -1
+        } else {
+          this.currentStep++
+        }
       }
 
       this.currentStep = -99
     },
     stopStep () {
+      clearInterval(this.intervalTimer)
       speechSynthesis.cancel()
+      this.stepCountDownModal = false
+      this.stepShowModal = false
+      this.stepCheckModal = false
+      this.stepMarkModal = false
+      this.stepPickOneModal = false
       this.currentStep = -99
     },
 
@@ -246,6 +285,35 @@ export default {
           }
         }, 10)
       })
+    },
+    stepPickOne (step, timer) {
+      this.currentStepTitle = '選擇要執行的項目'
+      this.stepPickOneOptData = step.data.optionsData
+      const totalTime = timer
+
+      return new Promise((resolve, reject) => {
+        this.stepPickOneModal = true
+
+        this.intervalTimer = setInterval(() => {
+          timer -= 10
+          if (this.$refs.stepShowCountDown) {
+            this.$refs.stepShowCountDown.style.width = parseInt((timer / totalTime) * 100) + '%'
+          }
+
+          if (timer < 0) {
+            clearInterval(this.intervalTimer)
+            this.stepPickOneModal = false
+            if (this.serverSkipInc[0] < 0) {
+              const randomNum = Math.round(Math.random() * (this.stepPickOneOptData.length - 1))
+              this.pick(randomNum + 1, this.stepPickOneOptData.length)
+            }
+            resolve()
+          }
+        }, 10)
+      })
+    },
+    pick (skipInc, skipLength) {
+      this.serverSkipInc = [skipInc, skipLength + 1 - skipInc]
     }
   },
   computed: {
@@ -273,21 +341,6 @@ export default {
     this.msg = new SpeechSynthesisUtterance()
     this.msg.voice = VT
   }
-}
-
-function getVoices () {
-  return new Promise(
-    function (resolve, reject) {
-      const synth = window.speechSynthesis
-
-      const id = setInterval(() => {
-        if (synth.getVoices().length !== 0) {
-          resolve(synth.getVoices())
-          clearInterval(id)
-        }
-      }, 10)
-    }
-  )
 }
 </script>
 

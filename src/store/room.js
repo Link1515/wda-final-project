@@ -1,4 +1,6 @@
 import swal from 'sweetalert2'
+import { roleListNameTranslator, roleNameTranslator } from '@/functions/idTranslator.js'
+import { getVoices } from '@/functions/getVoices.js'
 
 export default {
   namespaced: true,
@@ -89,27 +91,27 @@ export default {
               rule.iconType = 'pi pi-eye'
               rule.iconColor = '#ACBA9D'
               rule.conductingRoleListName = roleListNameTranslator(rule.data.conductingRoleListType)
-              rule.conductingRoleName = roleNameTranslator(state, rule.data.conductingRoleListType, rule.data.conductingRoleId)
+              rule.conductingRoleName = roleNameTranslator(state.gameInfo, rule.data.conductingRoleListType, rule.data.conductingRoleId)
               rule.roleListName = roleListNameTranslator(rule.data.roleListType)
-              rule.roleName = roleNameTranslator(state, rule.data.roleListType, rule.data.roleId)
+              rule.roleName = roleNameTranslator(state.gameInfo, rule.data.roleListType, rule.data.roleId)
               break
             case '查驗':
               rule.iconType = 'pi pi-search'
               rule.iconColor = '#749D9B'
               rule.conductingRoleListName = roleListNameTranslator(rule.data.conductingRoleListType)
-              rule.conductingRoleName = roleNameTranslator(state, rule.data.conductingRoleListType, rule.data.conductingRoleId)
+              rule.conductingRoleName = roleNameTranslator(state.gameInfo, rule.data.conductingRoleListType, rule.data.conductingRoleId)
               break
             case '標記':
               rule.iconType = 'pi pi-user-edit'
               rule.iconColor = '#E8837E'
               rule.conductingRoleListName = roleListNameTranslator(rule.data.conductingRoleListType)
-              rule.conductingRoleName = roleNameTranslator(state, rule.data.conductingRoleListType, rule.data.conductingRoleId)
+              rule.conductingRoleName = roleNameTranslator(state.gameInfo, rule.data.conductingRoleListType, rule.data.conductingRoleId)
               break
             case '多選一':
               rule.iconType = 'pi pi-sitemap'
               rule.iconColor = '#E2BFE7'
               rule.conductingRoleListName = roleListNameTranslator(rule.data.conductingRoleListType)
-              rule.conductingRoleName = roleNameTranslator(state, rule.data.conductingRoleListType, rule.data.conductingRoleId)
+              rule.conductingRoleName = roleNameTranslator(state.gameInfo, rule.data.conductingRoleListType, rule.data.conductingRoleId)
               break
           }
         })
@@ -117,38 +119,4 @@ export default {
       return newStepList
     }
   }
-}
-
-function getVoices () {
-  return new Promise(
-    function (resolve, reject) {
-      const synth = window.speechSynthesis
-
-      const id = setInterval(() => {
-        if (synth.getVoices().length !== 0) {
-          resolve(synth.getVoices())
-          clearInterval(id)
-        }
-      }, 10)
-    }
-  )
-}
-
-function roleListNameTranslator (roleListType) {
-  switch (roleListType) {
-    case 'goodCampRoleList':
-      return '好人陣營'
-    case 'badCampRoleList':
-      return '壞人陣營'
-    case 'funRoleList':
-      return '功能身分'
-  }
-}
-
-function roleNameTranslator (state, roleListType, roleId) {
-  if (roleListType === 'labelResult') return '標記結果'
-  if (roleId === 'all') return '全部'
-  const result = state.gameInfo[roleListType].filter(role => role.id === roleId)[0]
-  if (!result) return 'error: 角色不存在'
-  return result.name
 }
