@@ -414,6 +414,7 @@ export default {
               if (timer < 0) {
                 clearInterval(this.intervalTimer)
                 this.stepPickOneModal = false
+                this.pickOneInc = -1
                 if (this.serverSkipInc[0] < 0) {
                   const randomNum = Math.round(Math.random() * (this.stepPickOneOptData.length - 1))
                   this.pick(randomNum + 1, this.stepPickOneOptData.length)

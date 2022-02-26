@@ -491,8 +491,7 @@ export default {
       this.$v.stepList.$touch()
       if (this.$v.stepList.$each[0].rules.$error) {
         this.$toast.add({ severity: 'error', summary: '錯誤', detail: '缺少必要項目', life: 3000 })
-      }
-      if (this.$v.stepList.$error) {
+      } else if (this.$v.stepList.$error) {
         const result = await this.$swal({
           icon: 'warning',
           title: '是否要刪除沒有步驟的流程?',

@@ -9,7 +9,7 @@
         <div class="d-flex flex-column align-items-xl-center flex-xl-row">
           <label class="me-3 mb-3 mb-xl-0">遊玩人數</label>
           <div class="me-3 mb-3 mb-xl-0"><span class="playerNum">{{ playerRange[0] }}</span> ~ <span class="playerNum">{{ playerRange[1] }}</span> 人</div>
-          <Slider class="flex-grow-1" v-model="playerRange" :range="true" :max="20" :min="2"></Slider>
+          <Slider class="flex-grow-1" v-model="playerRange" :range="true" :max="20" :min="1"></Slider>
         </div>
       </div>
       <div class="invalidMsg" v-if="!$v.name.required && $v.name.$error">必須輸入桌遊名稱</div>

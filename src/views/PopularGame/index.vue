@@ -120,6 +120,7 @@ export default {
             page: this.page
           }
         })
+        console.log(data.result)
         if (data.result.length) {
           this.page++
           const favGame = JSON.parse(JSON.stringify(this.userInfo.favoriteGame))
@@ -137,6 +138,7 @@ export default {
 
           this.gameList.push(...data.result)
           $state.loaded()
+          console.log('loaded')
         } else {
           $state.complete()
         }
@@ -229,6 +231,11 @@ export default {
       padding-left: 0;
       padding-right: 0;
       text-align: center;
+    }
+
+    img {
+      max-height: 75vh;
+      object-fit: contain;
     }
   }
 }

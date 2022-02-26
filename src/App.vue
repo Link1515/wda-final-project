@@ -113,6 +113,11 @@ li {
   color: red;
 }
 
+.overlay-left,
+.overlay-right {
+  z-index: 99999;
+}
+
 #app {
   .container {
     margin-top: 2rem !important;

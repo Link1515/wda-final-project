@@ -4,7 +4,7 @@
     <div class="row g-4">
       <div class="col-12 col-lg-6">
         <div class="banner_img">
-          <img src="https://web.ntnu.edu.tw/~40147014S/TG.jpg">
+          <img src="@/assets/images/banner.jpg">
         </div>
       </div>
       <div class="col-12 col-lg-6">
@@ -25,7 +25,8 @@
       <Button
         @click="startGame"
         :label="$socket.connected ? '返回遊戲' : '立即開始！'"
-        class="start_btn p-button-rounded p-button-raised p-button-lg" />
+        class="start_btn p-button-rounded p-button-raised p-button-lg"
+      />
     </div>
   </div>
 </template>
