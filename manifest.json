@@ -1,0 +1,1 @@
+{"name":"易桌遊 E-TableTopGame","short_name":"易桌遊","theme_color":"#c6ebfe","icons":[{"src":"./img/icons/android-chrome-192x192.png","sizes":"192x192","type":"image/png"},{"src":"./img/icons/android-chrome-256x256.png","sizes":"256x256","type":"image/png"}],"start_url":"./","display":"standalone","background_color":"#E8E8E8","scope":"./"}
