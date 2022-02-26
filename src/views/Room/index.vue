@@ -7,10 +7,11 @@
           <span v-else>等待玩家加入中 ... {{ joinedPlayerAmount }} / {{ playerAmount }}</span>
         </template>
       </Title>
-      <div class="subViewBox mb-5">
+      <div class="subViewBox mb-5" >
         <h2 style="margin: 0 auto 2rem; text-align: center;">
           遊戲間 ID: <span class="roomId">{{ roomId }}<i @click="copyRoomId" class="pi pi-copy ms-3"></i></span>
           <input type="hidden" ref="roomIdInput" :value="roomId">
+          <QrcodeVue value="https://google.com" class="mt-3"/>
         </h2>
         <DataTable stripedRows :value="playerList" class="mb-5">
           <Column field="role" :bodyStyle="{ textAlign: 'center' }">
@@ -130,12 +131,14 @@
 
 <script>
 import SelectButton from 'primevue/selectbutton'
+import QrcodeVue from 'qrcode.vue'
 import { mapState, mapGetters } from 'vuex'
 
 export default {
   name: 'Room',
   components: {
-    SelectButton
+    SelectButton,
+    QrcodeVue
   },
   data () {
     return {
