@@ -12,7 +12,7 @@
           style="background: #fff"
         />
         <InputText v-model="searchText" @keydown.enter="searchGame" class="me-lg-2 flex-grow-1 mb-2 mb-lg-0"/>
-        <Button icon="pi pi-search" @click="searchGame" class="p-button-rounded p-button-raised" />
+        <Button icon="pi pi-search" @click="searchGame" :disabled="sending" class="p-button-rounded p-button-raised" />
       </div>
     </div>
     <DataTable v-if="gotGames.length > 0" stripedRows :value="gotGames">
@@ -43,6 +43,7 @@ export default {
   name: 'ManageGame',
   data () {
     return {
+      sending: false,
       searchTypeList: [
         { name: '桌遊名稱', type: 'name' },
         { name: '桌遊 ID', type: 'id' }
@@ -64,6 +65,7 @@ export default {
           return
         }
 
+        this.sending = true
         if (this.searchType === 'name') {
           const { data } = await this.serverAPI.get('games/getGameByName/' + this.searchText, {
             headers: {
@@ -81,7 +83,9 @@ export default {
         }
 
         this.searchText = ''
+        this.sending = false
       } catch (error) {
+        this.sending = false
         this.$swal({
           icon: 'error',
           title: '錯誤',

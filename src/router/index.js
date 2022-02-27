@@ -163,7 +163,7 @@ const router = new VueRouter({
 
 router.beforeEach((to, from, next) => {
   if (to.meta.mustLogin && !store.getters['user/userInfo'].isLogin) {
-    next('/?login=0')
+    next({ path: '/', query: { login: 0 } })
     return
   } else if (to.meta.admin && !store.getters['user/userInfo'].isAdmin) {
     next('/')

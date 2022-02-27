@@ -106,8 +106,8 @@
         <div class="col-3" v-if="checkedPlayer">
           <Avatar v-if="!checkedPlayer.avatar" icon="pi pi-user" class="mb-2" size="large" shape="circle"/>
           <Avatar v-else :image="checkedPlayer.avatar" class="mb-2" size="large" shape="circle"/>
-          <div class="mb-3">{{ checkedPlayer.name }}</div>
-          <div>{{ translateRoleType(checkedPlayer.camp) }}</div>
+          <div class="mb-3" style="width: max-content;">{{ checkedPlayer.name }}</div>
+          <div style="width: max-content;">{{ translateRoleType(checkedPlayer.camp) }}</div>
         </div>
       </div>
     </VueModal>

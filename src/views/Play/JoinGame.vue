@@ -77,6 +77,9 @@ export default {
       if (vm.$socket.connected) {
         next('/room')
       } else {
+        if (vm.$route.query.roomId) {
+          vm.roomId = vm.$route.query.roomId
+        }
         vm.$socket.connect()
       }
     })

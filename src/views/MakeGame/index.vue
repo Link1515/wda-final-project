@@ -62,6 +62,7 @@ export default {
       this.$router.push('/makegame/edit')
     },
     editGame (gameId) {
+      this.$store.commit('game/reset')
       this.$store.dispatch('game/getOneGame', gameId)
       this.$router.push('/makegame/edit')
     },

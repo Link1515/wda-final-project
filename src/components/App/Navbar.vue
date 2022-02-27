@@ -158,7 +158,6 @@ export default {
       if (!this.$v.loginData.$invalid) {
         this.$store.dispatch('user/login', this.loginData)
         this.$v.loginData.$reset()
-        this.loginData.account = ''
         this.loginData.password = ''
       }
     },
@@ -205,6 +204,8 @@ export default {
           this.navItems = [this.navItems[0], this.navItems[1],
             { label: '自製遊戲', to: '/makegame' }, { label: pageStr, to: '/usercenter' }]
           this.displayPanel = false
+          this.loginData.account = ''
+          this.loginData.password = ''
         } else {
           this.navItems = [this.navItems[0], this.navItems[1]]
         }
@@ -244,15 +245,11 @@ export default {
   .p-menubar {
     border-radius: 8px 8px 0 0;
     border: none;
-    padding: 1rem 3rem;
+    padding: 1rem;
   }
 
   .p-menubar-start {
     margin-right: auto;
-  }
-
-  .p-menubar-end {
-    margin-left: 2rem;
   }
 
   .p-menuitem-text,
@@ -304,6 +301,18 @@ export default {
 
   .p-float-label {
     margin: 2rem 0;
+  }
+}
+
+@media (min-width: 768px) {
+  #navbar {
+    .p-menubar {
+      padding: 1rem 3rem;
+    }
+
+    .p-menubar-end {
+      margin-left: 2rem;
+    }
   }
 }
 </style>

@@ -100,6 +100,7 @@ export default {
   },
   methods: {
     showDialog (gameId) {
+      this.$store.commit('game/reset')
       this.$store.dispatch('game/getOneGame', gameId)
       this.dialogDisplay = !this.dialogDisplay
     },
