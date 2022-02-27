@@ -4,7 +4,7 @@ self.__precacheManifest = (self.__precacheManifest || []).concat([
     "url": "css/CreateGame.0247e792.css"
   },
   {
-    "revision": "e230097f7cab4fa8c1d4",
+    "revision": "8e3de05bc22154a21230",
     "url": "css/Edit.f1ed14a3.css"
   },
   {
@@ -12,7 +12,7 @@ self.__precacheManifest = (self.__precacheManifest || []).concat([
     "url": "css/EditInfo.97681093.css"
   },
   {
-    "revision": "290b41163664184787ce",
+    "revision": "70e2869919f3950465b9",
     "url": "css/MakeGame.632b07e4.css"
   },
   {
@@ -24,15 +24,15 @@ self.__precacheManifest = (self.__precacheManifest || []).concat([
     "url": "css/Play.1a2a00b0.css"
   },
   {
-    "revision": "e5cad10f9c71e9404b1b",
-    "url": "css/PopularGame.ba6459c6.css"
+    "revision": "02d025ba33c6652b4c5d",
+    "url": "css/PopularGame.385e0489.css"
   },
   {
     "revision": "e4e09b760af23de7f933",
     "url": "css/ReportReview.f8eaef5e.css"
   },
   {
-    "revision": "648bfd8d200ae5b04dfd",
+    "revision": "f9039ecd0c104038ce0b",
     "url": "css/Room.9512464b.css"
   },
   {
@@ -44,11 +44,11 @@ self.__precacheManifest = (self.__precacheManifest || []).concat([
     "url": "css/UserCenter.1fe06140.css"
   },
   {
-    "revision": "395f268e1f4f46ba97e9",
+    "revision": "f18cf65e6bfeca2f1f9c",
     "url": "css/app.5ff07af1.css"
   },
   {
-    "revision": "2a52599b8b97d76b508a",
+    "revision": "a15177dd8b2ac52f3ddd",
     "url": "css/chunk-vendors.c8a14855.css"
   },
   {
@@ -92,6 +92,10 @@ self.__precacheManifest = (self.__precacheManifest || []).concat([
     "url": "img/logo.c412cabe.png"
   },
   {
+    "revision": "aa0f014cc19ee3de3a8a3da0096c9659",
+    "url": "img/metatag.png"
+  },
+  {
     "revision": "04a0c3c38016a8679bcb35f84216c0d8",
     "url": "img/preparing.04a0c3c3.svg"
   },
@@ -104,7 +108,7 @@ self.__precacheManifest = (self.__precacheManifest || []).concat([
     "url": "img/trashCan.0666bd3d.png"
   },
   {
-    "revision": "bfce8c34ae94a9bfcedb4ffee4903d2e",
+    "revision": "5ead0139e6a50aae7336e7f3f577b37b",
     "url": "index.html"
   },
   {
@@ -116,8 +120,8 @@ self.__precacheManifest = (self.__precacheManifest || []).concat([
     "url": "js/CreateGame.dd4e98c9.js"
   },
   {
-    "revision": "e230097f7cab4fa8c1d4",
-    "url": "js/Edit.c5ffe682.js"
+    "revision": "8e3de05bc22154a21230",
+    "url": "js/Edit.13a51150.js"
   },
   {
     "revision": "b859fbc8d7476fdea2a3",
@@ -132,8 +136,8 @@ self.__precacheManifest = (self.__precacheManifest || []).concat([
     "url": "js/JoinGame.8fa0b610.js"
   },
   {
-    "revision": "290b41163664184787ce",
-    "url": "js/MakeGame.f8b84bcf.js"
+    "revision": "70e2869919f3950465b9",
+    "url": "js/MakeGame.09b33416.js"
   },
   {
     "revision": "e39d27596fd64ac513f3",
@@ -148,16 +152,16 @@ self.__precacheManifest = (self.__precacheManifest || []).concat([
     "url": "js/Play.8d8eca85.js"
   },
   {
-    "revision": "e5cad10f9c71e9404b1b",
-    "url": "js/PopularGame.a93711c3.js"
+    "revision": "02d025ba33c6652b4c5d",
+    "url": "js/PopularGame.9a3cc30c.js"
   },
   {
     "revision": "e4e09b760af23de7f933",
     "url": "js/ReportReview.d82f9a7e.js"
   },
   {
-    "revision": "648bfd8d200ae5b04dfd",
-    "url": "js/Room.aac83191.js"
+    "revision": "f9039ecd0c104038ce0b",
+    "url": "js/Room.fd722531.js"
   },
   {
     "revision": "8d88ab14effd24be2b6a",
@@ -168,12 +172,12 @@ self.__precacheManifest = (self.__precacheManifest || []).concat([
     "url": "js/UserCenter.b248cfcd.js"
   },
   {
-    "revision": "395f268e1f4f46ba97e9",
-    "url": "js/app.2cc61b57.js"
+    "revision": "f18cf65e6bfeca2f1f9c",
+    "url": "js/app.89b0e466.js"
   },
   {
-    "revision": "2a52599b8b97d76b508a",
-    "url": "js/chunk-vendors.78cc33f9.js"
+    "revision": "a15177dd8b2ac52f3ddd",
+    "url": "js/chunk-vendors.196faddc.js"
   },
   {
     "revision": "c78f2d8fa0a89267e7f9883898f0baff",
