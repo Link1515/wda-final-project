@@ -13,7 +13,7 @@
       </template>
     </Menubar>
 
-    <Dialog :visible.sync="displayPanel" @hide="resetForm" :showHeader="false" modal dismissableMask>
+    <Dialog id="displayPanel" :visible.sync="displayPanel" @hide="resetForm" :showHeader="false" modal dismissableMask>
       <TabView :activeIndex="tabActiveIndex">
         <!--
           登入
@@ -161,15 +161,33 @@ export default {
         this.loginData.password = ''
       }
     },
-    register () {
-      this.$v.registerData.$touch()
-      if (!this.$v.registerData.$invalid) {
-        this.$store.dispatch('user/register', this.registerData)
-        this.$v.registerData.$reset()
-        this.registerData.email = ''
-        this.registerData.account = ''
-        this.registerData.password = ''
-        this.registerData.passwordAgain = ''
+    async register () {
+      try {
+        this.$v.registerData.$touch()
+        if (!this.$v.registerData.$invalid) {
+          this.$store.commit('loading')
+          await this.serverAPI.post('users/register', this.registerData)
+          this.$store.commit('loadingFinish')
+          this.$v.registerData.$reset()
+
+          this.$swal({
+            icon: 'success',
+            title: '成功',
+            text: '註冊成功'
+          })
+          this.displayPanel = false
+          this.registerData.email = ''
+          this.registerData.account = ''
+          this.registerData.password = ''
+          this.registerData.passwordAgain = ''
+        }
+      } catch (error) {
+        this.$store.commit('loadingFinish')
+        this.$swal({
+          icon: 'error',
+          title: '失敗',
+          text: error.response.data.message
+        })
       }
     },
     logout () {

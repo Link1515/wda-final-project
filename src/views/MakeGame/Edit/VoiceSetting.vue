@@ -2,7 +2,8 @@
   <div id="voicesetting">
     <div class="row" style="padding-bottom: 8rem">
       <div class="col-12 col-lg-6 mb-5 controlPanel">
-        <VueSelect v-model="voiceType" :options="voiceOptions" :reduce="v => v.value" class="mb-5"/>
+        <VueSelect v-model="voiceType" :options="voiceOptions" :reduce="v => v.value" />
+        <p class="mb-5">目前手機只支援英文版語音</p>
         <div class="mb-3">播放流程</div>
         <VueSelect
           v-model="stepIndex"
@@ -101,6 +102,7 @@ export default {
   data () {
     return {
       voiceOptions: [
+        { label: 'Google English', value: 'Google US English' },
         { label: 'Google 小姐', value: 'Google 國語' },
         { label: 'Microsoft 小姐1', value: 'Microsoft Yating' },
         { label: 'Microsoft 小姐2', value: 'Microsoft Hanhan' },
@@ -326,6 +328,7 @@ export default {
       async set (vt) {
         this.$store.commit('game/updateVoiceType', vt)
         const voices = await getVoices()
+        console.log(voices)
         const VT = voices.filter(v => v.name.includes(vt))[0]
         this.msg = new SpeechSynthesisUtterance()
         this.msg.voice = VT

@@ -1,6 +1,5 @@
 import swal from 'sweetalert2'
 import { serverAPI } from '../plugins/Axios.js'
-import router from '../router'
 
 export default {
   namespaced: true,
@@ -59,27 +58,11 @@ export default {
     }
   },
   actions: {
-    async register (_, registerData) {
-      try {
-        await serverAPI.post('users/register', registerData)
-        swal.fire({
-          icon: 'success',
-          title: '成功',
-          text: '註冊成功'
-        }).then(() => {
-          router.go()
-        })
-      } catch (error) {
-        swal.fire({
-          icon: 'error',
-          title: '失敗',
-          text: error.response.data.message
-        })
-      }
-    },
     async login ({ commit }, loginData) {
       try {
+        commit('loading', null, { root: true })
         const { data } = await serverAPI.post('/users/login', loginData)
+        commit('loadingFinish', null, { root: true })
         commit('login', data.result)
         swal.fire({
           icon: 'success',
@@ -87,6 +70,7 @@ export default {
           text: '登入成功'
         })
       } catch (error) {
+        commit('loadingFinish', null, { root: true })
         swal.fire({
           icon: 'error',
           title: '失敗',
@@ -96,11 +80,13 @@ export default {
     },
     async logout ({ commit, state }) {
       try {
+        commit('loading', null, { root: true })
         await serverAPI.delete('users/logout', {
           headers: {
             authorization: 'Bearer ' + state.token
           }
         })
+        commit('loadingFinish', null, { root: true })
         commit('logout')
         swal.fire({
           icon: 'success',
@@ -108,6 +94,7 @@ export default {
           text: '已登出'
         })
       } catch (error) {
+        commit('loadingFinish', null, { root: true })
         swal.fire({
           icon: 'error',
           title: '失敗',

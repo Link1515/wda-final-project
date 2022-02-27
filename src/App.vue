@@ -1,7 +1,7 @@
 <template>
   <div id="app">
     <transition name="loading">
-      <div v-if="loading" class="d-flex justify-content-center align-items-center" style="height: 100vh; background: rgba(0,0,0,0.2`)">
+      <div v-if="loading" class="d-flex justify-content-center align-items-center" style="height: 100vh; background: rgba(0,0,0,0.2`);">
         <img src="@/assets/images/loading.svg" style="width: 150px; height: 150px">
       </div>
     </transition>
