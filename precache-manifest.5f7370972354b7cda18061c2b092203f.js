@@ -4,7 +4,7 @@ self.__precacheManifest = (self.__precacheManifest || []).concat([
     "url": "css/CreateGame.0247e792.css"
   },
   {
-    "revision": "91d0f13961ab41bfbdfb",
+    "revision": "7d8db7db9ef73c0a3e78",
     "url": "css/Edit.f1ed14a3.css"
   },
   {
@@ -36,7 +36,7 @@ self.__precacheManifest = (self.__precacheManifest || []).concat([
     "url": "css/Room.9512464b.css"
   },
   {
-    "revision": "8d88ab14effd24be2b6a",
+    "revision": "07bdb1c2efe764ddf0c0",
     "url": "css/Start.954eae77.css"
   },
   {
@@ -44,7 +44,7 @@ self.__precacheManifest = (self.__precacheManifest || []).concat([
     "url": "css/UserCenter.1fe06140.css"
   },
   {
-    "revision": "ce57eee1eb0d13c04557",
+    "revision": "e1d5d732ac6668b669ee",
     "url": "css/app.5ff07af1.css"
   },
   {
@@ -108,7 +108,7 @@ self.__precacheManifest = (self.__precacheManifest || []).concat([
     "url": "img/trashCan.0666bd3d.png"
   },
   {
-    "revision": "8bb590043e20a953461136c5a9e94095",
+    "revision": "f6b7fc2aaadd6a69c35b879e3b92c209",
     "url": "index.html"
   },
   {
@@ -120,8 +120,8 @@ self.__precacheManifest = (self.__precacheManifest || []).concat([
     "url": "js/CreateGame.dd4e98c9.js"
   },
   {
-    "revision": "91d0f13961ab41bfbdfb",
-    "url": "js/Edit.d732fc84.js"
+    "revision": "7d8db7db9ef73c0a3e78",
+    "url": "js/Edit.e7b0fd1b.js"
   },
   {
     "revision": "b859fbc8d7476fdea2a3",
@@ -164,16 +164,16 @@ self.__precacheManifest = (self.__precacheManifest || []).concat([
     "url": "js/Room.d05a1fd8.js"
   },
   {
-    "revision": "8d88ab14effd24be2b6a",
-    "url": "js/Start.120f34f3.js"
+    "revision": "07bdb1c2efe764ddf0c0",
+    "url": "js/Start.a88c0132.js"
   },
   {
     "revision": "ed0bed771ac94382927d",
     "url": "js/UserCenter.b248cfcd.js"
   },
   {
-    "revision": "ce57eee1eb0d13c04557",
-    "url": "js/app.6ff5add3.js"
+    "revision": "e1d5d732ac6668b669ee",
+    "url": "js/app.543d80ac.js"
   },
   {
     "revision": "a15177dd8b2ac52f3ddd",
