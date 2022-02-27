@@ -44,7 +44,7 @@ self.__precacheManifest = (self.__precacheManifest || []).concat([
     "url": "css/UserCenter.1fe06140.css"
   },
   {
-    "revision": "2095d1bc6c742c54e6d3",
+    "revision": "7456988962abb9fd5ff3",
     "url": "css/app.b1abe9f1.css"
   },
   {
@@ -104,7 +104,7 @@ self.__precacheManifest = (self.__precacheManifest || []).concat([
     "url": "img/trashCan.0666bd3d.png"
   },
   {
-    "revision": "50306ce4c321a57812a1d5e697cd13c2",
+    "revision": "a3db7f3245e3e481ed2df3c398e4932b",
     "url": "index.html"
   },
   {
@@ -168,8 +168,8 @@ self.__precacheManifest = (self.__precacheManifest || []).concat([
     "url": "js/UserCenter.b248cfcd.js"
   },
   {
-    "revision": "2095d1bc6c742c54e6d3",
-    "url": "js/app.3f7131fb.js"
+    "revision": "7456988962abb9fd5ff3",
+    "url": "js/app.4bc38c8e.js"
   },
   {
     "revision": "761270562d6c4e82597b",
