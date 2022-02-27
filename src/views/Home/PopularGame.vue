@@ -115,7 +115,7 @@ export default {
       this.popGames = data.result
     } catch (error) {
       this.$swal({
-        icon: 'success',
+        icon: 'error',
         title: '錯誤',
         text: '取得失敗'
       })

@@ -3,7 +3,7 @@ import VueSocketIO from 'vue-socket.io'
 import store from '../store'
 
 Vue.use(new VueSocketIO({
-  connection: 'https://table-top-game-server.herokuapp.com/',
+  connection: process.env.VUE_APP_SERVERAPI,
   vuex: {
     store,
     actionPrefix: 'SOCKET_',

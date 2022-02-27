@@ -16,6 +16,8 @@ jobs:
         run: |
           npm install
           npm run build-linux
+        env:
+          VUE_APP_SERVERAPI: ${{ secrets.VUE_APP_SERVERAPI }}
       - name: Deploy
         uses: JamesIves/github-pages-deploy-action@4.1.1
         with:
