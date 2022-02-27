@@ -4,7 +4,7 @@ self.__precacheManifest = (self.__precacheManifest || []).concat([
     "url": "css/CreateGame.0247e792.css"
   },
   {
-    "revision": "8e3de05bc22154a21230",
+    "revision": "91d0f13961ab41bfbdfb",
     "url": "css/Edit.f1ed14a3.css"
   },
   {
@@ -24,7 +24,7 @@ self.__precacheManifest = (self.__precacheManifest || []).concat([
     "url": "css/Play.1a2a00b0.css"
   },
   {
-    "revision": "02d025ba33c6652b4c5d",
+    "revision": "a84560938f5a4a2cfa14",
     "url": "css/PopularGame.385e0489.css"
   },
   {
@@ -32,7 +32,7 @@ self.__precacheManifest = (self.__precacheManifest || []).concat([
     "url": "css/ReportReview.f8eaef5e.css"
   },
   {
-    "revision": "f9039ecd0c104038ce0b",
+    "revision": "ac7682043a6064b8026e",
     "url": "css/Room.9512464b.css"
   },
   {
@@ -44,7 +44,7 @@ self.__precacheManifest = (self.__precacheManifest || []).concat([
     "url": "css/UserCenter.1fe06140.css"
   },
   {
-    "revision": "f18cf65e6bfeca2f1f9c",
+    "revision": "ce57eee1eb0d13c04557",
     "url": "css/app.5ff07af1.css"
   },
   {
@@ -108,7 +108,7 @@ self.__precacheManifest = (self.__precacheManifest || []).concat([
     "url": "img/trashCan.0666bd3d.png"
   },
   {
-    "revision": "5ead0139e6a50aae7336e7f3f577b37b",
+    "revision": "8bb590043e20a953461136c5a9e94095",
     "url": "index.html"
   },
   {
@@ -120,8 +120,8 @@ self.__precacheManifest = (self.__precacheManifest || []).concat([
     "url": "js/CreateGame.dd4e98c9.js"
   },
   {
-    "revision": "8e3de05bc22154a21230",
-    "url": "js/Edit.13a51150.js"
+    "revision": "91d0f13961ab41bfbdfb",
+    "url": "js/Edit.d732fc84.js"
   },
   {
     "revision": "b859fbc8d7476fdea2a3",
@@ -152,16 +152,16 @@ self.__precacheManifest = (self.__precacheManifest || []).concat([
     "url": "js/Play.8d8eca85.js"
   },
   {
-    "revision": "02d025ba33c6652b4c5d",
-    "url": "js/PopularGame.9a3cc30c.js"
+    "revision": "a84560938f5a4a2cfa14",
+    "url": "js/PopularGame.7f266524.js"
   },
   {
     "revision": "e4e09b760af23de7f933",
     "url": "js/ReportReview.d82f9a7e.js"
   },
   {
-    "revision": "f9039ecd0c104038ce0b",
-    "url": "js/Room.fd722531.js"
+    "revision": "ac7682043a6064b8026e",
+    "url": "js/Room.d05a1fd8.js"
   },
   {
     "revision": "8d88ab14effd24be2b6a",
@@ -172,8 +172,8 @@ self.__precacheManifest = (self.__precacheManifest || []).concat([
     "url": "js/UserCenter.b248cfcd.js"
   },
   {
-    "revision": "f18cf65e6bfeca2f1f9c",
-    "url": "js/app.89b0e466.js"
+    "revision": "ce57eee1eb0d13c04557",
+    "url": "js/app.6ff5add3.js"
   },
   {
     "revision": "a15177dd8b2ac52f3ddd",
