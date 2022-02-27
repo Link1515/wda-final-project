@@ -38,7 +38,10 @@
     </InfiniteLoading>
 
     <Dialog :visible.sync="dialogDisplay" @hide="stepIndex = ''" position="center" :showHeader="false" modal dismissableMask>
-      <div style="max-height: 70vh; max-width: 800px">
+      <div style="background: #5A7AB5;">
+        <img v-if="!name" src="@/assets/images/loading.svg" style="width: 150px; height: 150px">
+      </div>
+      <div style="max-height: 70vh; max-width: 800px" v-if="name">
         <img v-if="image" :src="image">
         <img v-else src="@/assets/images/image-placeholder.png"/>
         <div class="dialogText mb-5">
@@ -121,7 +124,6 @@ export default {
             page: this.page
           }
         })
-        console.log(data.result)
         if (data.result.length) {
           this.page++
           const favGame = JSON.parse(JSON.stringify(this.userInfo.favoriteGame))
@@ -139,7 +141,6 @@ export default {
 
           this.gameList.push(...data.result)
           $state.loaded()
-          console.log('loaded')
         } else {
           $state.complete()
         }
@@ -231,6 +232,7 @@ export default {
     .p-dialog-content {
       padding-left: 0;
       padding-right: 0;
+      padding-bottom: 0;
       text-align: center;
     }
 

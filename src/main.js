@@ -17,6 +17,7 @@ import './plugins/VueImgInputer.js'
 import './plugins/VueSocketIO.js'
 import './plugins/VueSelect.js'
 import './plugins/VuePageTransition.js'
+import './plugins/VueGtag.js'
 // global component
 import Title from './components/Title.vue'
 // mixin

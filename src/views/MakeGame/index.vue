@@ -54,6 +54,9 @@ export default {
   computed: {
     showMakegameHome () {
       return this.$route.path === '/makegame'
+    },
+    name () {
+      return this.$store.state.game.name
     }
   },
   methods: {
@@ -64,7 +67,7 @@ export default {
     editGame (gameId) {
       this.$store.commit('game/reset')
       this.$store.dispatch('game/getOneGame', gameId)
-      this.$router.push('/makegame/edit')
+      this.$router.push('/makegame/edit?loading=1')
     },
     async infiniteHandler ($state) {
       try {

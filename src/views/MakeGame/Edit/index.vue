@@ -47,6 +47,7 @@ export default {
   methods: {
     backHome () {
       this.$router.push('/makegame')
+      this.$store.commit('game/reset')
     },
     validateStep (name) {
       var refToValidate = this.$refs[name]
@@ -58,6 +59,28 @@ export default {
       this.$emit('updateList')
       this.$store.dispatch('game/editGameFinish')
     }
+  },
+  computed: {
+    name () {
+      return this.$store.state.game.name
+    }
+  },
+  watch: {
+    name (val) {
+      if (val) {
+        this.$store.commit('loadingFinish')
+      }
+    }
+  },
+  beforeRouteEnter (to, from, next) {
+    console.log(123)
+    if (to.query.loading) {
+      next(vm => {
+        vm.$store.commit('loading')
+      })
+      return
+    }
+    next()
   }
 }
 </script>

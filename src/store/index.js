@@ -8,6 +8,17 @@ import room from './room.js'
 Vue.use(Vuex)
 
 export default new Vuex.Store({
+  state: {
+    loading: true
+  },
+  mutations: {
+    loadingFinish (state) {
+      state.loading = false
+    },
+    loading (state) {
+      state.loading = true
+    }
+  },
   modules: { user, game, room },
   plugins: [
     createPersistedState({

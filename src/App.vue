@@ -1,7 +1,7 @@
 <template>
   <div id="app">
     <transition name="loading">
-      <div v-if="!serverOn" class="d-flex justify-content-center align-items-center" style="height: 100vh; background: rgba(0,0,0,0.2`)">
+      <div v-if="loading" class="d-flex justify-content-center align-items-center" style="height: 100vh; background: rgba(0,0,0,0.2`)">
         <img src="@/assets/images/loading.svg" style="width: 150px; height: 150px">
       </div>
     </transition>
@@ -31,14 +31,16 @@ export default {
     Navbar,
     ScrollPanel
   },
-  data () {
-    return {
-      serverOn: false
+  computed: {
+    loading () {
+      return this.$store.state.loading
     }
   },
   async created () {
     const { data } = await this.serverAPI.get('/checkServer')
-    this.serverOn = data.result.serverOn
+    if (data.result.serverOn) {
+      this.$store.commit('loadingFinish')
+    }
     this.$store.dispatch('user/getInfo')
   }
 }

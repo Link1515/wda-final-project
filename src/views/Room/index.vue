@@ -11,7 +11,7 @@
         <h2 style="margin: 0 auto 2rem; text-align: center;">
           遊戲間 ID: <span class="roomId">{{ roomId }}<i @click="copyRoomId" class="pi pi-copy ms-3"></i></span>
           <input type="hidden" ref="roomIdInput" :value="roomId">
-          <QrcodeVue :value="serverAPI + '/#/play/joingame?roomId=' + roomId" class="mt-3"/>
+          <QrcodeVue :value="serverAPI + '#/play/joingame?roomId=' + roomId" class="mt-3"/>
         </h2>
         <DataTable stripedRows :value="playerList" class="mb-5">
           <Column field="role" :bodyStyle="{ textAlign: 'center' }">
