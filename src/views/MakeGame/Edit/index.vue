@@ -73,7 +73,6 @@ export default {
     }
   },
   beforeRouteEnter (to, from, next) {
-    console.log(123)
     if (to.query.loading) {
       next(vm => {
         vm.$store.commit('loading')

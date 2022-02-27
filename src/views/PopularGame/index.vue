@@ -38,8 +38,8 @@
     </InfiniteLoading>
 
     <Dialog :visible.sync="dialogDisplay" @hide="stepIndex = ''" position="center" :showHeader="false" modal dismissableMask>
-      <div style="background: #5A7AB5;">
-        <img v-if="!name" src="@/assets/images/loading.svg" style="width: 150px; height: 150px">
+      <div v-if="!name" style="background: #5A7AB5;">
+        <img src="@/assets/images/loading.svg" style="width: 150px; height: 150px">
       </div>
       <div style="max-height: 70vh; max-width: 800px" v-if="name">
         <img v-if="image" :src="image">
@@ -159,6 +159,11 @@ export default {
     },
     ...mapState('game', ['name', 'description', 'image', 'playerRange', 'goodCampRoleList', 'badCampRoleList', 'enableFunRole', 'funRoleList', 'stepList']),
     ...mapGetters('game', ['stepListDisplayHelper'])
+  },
+  beforeRouteEnter (to, from, next) {
+    next(vm => {
+      vm.$store.commit('game/reset')
+    })
   }
 }
 </script>
