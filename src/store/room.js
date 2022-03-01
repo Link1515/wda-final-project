@@ -59,6 +59,18 @@ export default {
     }
   },
   actions: {
+    SOCKET_excludePlayer ({ state, commit }, socketId) {
+      if (socketId === state.socketId) {
+        vm.$socket.disconnect()
+        router.push('/play')
+        commit('reset')
+        swal.fire({
+          icon: 'error',
+          title: '錯誤',
+          text: '已被房主踢出'
+        })
+      }
+    },
     SOCKET_error (_, msg) {
       swal.fire({
         icon: 'error',

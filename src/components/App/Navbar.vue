@@ -192,6 +192,7 @@ export default {
     },
     logout () {
       this.$store.dispatch('user/logout')
+      this.$store.commit('room/reset')
       this.$socket.disconnect()
       this.$router.push('/')
     },

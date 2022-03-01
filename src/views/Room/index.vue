@@ -14,28 +14,33 @@
           <QrcodeVue :value="'https://link1515.github.io/wda-final-project/#/play/joingame?roomId=' + roomId" class="mt-3"/>
         </h2>
         <DataTable stripedRows :value="playerList" class="mb-5">
-          <Column field="role" :bodyStyle="{ textAlign: 'center' }">
+          <Column :bodyStyle="{ textAlign: 'center' }">
             <template #body="slotProps">
               <template v-if="slotProps">
                 <FontAwesomeIcon v-if="slotProps.data.role === 1" :icon="['fas','crown']" style="color: #fa0" />
               </template>
             </template>
           </Column>
-          <Column field="name" header="玩家頭像" :bodyStyle="{ textAlign: 'center' }">
+          <Column header="玩家頭像" :bodyStyle="{ textAlign: 'center' }">
             <template #body="slotProps">
               <Avatar v-if="slotProps.data.avatar" :image="slotProps.data.avatar" class="mr-2" size="large" shape="circle"/>
               <Avatar v-else icon="pi pi-user" class="mr-2" size="large" shape="circle"/>
             </template>
           </Column>
-          <Column field="name" header="玩家暱稱" :bodyStyle="{ textAlign: 'center' }">
+          <Column header="玩家暱稱" :bodyStyle="{ textAlign: 'center' }">
             <template #body="slotProps">
               <span :class="{ self: $socket.id === slotProps.data.socketId }">{{ slotProps.data.name }}</span>
             </template>
           </Column>
-          <Column field="ready" header="準備狀態" :bodyStyle="{ textAlign: 'center' }">
+          <Column header="準備狀態" :bodyStyle="{ textAlign: 'center' }">
             <template #body="slotProps">
               <i v-if="slotProps.data.ready" class="pi pi-check" style="font-size: 24px; display: inline-block; height: 32px"></i>
               <img v-else src="@/assets/images/preparing.svg" style="width: 32px; height: 32px">
+            </template>
+          </Column>
+          <Column v-if="playerData.role === 1" header="剔除玩家" :bodyStyle="{ textAlign: 'center' }">
+            <template #body="slotProps">
+              <Button v-if="slotProps.data.socketId !== playerData.socketId" @click="excludePlayer(slotProps.data.socketId)" icon="pi pi-times" class="p-button-rounded p-button-raised p-button-danger"/>
             </template>
           </Column>
         </DataTable>
@@ -165,6 +170,10 @@ export default {
       this.$toast.add({ severity: 'success', summary: '成功', detail: '成功複製遊戲間 ID', life: 3000 })
       roomIdInput.setAttribute('type', 'hidden')
       window.getSelection().removeAllRanges()
+    },
+    excludePlayer (socketId) {
+      console.log(socketId)
+      this.$socket.emit('excludePlayer', socketId)
     },
     toggleReady () {
       this.$v.$touch()
