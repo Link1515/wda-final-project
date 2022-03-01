@@ -14,7 +14,7 @@
 importScripts("https://storage.googleapis.com/workbox-cdn/releases/4.3.1/workbox-sw.js");
 
 importScripts(
-  "precache-manifest.2401e5f4bfc309bd1132a7424427d0ff.js"
+  "precache-manifest.71c5d4ddf19f8b82d364269b9f9be319.js"
 );
 
 workbox.core.setCacheNameDetails({prefix: "wda-final-project"});
