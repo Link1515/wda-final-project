@@ -246,7 +246,6 @@ export default {
     pick (skipInc, skipLength) {
       this.serverSkipInc = [skipInc, skipLength + 1 - skipInc]
       this.$socket.emit('updateSkipInc', this.serverSkipInc)
-      this.serverSkipInc = [-1, -1]
     },
     stepVoice (msg, step) {
       return new Promise((resolve, reject) => {
@@ -414,11 +413,12 @@ export default {
               if (timer < 0) {
                 clearInterval(this.intervalTimer)
                 this.stepPickOneModal = false
-                this.pickOneInc = -1
                 if (this.serverSkipInc[0] < 0) {
                   const randomNum = Math.round(Math.random() * (this.stepPickOneOptData.length - 1))
                   this.pick(randomNum + 1, this.stepPickOneOptData.length)
                 }
+                this.pickOneInc = -1
+                this.serverSkipInc = [-1, -1]
                 resolve()
               }
             }, 10)

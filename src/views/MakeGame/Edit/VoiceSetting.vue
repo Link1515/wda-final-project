@@ -309,6 +309,7 @@ export default {
               const randomNum = Math.round(Math.random() * (this.stepPickOneOptData.length - 1))
               this.pick(randomNum + 1, this.stepPickOneOptData.length)
             }
+            this.pickOneInc = -1
             resolve()
           }
         }, 10)

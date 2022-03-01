@@ -194,7 +194,7 @@ export default {
       this.$store.dispatch('user/logout')
       this.$store.commit('room/reset')
       this.$socket.disconnect()
-      this.$router.push('/')
+      this.$router.push('/').catch(() => {})
     },
     resetForm () {
       this.$v.loginData.$reset()
