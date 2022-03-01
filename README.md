@@ -1,24 +1,19 @@
-# wda-final-project
+# [易桌遊 E-TableTopGame](https://link1515.github.io/wda-final-project/)
+- 於泰山訓練場所製期末專題
+- 應用於輔助桌遊進行，作為桌遊語音主持人
 
-## Project setup
-```
-npm install
-```
+## 技術使用
 
-### Compiles and hot-reloads for development
-```
-npm run serve
-```
+### 前端 [repository](https://github.com/Link1515/wda-final-project)
+- Vue 2
+- primeVue (UI)
+- Axios
+- vue-gtag (Google Analytics)
+- vue-socket.io
 
-### Compiles and minifies for production
-```
-npm run build
-```
-
-### Lints and fixes files
-```
-npm run lint
-```
-
-### Customize configuration
-See [Configuration Reference](https://cli.vuejs.org/config/).
+### 後端 [repository](https://github.com/Link1515/wda-final-project-server)
+- node.js
+- Express.js
+- socket.io
+- json web token
+- cloudinary
