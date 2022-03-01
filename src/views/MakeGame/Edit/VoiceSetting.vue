@@ -328,7 +328,6 @@ export default {
       async set (vt) {
         this.$store.commit('game/updateVoiceType', vt)
         const voices = await getVoices()
-        console.log(voices)
         const VT = voices.filter(v => v.name.includes(vt))[0]
         this.msg = new SpeechSynthesisUtterance()
         this.msg.voice = VT

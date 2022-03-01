@@ -38,7 +38,7 @@
               <img v-else src="@/assets/images/preparing.svg" style="width: 32px; height: 32px">
             </template>
           </Column>
-          <Column v-if="playerData.role === 1" header="剔除玩家" :bodyStyle="{ textAlign: 'center' }">
+          <Column v-if="playerData && playerData.role === 1" header="剔除玩家" :bodyStyle="{ textAlign: 'center' }">
             <template #body="slotProps">
               <Button v-if="slotProps.data.socketId !== playerData.socketId" @click="excludePlayer(slotProps.data.socketId)" icon="pi pi-times" class="p-button-rounded p-button-raised p-button-danger"/>
             </template>
@@ -172,7 +172,6 @@ export default {
       window.getSelection().removeAllRanges()
     },
     excludePlayer (socketId) {
-      console.log(socketId)
       this.$socket.emit('excludePlayer', socketId)
     },
     toggleReady () {
