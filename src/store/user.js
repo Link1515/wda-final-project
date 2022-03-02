@@ -1,5 +1,6 @@
 import swal from 'sweetalert2'
 import { serverAPI } from '../plugins/Axios.js'
+import router from '../router/index.js'
 
 export default {
   namespaced: true,
@@ -64,6 +65,7 @@ export default {
         const { data } = await serverAPI.post('/users/login', loginData)
         commit('loadingFinish', null, { root: true })
         commit('login', data.result)
+        router.go()
         swal.fire({
           icon: 'success',
           title: '成功',

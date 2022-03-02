@@ -1,5 +1,5 @@
 <template>
-  <div id="populargame" class="viewBox routerviewHeight">
+  <div id="populargame" class="viewBox routerviewHeight" :key="userInfo.token">
     <Title>
       <template #text>
         熱門遊戲
@@ -19,7 +19,7 @@
             <Rating :value="countStar(game.likes)" :readonly="true" :cancel="false"/>
           </template>
           <template #footer>
-            <ToggleButton v-model="game.likedByUser" @change="setFavGame(game.likedByUser, game._id, game.name)" onIcon="pi pi-heart-fill" offIcon="pi pi-heart"/>
+            <ToggleButton v-model="game.likedByUser" @change="setFavGame(game.likedByUser, game._id, game.name)" :disabled="!Boolean(userInfo.token)" onIcon="pi pi-heart-fill" offIcon="pi pi-heart"/>
           </template>
         </Card>
       </div>
