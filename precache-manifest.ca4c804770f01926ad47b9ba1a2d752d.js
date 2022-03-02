@@ -24,7 +24,7 @@ self.__precacheManifest = (self.__precacheManifest || []).concat([
     "url": "css/Play.1a2a00b0.css"
   },
   {
-    "revision": "a84560938f5a4a2cfa14",
+    "revision": "366ca4da64b8faabe119",
     "url": "css/PopularGame.385e0489.css"
   },
   {
@@ -44,7 +44,7 @@ self.__precacheManifest = (self.__precacheManifest || []).concat([
     "url": "css/UserCenter.1fe06140.css"
   },
   {
-    "revision": "d8fffd7c2337b7e3b178",
+    "revision": "0fdc741134e1f6221594",
     "url": "css/app.5ff07af1.css"
   },
   {
@@ -108,7 +108,7 @@ self.__precacheManifest = (self.__precacheManifest || []).concat([
     "url": "img/trashCan.0666bd3d.png"
   },
   {
-    "revision": "9b3c68ddb919bac179e944c9557e8d9b",
+    "revision": "df6c5ff09a5e057bfe4fa2d8da794390",
     "url": "index.html"
   },
   {
@@ -152,8 +152,8 @@ self.__precacheManifest = (self.__precacheManifest || []).concat([
     "url": "js/Play.8d8eca85.js"
   },
   {
-    "revision": "a84560938f5a4a2cfa14",
-    "url": "js/PopularGame.7f266524.js"
+    "revision": "366ca4da64b8faabe119",
+    "url": "js/PopularGame.e7a2065d.js"
   },
   {
     "revision": "e4e09b760af23de7f933",
@@ -172,8 +172,8 @@ self.__precacheManifest = (self.__precacheManifest || []).concat([
     "url": "js/UserCenter.b248cfcd.js"
   },
   {
-    "revision": "d8fffd7c2337b7e3b178",
-    "url": "js/app.aab66a07.js"
+    "revision": "0fdc741134e1f6221594",
+    "url": "js/app.038adb0b.js"
   },
   {
     "revision": "a15177dd8b2ac52f3ddd",
