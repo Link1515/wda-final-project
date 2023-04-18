@@ -4,14 +4,14 @@
 
 ## 技術使用
 
-### 前端 [repository](https://github.com/Link1515/wda-final-project)
+### 前端 [Repo](https://github.com/Link1515/wda-final-project)
 - Vue 2
 - primeVue (UI)
 - Axios
 - vue-gtag (Google Analytics)
 - vue-socket.io
 
-### 後端 [repository](https://github.com/Link1515/wda-final-project-server)
+### 後端 [Repo](https://github.com/Link1515/wda-final-project-server)
 - node.js
 - Express.js
 - socket.io
